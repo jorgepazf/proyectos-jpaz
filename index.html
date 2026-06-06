@@ -67,7 +67,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .project-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:box-shadow .15s,border-color .15s;position:relative;overflow:hidden}
 .project-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08);border-color:var(--border2)}
 .pc-accent{position:absolute;top:0;left:0;right:0;height:3px}
-.pc-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;margin-top:6px;line-height:1.3}
+.pc-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;margin-top:6px;line-height:1.3;padding-right:20px;}
 .pc-client{font-size:12px;color:var(--text2);margin-bottom:12px}
 .pc-meta{display:flex;gap:12px;font-size:11px;color:var(--text3)}
 .pc-meta span{display:flex;align-items:center;gap:4px}
@@ -80,6 +80,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .new-card:hover{border-color:var(--green);background:var(--green-light);color:var(--green)}
 .new-card i{font-size:24px}
 .new-card span{font-size:13px;font-weight:500}
+.delete-proj-btn{position:absolute;bottom:12px;right:12px;padding:5px;font-size:14px;border:none;background:transparent;color:var(--text3);cursor:pointer;transition:color .15s}
+.delete-proj-btn:hover{color:var(--red)}
 
 /* ── BACK BUTTON / PROJECT TOPBAR ── */
 .proj-topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:16px;flex-wrap:wrap}
@@ -87,7 +89,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .proj-title-area p{font-size:12px;color:var(--text2);margin-top:3px}
 
 /* ── TABS ── */
-.tab-row{display:flex;gap:4px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:0;overflow-x:auto}
+.tab-row{display:flex;gap:4px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:0;overflow-x:auto;scrollbar-width:none;}
+.tab-row::-webkit-scrollbar{display:none;}
 .tab{padding:8px 16px;border-radius:var(--radius) var(--radius) 0 0;font-size:13px;cursor:pointer;border:1px solid transparent;background:transparent;color:var(--text2);margin-bottom:-1px;display:flex;align-items:center;gap:5px;white-space:nowrap}
 .tab.active{background:var(--bg);border-color:var(--border);border-bottom-color:var(--bg);color:var(--text);font-weight:500}
 
@@ -144,13 +147,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 /* ── GANTT ── */
 .gantt-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-lg)}
 .gantt-inner{min-width:820px}
-.gantt-head-row{display:grid;font-size:11px;color:var(--text2);padding:8px 14px;background:var(--bg2);border-bottom:1px solid var(--border);font-weight:500}
-.gantt-row{display:grid;align-items:center;padding:5px 14px;border-top:1px solid var(--border);font-size:12px;position:relative}
-.gantt-row:hover{background:var(--bg2)}
+.gantt-head-row{display:grid;grid-template-columns:300px 1fr;font-size:11px;color:var(--text2);padding:8px 14px;background:var(--bg2);border-bottom:1px solid var(--border);font-weight:500;align-items:center;}
+.gantt-row{display:grid;grid-template-columns:300px 1fr;align-items:center;padding:5px 14px;border-top:1px solid var(--border);font-size:12px;position:relative}
+.gantt-row:hover{background:var(--bg2)!important}
 .gantt-bar-cell{position:relative;height:14px}
 .gantt-bar{position:absolute;height:100%;border-radius:3px;z-index:1}
 .gantt-today-line{position:absolute;top:0;width:2px;height:100%;background:rgba(216,90,48,.8);z-index:10;pointer-events:none}
-.month-labels{display:grid;font-size:10px;text-align:center;color:var(--text3);padding:4px 14px;border-bottom:1px solid var(--border)}
+.month-labels{display:flex;font-size:10px;color:var(--text3);height:100%;align-items:center;}
+.month-col{flex:1;text-align:center;border-left:1px solid var(--border2);height:100%;display:flex;align-items:center;justify-content:center;}
+.month-col:first-child{border-left:none;}
 
 /* ── MODALS ── */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:99999;padding:16px}
@@ -179,8 +184,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
 .sub-row{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--border)}
 .sub-row:last-child{border-bottom:none}
+.sub-row i.ti-circle, .sub-row i.ti-check {font-size:18px; cursor:pointer;}
 .sub-row input[type="text"]{flex:1;background:var(--bg);border:1px solid var(--border2);padding:6px 8px;font-size:12px;border-radius:4px;color:var(--text);outline:none}
-.sub-row input[type="date"],.sub-row select{width:110px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;color:var(--text);outline:none}
+.sub-row input[type="date"],.sub-row select{width:115px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;color:var(--text);outline:none}
 .dropdown{position:relative;display:inline-block}
 .notif-badge{position:absolute;top:-5px;right:-5px;background:var(--red);color:white;font-size:10px;font-weight:bold;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid var(--bg);z-index:10}
 .dropdown-content{display:none;position:absolute;right:0;top:100%;margin-top:8px;width:280px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:9999;overflow:hidden}
@@ -210,6 +216,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   .task-right{flex-wrap:wrap}
   .tab{padding:6px 10px;font-size:12px}
   .filter-bar select{flex:1;min-width:100%}
+  .gantt-row {grid-template-columns: 240px 1fr;}
+  .gantt-head-row {grid-template-columns: 240px 1fr;}
 }
 </style>
 </head>
@@ -220,7 +228,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <p style="color:var(--text2);font-weight:500">Conectando con la base de datos...</p>
 </div>
 
-<!-- ══ SCREEN: HOME ══ -->
 <div id="screen-home" class="screen active">
   <div class="topbar">
     <div class="brand">
@@ -238,7 +245,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div id="home-projects-list"></div>
 </div>
 
-<!-- ══ SCREEN: PROJECT ══ -->
 <div id="screen-project" class="screen">
   <div class="proj-topbar">
     <div class="proj-title-area">
@@ -273,6 +279,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <button class="tab" onclick="setTab('board',this)"><i class="ti ti-layout-kanban"></i> Tablero</button>
     <button class="tab" onclick="setTab('eval',this)"><i class="ti ti-star"></i> Evaluaciones</button>
     <button class="tab" onclick="setTab('team',this)"><i class="ti ti-users"></i> Equipo</button>
+    <button class="tab" onclick="setTab('share',this)"><i class="ti ti-world"></i> Publicar</button>
     <button class="tab" onclick="setTab('config',this)"><i class="ti ti-settings"></i> Config</button>
   </div>
 
@@ -281,15 +288,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div id="tab-board" style="display:none"></div>
   <div id="tab-eval"  style="display:none"></div>
   <div id="tab-team"  style="display:none"></div>
+  <div id="tab-share" style="display:none"></div>
   <div id="tab-config" style="display:none"></div>
 </div>
 
 <div id="modal-root"></div>
 
-<!-- ══════════════════════════════════════════════════════════ -->
 <script>
 // ═══════════════════════════════════════════════════════
-//  FIREBASE CONFIGURATION  ← REEMPLAZA ESTOS VALORES
+//  FIREBASE CONFIGURATION
 // ═══════════════════════════════════════════════════════
 const firebaseConfig = {
   apiKey:            "AIzaSyBmh1KNxCs7-eM8OSx6uHjxbIwwEgH_ju4",
@@ -328,6 +335,7 @@ let filterAssignee = 'all';
 let filterStatus   = 'all';
 let unseenLogs     = 0;
 let isFirstLoad    = true;
+let hideCompletedGantt = false; // Filtro Gantt
 
 // ═══════════════════════════════════════════════════════
 //  BOOTSTRAP: cargar lista de proyectos
@@ -411,6 +419,7 @@ function buildProjectCard(id) {
         <span><i class="ti ti-chart-pie"></i> ${pct}%</span>
       </div>
       <div class="pc-pbar"><div class="pc-pbar-inner" style="width:${pct}%;background:${m.accentColor||pal.color}"></div></div>
+      <button class="delete-proj-btn" title="Eliminar proyecto" onclick="event.stopPropagation(); deleteProject('${id}')"><i class="ti ti-trash"></i></button>
     </div>`;
 }
 
@@ -426,7 +435,7 @@ function goHome() {
   if (projListener) { projListener(); projListener = null; }
   currentProjId = null; state = {}; STAGES = [];
   filterAssignee = 'all'; filterStatus = 'all';
-  currentTab = 'tasks'; unseenLogs = 0; isFirstLoad = true;
+  currentTab = 'tasks'; unseenLogs = 0; isFirstLoad = true; hideCompletedGantt = false;
   showScreen('home');
   loadProjectList();
 }
@@ -440,20 +449,17 @@ function openProject(id) {
   isFirstLoad  = true;
   unseenLogs   = 0;
 
-  // Reconstruir STAGES desde meta
   STAGES = (meta.stages || []).map((s, i) => ({
     ...s,
     color: STAGE_PALETTE[i % STAGE_PALETTE.length].color,
     light: STAGE_PALETTE[i % STAGE_PALETTE.length].light,
   }));
 
-  // UI
   document.getElementById('proj-title').textContent    = meta.name;
   document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'} · Inicio: ${fmtDateStr(meta.startDate)} · ${meta.totalWeeks} semanas · ${STAGES.length} etapas`;
   setTab('tasks', document.querySelector('.tab'));
   showScreen('project');
 
-  // Listener en tiempo real del estado del proyecto
   const stateRef = db.collection('projects').doc(id).collection('runtime').doc('state');
   if (projListener) projListener();
   projListener = stateRef.onSnapshot(doc => {
@@ -473,7 +479,7 @@ function openProject(id) {
     autoUpdateDelays();
     renderAllViews();
     renderNotifs();
-    // Actualizar pct en meta
+    
     const s = calcStats();
     if ((meta.lastPct||0) !== s.pct) {
       db.collection('projects').doc(id).update({ lastPct: s.pct });
@@ -521,6 +527,19 @@ function logAction(text) {
 }
 
 // ═══════════════════════════════════════════════════════
+//  ELIMINAR PROYECTO DESDE HOME
+// ═══════════════════════════════════════════════════════
+async function deleteProject(id) {
+  if (!confirm(`¿Eliminar el proyecto "${allProjects[id].meta.name}" permanentemente? Esta acción no se puede deshacer.`)) return;
+  try {
+    await db.collection('projects').doc(id).collection('runtime').doc('state').delete();
+    await db.collection('projects').doc(id).delete();
+    delete allProjects[id];
+    renderHome();
+  } catch(e) { alert('Error al eliminar el proyecto.'); }
+}
+
+// ═══════════════════════════════════════════════════════
 //  CREAR NUEVO PROYECTO (modal)
 // ═══════════════════════════════════════════════════════
 function openNewProjectModal() {
@@ -558,7 +577,6 @@ function openNewProjectModal() {
       <button class="btn btn-sm" id="btn-method-json" onclick="setCreateMethod('json')"><i class="ti ti-file-code"></i> Importar JSON</button>
     </div>
 
-    <!-- MÉTODO FORMULARIO -->
     <div id="create-form-section">
       <div class="tip-box">
         <i class="ti ti-info-circle" style="flex-shrink:0;margin-top:1px"></i>
@@ -568,7 +586,6 @@ function openNewProjectModal() {
       <button class="btn btn-sm" onclick="addStageRow()" style="margin-bottom:14px"><i class="ti ti-plus"></i> Agregar etapa</button>
     </div>
 
-    <!-- MÉTODO JSON -->
     <div id="create-json-section" style="display:none">
       <div class="tip-box">
         <i class="ti ti-info-circle" style="flex-shrink:0;margin-top:1px"></i>
@@ -591,7 +608,6 @@ function openNewProjectModal() {
     </div>
   `, true);
 
-  // Iniciar con una etapa vacía
   addStageRow();
 }
 
@@ -645,8 +661,8 @@ function addTaskRow(stageN) {
     <select id="${tid}-type">
       <option value="tarea">Tarea</option>
       <option value="hito">Hito</option>
-      <option value="revision">Revisión</option>
       <option value="producto">Producto</option>
+      <option value="revision">Revisión contraparte</option>
     </select>
     <div class="week-pair">
       S<input type="number" id="${tid}-ws" min="1" placeholder="ini" value="1"/>
@@ -704,13 +720,6 @@ function downloadJsonTemplate() {
         { id: "1-P1", name: "Producto N°1", week: 5, type: "producto" },
         { id: "1-R1", name: "Revisión contraparte", weeks: [5, 7], type: "revision" }
       ]
-    },
-    {
-      id: 2, name: "Etapa 2: Diseño", weeks: [6, 14],
-      tasks: [
-        { id: "2-1", name: "Diseño de instrumentos", weeks: [6, 9], type: "tarea" },
-        { id: "2-P2", name: "Producto N°2", week: 10, type: "producto" }
-      ]
     }
   ];
   const blob = new Blob([JSON.stringify(tpl, null, 2)], { type: 'application/json' });
@@ -748,10 +757,7 @@ async function saveNewProject() {
     stageCount = 0; taskCounters = {};
     closeModal();
     openProject(ref.id);
-  } catch(e) {
-    console.error(e);
-    alert('Error al guardar el proyecto en Firebase.');
-  }
+  } catch(e) { console.error(e); alert('Error al guardar el proyecto en Firebase.'); }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -774,6 +780,17 @@ function weekStart(w) { const d=new Date(getStartDate()); d.setDate(d.getDate()+
 function weekEnd(w)   { const d=weekStart(w); d.setDate(d.getDate()+6); return d; }
 function fmtDate(d)   { return d.toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'}); }
 function fmtShort(d)  { return d.toLocaleDateString('es-CL',{day:'2-digit',month:'short'}); }
+
+// Obtiene la semana relativa del proyecto dado una fecha
+function getRelWeek(dateInput) {
+    const d = (typeof dateInput === 'string') ? parseLocal(dateInput) : dateInput;
+    const start = getStartDate();
+    const startNoTime = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    const dNoTime = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const diff = (dNoTime - startNoTime) / (7 * 24 * 3600 * 1000);
+    return Math.max(1, Math.floor(diff) + 1);
+}
+
 function timeAgo(ms)  {
   const mins = Math.floor((Date.now()-ms)/60000);
   if (mins < 1) return 'Hace un momento';
@@ -892,6 +909,7 @@ function renderAllViews() {
     if (currentTab==='gantt') renderGantt();
     if (currentTab==='eval')  renderEval();
     if (currentTab==='team')  renderTeam();
+    if (currentTab==='share') renderShare();
     if (currentTab==='config')renderConfig();
   } catch(e) { console.error('renderAllViews:', e); }
 }
@@ -900,14 +918,13 @@ function setTab(tab, btn) {
   currentTab = tab;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   if (btn) btn.classList.add('active');
-  ['tasks','gantt','board','eval','team','config'].forEach(t => {
+  ['tasks','gantt','board','eval','team','share','config'].forEach(t => {
     const el = document.getElementById('tab-'+t);
     if (el) el.style.display = t===tab ? 'block' : 'none';
   });
   renderAllViews();
 }
 
-// BADGES
 function badge(type) {
   if (type==='producto') return '<span class="badge badge-producto"><i class="ti ti-box"></i> Producto</span>';
   if (type==='revision') return '<span class="badge badge-revision"><i class="ti ti-clock"></i> Revisión</span>';
@@ -1008,7 +1025,9 @@ function renderTaskList(tasks, stage) {
   tasks.forEach(t => {
     const status = getTaskStatus(t.id);
     const { start, end } = getTaskDates(t);
-    const dateLabel = t.startDate ? `${fmtShort(start)} – ${fmtShort(end)}` : weekLabel(t);
+    // Nuevo formato de fecha: "15-jun — 19-jul · S5-S7"
+    const dateLabel = `${fmtShort(start)} — ${fmtShort(end)} · S${getRelWeek(start)}-S${getRelWeek(end)}`;
+    
     const assigneeBadge = (t.assignee && typeof t.assignee==='string')
       ? `<span class="badge" style="background:var(--bg3);color:var(--text2)"><i class="ti ti-user"></i> ${t.assignee}</span>` : '';
     html += `<div class="task-row${status==='completado'?' done':''}" onclick="openTask('${t.id}',${stage.id})">
@@ -1019,6 +1038,7 @@ function renderTaskList(tasks, stage) {
       </div>
       <div class="task-right">${assigneeBadge}${badge(t.type)}</div>
     </div>`;
+    
     const subs = state.subtasks && state.subtasks[t.id] ? state.subtasks[t.id] : [];
     subs.forEach(s => {
       if (!s) return;
@@ -1026,7 +1046,7 @@ function renderTaskList(tasks, stage) {
       const sassg = (s.assignee&&typeof s.assignee==='string') ? ` <i class="ti ti-user"></i> ${s.assignee.split(' ')[0]}` : '';
       const sdate = s.date ? ` · <i class="ti ti-calendar-event"></i> ${fmtShort(parseLocal(s.date))}` : '';
       html += `<div class="subtask-indented ${sst==='completado'?'done':''}" onclick="openTask('${t.id}',${stage.id})">
-        <i class="ti ti-${sst==='completado'?'check':'corner-down-right'}" style="color:var(--text3);font-size:16px"></i>
+        <i class="ti ti-${sst==='completado'?'check':'circle'}" style="color:var(--text3);font-size:16px"></i>
         <span class="st-name">${s.name}<span style="font-size:11px;color:var(--text3)"> ${sassg}${sdate}</span></span>
       </div>`;
     });
@@ -1048,6 +1068,7 @@ function quickToggle(e, id) {
   state.statuses[id] = isDone ? 'pendiente' : 'completado';
   const tName = (getAllTasks().find(t=>t.id===id)||{}).name||'';
   logAction(`Marcó '${tName.length>25?tName.slice(0,25)+'...':tName}' como ${isDone?'Pendiente':'Completado'}.`);
+  saveState();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1089,6 +1110,11 @@ function renderBoard() {
 // ═══════════════════════════════════════════════════════
 //  RENDER GANTT
 // ═══════════════════════════════════════════════════════
+function toggleGanttCompleted() {
+    hideCompletedGantt = !hideCompletedGantt;
+    renderGantt();
+}
+
 function renderGantt() {
   const el = document.getElementById('tab-gantt');
   if (!el) return;
@@ -1099,39 +1125,54 @@ function renderGantt() {
     const projStart = getStartDate();
     const tf        = todayFraction();
     
-    // Generar etiquetas de meses
-    const months = [];
-    const seen   = new Set();
-    for (let w=1; w<=TOTAL_W; w++) {
-      const mn = weekStart(w).toLocaleDateString('es-CL',{month:'short'});
-      if (!seen.has(mn)) { seen.add(mn); months.push(mn); }
+    // Agrupar semanas por mes (e.g. "Jun 26")
+    let monthsHtml = '';
+    let currentM = '';
+    let wCount = 0;
+    
+    for (let w = 1; w <= TOTAL_W; w++) {
+        const date = weekStart(w);
+        const mStr = date.toLocaleDateString('es-CL', { month: 'short', year: '2-digit' }).replace(' de ', ' '); 
+        if (mStr !== currentM) {
+            if (wCount > 0) monthsHtml += `<div class="month-col" style="flex:${wCount};">${currentM}</div>`;
+            currentM = mStr;
+            wCount = 1;
+        } else {
+            wCount++;
+        }
     }
-    const monthsGrid = `grid-template-columns:240px 1fr`;
+    if (wCount > 0) monthsHtml += `<div class="month-col" style="flex:${wCount};">${currentM}</div>`;
 
     let html = `<div class="gantt-wrap"><div class="gantt-inner">
-      <div class="month-labels" style="${monthsGrid}">
-        <div></div>
-        <div style="display:flex">
-          ${months.map(m=>`<div style="flex:1;text-align:center">${m}</div>`).join('')}
+      <div class="gantt-head-row">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding-right:10px;">
+          Actividad 
+          <label style="font-weight:normal; cursor:pointer; font-size:10px; display:flex; align-items:center; gap:4px; color:var(--text2)">
+            <input type="checkbox" onchange="toggleGanttCompleted()" ${hideCompletedGantt?'checked':''}> Ocultar completadas
+          </label>
         </div>
-      </div>
-      <div class="gantt-head-row" style="grid-template-columns:240px 1fr">
-        <div>Actividad</div><div></div>
+        <div class="month-labels">${monthsHtml}</div>
       </div>`;
 
     STAGES.forEach(stage => {
-      const stageTasks = getAllTasks().filter(t=>t.stageId===stage.id)
-        .sort((a,b)=>getTaskDates(a).start-getTaskDates(b).start);
+      let stageTasks = getAllTasks().filter(t=>t.stageId===stage.id);
+      if(hideCompletedGantt) stageTasks = stageTasks.filter(t => getTaskStatus(t.id) !== 'completado');
+      
+      stageTasks = stageTasks.sort((a,b)=>getTaskDates(a).start-getTaskDates(b).start);
+      
       if (!stageTasks.length) return;
       const scol = state.ganttCollapsed && state.ganttCollapsed[stage.id];
-      html += `<div class="gantt-row" style="grid-template-columns:240px 1fr;background:var(--bg2);cursor:pointer" onclick="toggleGanttSection(${stage.id})">
-        <div style="font-weight:500;font-size:12px;display:flex;align-items:center;gap:6px">
+      
+      // La flecha, luego el color, luego la etapa y fondo de color
+      html += `<div class="gantt-row" style="background:${stage.light}; cursor:pointer" onclick="toggleGanttSection(${stage.id})">
+        <div style="font-weight:600; font-size:12px; display:flex; align-items:center; gap:6px; z-index:3;">
+          <i class="ti ti-chevron-${scol?'right':'down'}" style="font-size:14px;color:var(--text2)"></i>
           <span style="width:8px;height:8px;border-radius:50%;background:${stage.color};display:inline-block;flex-shrink:0"></span>
           ${stage.name}
-          <i class="ti ti-chevron-${scol?'right':'down'}" style="font-size:12px;color:var(--text3);margin-left:auto"></i>
         </div>
         <div></div>
       </div>`;
+      
       if (!scol) {
         stageTasks.forEach(t => {
           const status = getTaskStatus(t.id);
@@ -1140,14 +1181,19 @@ function renderGantt() {
           const endD    = Math.floor((end - projStart)/(24*3600*1000));
           const leftPct = Math.max(0,(startD/TOTAL_D)*100);
           const widthPct= Math.max(.5,((endD-startD+1)/TOTAL_D)*100);
-          const barColor= status==='completado'?'var(--green)':
-                          status==='retrasado'?'var(--red)':
-                          status==='curso'?'var(--blue)':stage.color;
-          html += `<div class="gantt-row" style="grid-template-columns:240px 1fr" onclick="openTask('${t.id}',${stage.id})">
-            <div style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding-right:8px;color:${status==='completado'?'var(--text3)':'var(--text)'}${status==='completado'?';text-decoration:line-through':''}">${t.name}</div>
+          
+          let barColor = status==='completado'?'var(--green)': status==='retrasado'?'var(--red)': status==='curso'?'var(--blue)':stage.color;
+          let barStyle = `background:${barColor};`;
+          
+          if(t.type === 'revision') {
+             barStyle = `background: repeating-linear-gradient(45deg, ${barColor}, ${barColor} 6px, rgba(255,255,255,0.4) 6px, rgba(255,255,255,0.4) 12px);`;
+          }
+
+          html += `<div class="gantt-row" onclick="openTask('${t.id}',${stage.id})">
+            <div style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding-right:8px;color:${status==='completado'?'var(--text3)':'var(--text)'}${status==='completado'?';text-decoration:line-through':''}" title="${t.name}">${t.name}</div>
             <div class="gantt-bar-cell">
               <div class="gantt-today-line" style="left:${tf*100}%"></div>
-              <div class="gantt-bar" style="left:${leftPct}%;width:${widthPct}%;background:${barColor}${status==='completado'?';opacity:.5':''}"></div>
+              <div class="gantt-bar" style="left:${leftPct}%; width:${widthPct}%; ${barStyle} ${status==='completado'?';opacity:.5':''}" title="${t.name}"></div>
             </div>
           </div>`;
         });
@@ -1175,14 +1221,18 @@ function renderEval() {
     const evals = getAllTasks().filter(t=>t.stageId===stage.id&&(t.type==='producto'||t.type==='revision'));
     if (!evals.length) return;
     html += `<div class="section"><div class="section-header" style="cursor:default"><div class="section-title"><span style="width:10px;height:10px;border-radius:50%;background:${stage.color};display:inline-block"></span>${stage.name}</div></div><div style="padding:10px 14px 0">`;
+    
     evals.forEach(t => {
       const isProd = t.type==='producto';
       const ev     = isProd ? (state.evaluations&&state.evaluations[t.id]||0) : (state.evaluationsClient&&state.evaluationsClient[t.id]||0);
       const note   = state.notes&&state.notes[t.id]||'';
       const status = getTaskStatus(t.id);
+      const { start, end } = getTaskDates(t);
+      const dateLabel = `${fmtShort(start)} — ${fmtShort(end)} · S${getRelWeek(start)}-S${getRelWeek(end)}`;
+      
       html += `<div class="eval-card">
         <h4>${t.name} ${status==='completado'?'<span class="tag-active">Completado</span>':''} ${badge(t.type)}</h4>
-        <div style="font-size:11px;color:var(--text3);margin-bottom:8px"><i class="ti ti-calendar"></i> ${weekLabel(t)}</div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:8px"><i class="ti ti-calendar"></i> ${dateLabel}</div>
         <div class="eval-section">
           <h4 style="color:${isProd?'var(--green)':'#a87000'}">${isProd?'Autoevaluación del Equipo':'Feedback del Cliente'}</h4>
           <div class="stars-input">
@@ -1204,7 +1254,6 @@ function renderEval() {
 function renderTeam() {
   const el = document.getElementById('tab-team');
   if (!el) return;
-  const colors = ['#1D9E75','#378ADD','#D85A30','#7F77DD','#EF9F27','#D4537E'];
   let html = `<div class="section"><div style="padding:14px"><p style="font-size:13px;font-weight:500;margin-bottom:12px">Miembros del equipo</p>`;
   (state.team||[]).forEach((m,i) => {
     html += `<div class="team-member">
@@ -1234,6 +1283,27 @@ function saveMember() {
 }
 
 // ═══════════════════════════════════════════════════════
+//  RENDER PUBLICAR (SHARE)
+// ═══════════════════════════════════════════════════════
+function renderShare(){
+  const el = document.getElementById('tab-share');
+  if(!el) return;
+  el.innerHTML=`<div style="margin-bottom:14px">
+    <p style="font-size:13px;color:var(--text2);margin-bottom:12px">¡La base de datos en tiempo real de Firebase está activada! No necesitas exportar archivos para colaborar.</p>
+    <div class="export-row"><button class="btn btn-blue" onclick="copyShareMsg()"><i class="ti ti-copy"></i> Copiar resumen para equipo</button></div>
+  </div>`;
+}
+
+function copyShareMsg(){
+  const s = calcStats(); const cw = currentWeek(); const nm = getNextUpcoming('hito'); const np = getNextUpcoming('producto');
+  let hitoText = nm.item ? `${nm.item.name} (en ${nm.days} días)` : "Ninguno pendiente";
+  let prodText = np.item ? `${np.item.name} (en ${np.days} días)` : "Ninguno pendiente";
+  const meta = currentProjId ? allProjects[currentProjId].meta : {};
+  const text = `📊 Resumen de Proyecto – ${meta.name}\n\nSemana actual: S${cw} (${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))})\nProgreso: ${s.pct}% (${s.done}/${s.total} completadas)\n- En curso: ${s.counts.curso}\n- Retrasadas: ${s.counts.retrasado}\n\nPróximo hito: ${hitoText}\nPróximo producto: ${prodText}\n\nGenerado: ${fmtDate(new Date())}`;
+  navigator.clipboard.writeText(text).then(()=>alert('Resumen copiado al portapapeles ✓'));
+}
+
+// ═══════════════════════════════════════════════════════
 //  RENDER CONFIG
 // ═══════════════════════════════════════════════════════
 function renderConfig() {
@@ -1242,27 +1312,56 @@ function renderConfig() {
   const meta = currentProjId ? allProjects[currentProjId].meta : {};
   el.innerHTML = `
     <div class="section"><div style="padding:16px">
-      <p style="font-size:13px;font-weight:500;margin-bottom:12px">Configuración del proyecto</p>
+      <p style="font-size:14px;font-weight:600;margin-bottom:12px"><i class="ti ti-edit"></i> Editar información del proyecto</p>
+      
       <div class="form-row">
-        <label>Fecha de inicio del proyecto (Semana 1)</label>
-        <input type="date" value="${state.startDate||''}" onchange="state.startDate=this.value;saveState();renderAllViews()"/>
-        <p style="font-size:11px;color:var(--text3);margin-top:4px">Actualmente: S1 = ${fmtDate(weekStart(1))} – ${fmtDate(weekEnd(1))}</p>
+        <label>Nombre del proyecto</label>
+        <input type="text" id="cfg-name" value="${meta.name||''}"/>
       </div>
-      <hr style="border:none;border-top:1px solid var(--border);margin:14px 0"/>
-      <p style="font-size:13px;font-weight:500;margin-bottom:8px">Peligro</p>
-      <button class="btn btn-danger" onclick="deleteProject()"><i class="ti ti-trash"></i> Eliminar este proyecto</button>
+      <div class="form-row">
+        <label>Cliente / Mandante</label>
+        <input type="text" id="cfg-client" value="${meta.client||''}"/>
+      </div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-row">
+          <label>Total de semanas</label>
+          <input type="number" id="cfg-weeks" min="1" value="${meta.totalWeeks||35}"/>
+        </div>
+        <div class="form-row">
+          <label>Tipo</label>
+          <select id="cfg-type">
+            <option value="proyecto" ${meta.type==='proyecto'?'selected':''}>Proyecto</option>
+            <option value="propuesta" ${meta.type==='propuesta'?'selected':''}>Propuesta técnica</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="form-row" style="margin-top:6px;">
+        <label>Fecha de inicio oficial (Semana 1)</label>
+        <input type="date" value="${state.startDate||''}" onchange="state.startDate=this.value;saveState();"/>
+        <p style="font-size:11px;color:var(--text3);margin-top:4px">Al guardar abajo, el Gantt se ajustará a la nueva fecha y semanas.</p>
+      </div>
+      
+      <button class="btn btn-primary" style="margin-top:8px" onclick="updateProjectMeta()"><i class="ti ti-check"></i> Guardar configuración</button>
     </div></div>`;
 }
 
-async function deleteProject() {
-  if (!confirm(`¿Eliminar el proyecto "${allProjects[currentProjId].meta.name}" permanentemente? Esta acción no se puede deshacer.`)) return;
-  try {
-    // Borrar subcolección state
-    await db.collection('projects').doc(currentProjId).collection('runtime').doc('state').delete();
-    await db.collection('projects').doc(currentProjId).delete();
-    delete allProjects[currentProjId];
-    goHome();
-  } catch(e) { alert('Error al eliminar el proyecto.'); }
+function updateProjectMeta() {
+  const meta = allProjects[currentProjId].meta;
+  meta.name = document.getElementById('cfg-name').value.trim() || 'Proyecto sin nombre';
+  meta.client = document.getElementById('cfg-client').value.trim();
+  meta.totalWeeks = parseInt(document.getElementById('cfg-weeks').value) || 35;
+  meta.type = document.getElementById('cfg-type').value;
+  
+  db.collection('projects').doc(currentProjId).update(meta).then(() => {
+     document.getElementById('proj-title').textContent = meta.name;
+     document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'} · Inicio: ${fmtDateStr(state.startDate)} · ${meta.totalWeeks} semanas · ${STAGES.length} etapas`;
+     renderAllViews();
+     alert('Configuración actualizada ✓');
+  }).catch(e => {
+     console.error(e); alert('Error al actualizar.');
+  });
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1284,41 +1383,54 @@ function openTask(taskId, stageId) {
   const isRev  = t.type==='revision';
   const ev     = state.evaluations&&state.evaluations[taskId]||0;
   const evC    = state.evaluationsClient&&state.evaluationsClient[taskId]||0;
-  const evalSection = (isProd||isRev) ? `
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:12px">
-      ${isProd?`<div class="eval-section" style="margin-bottom:10px">
-        <h4>Autoevaluación del equipo</h4>
-        <div class="stars-input" id="modal-stars">
-          ${[1,2,3,4,5].map(i=>`<button class="star-btn on-green${ev>=i?' on-green':''}" onclick="setEvM('${taskId}',${i},false)">${ev>=i?'★':'☆'}</button>`).join('')}
-        </div>
-      </div>`:''}
+  
+  let evalSection = '';
+  if (isProd) {
+    evalSection = `
+    <div style="background:var(--green-light);border:1px solid var(--green);border-radius:var(--radius);padding:12px;margin-bottom:12px">
       <div class="eval-section">
-        <h4>Feedback del cliente</h4>
-        <div class="stars-input" id="modal-stars-client">
-          ${[1,2,3,4,5].map(i=>`<button class="star-btn${evC>=i?' on':''}" onclick="setEvM('${taskId}',${i},true)">${evC>=i?'★':'☆'}</button>`).join('')}
+        <h4 style="color:var(--green);"><i class="ti ti-star-filled"></i> Autoevaluación del equipo</h4>
+        <div class="stars-input" id="modal-stars" style="display:flex;align-items:center;">
+          <div>${[1,2,3,4,5].map(i=>`<button class="star-btn ${ev>=i?'on-green':''}" onclick="setEvM('${taskId}',${i},false)">★</button>`).join('')}</div>
+          <span style="font-size:11px;color:var(--green);margin-left:12px;cursor:pointer;text-decoration:underline" onclick="setEvM('${taskId}',0,false)">Desmarcar</span>
         </div>
       </div>
-    </div>` : '';
+    </div>`;
+  } else if (isRev) {
+    evalSection = `
+    <div style="background:var(--amber-light);border:1px solid var(--amber);border-radius:var(--radius);padding:12px;margin-bottom:12px">
+      <div class="eval-section">
+        <h4 style="color:#a87000;"><i class="ti ti-building-bank"></i> Feedback de la Contraparte</h4>
+        <div class="stars-input" id="modal-stars-client" style="display:flex;align-items:center;">
+          <div>${[1,2,3,4,5].map(i=>`<button class="star-btn ${evC>=i?'on':''}" onclick="setEvM('${taskId}',${i},true)">★</button>`).join('')}</div>
+          <span style="font-size:11px;color:#a87000;margin-left:12px;cursor:pointer;text-decoration:underline" onclick="setEvM('${taskId}',0,true)">Desmarcar</span>
+        </div>
+      </div>
+    </div>`;
+  }
 
   const subs = state.subtasks&&state.subtasks[taskId] ? state.subtasks[taskId] : [];
-  const subsHTML = `
-    <div style="margin-bottom:12px">
-      <p style="font-size:12px;font-weight:500;margin-bottom:8px;color:var(--text2)"><i class="ti ti-list-check"></i> Subtareas (${subs.length})</p>
-      ${subs.length>0?`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:8px;margin-bottom:8px">${
-        subs.map((s,si)=>`<div class="sub-row">
-          <input type="checkbox" ${s.status==='completado'?'checked':''} onchange="toggleSubM('${taskId}','${s.id}')"/>
-          <input type="text" value="${s.name}" onchange="updateSubM('${taskId}','${s.id}','name',this.value)" style="flex:1;min-width:0"/>
+  let subsHTML = `
+    <div style="margin-bottom:12px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:12px;">
+      <p style="font-size:12px;font-weight:500;margin-bottom:8px;color:var(--text2)"><i class="ti ti-list-check"></i> Subtareas y Desglose</p>
+      ${subs.length === 0 ? '<p style="font-size:11px;color:var(--text3);margin-bottom:8px">No hay subtareas. Puedes agregar micro-actividades aquí.</p>' : ''}
+      
+      <div style="margin-bottom:8px">
+        ${subs.map((s,si)=>`
+        <div class="sub-row">
+          <i class="ti ti-${s.status==='completado'?'check':'circle'}" style="color:${s.status==='completado'?'var(--green)':'var(--text3)'}" onclick="toggleSubM('${taskId}','${s.id}')"></i>
+          <input type="text" value="${s.name}" onchange="updateSubM('${taskId}','${s.id}','name',this.value)" placeholder="Descripción de subtarea" style="flex:1;min-width:0"/>
           <select onchange="updateSubM('${taskId}','${s.id}','assignee',this.value)">
-            <option value="">—</option>
+            <option value="">Responsable...</option>
             ${(state.team||[]).map(m=>`<option ${s.assignee===m.name?'selected':''}>${m.name}</option>`).join('')}
           </select>
           <input type="date" value="${s.date||''}" onchange="updateSubM('${taskId}','${s.id}','date',this.value)"/>
-          <button class="btn btn-sm btn-danger" onclick="deleteSubM('${taskId}','${s.id}')" style="padding:3px 8px"><i class="ti ti-trash"></i></button>
+          <i class="ti ti-trash" onclick="deleteSubM('${taskId}','${s.id}')" style="cursor:pointer; color:var(--red); font-size:16px; margin-left:4px;"></i>
         </div>`).join('')}
-      </div>`:''}
+      </div>
       <div style="display:flex;gap:6px">
-        <input id="new-sub-name" type="text" placeholder="Nueva subtarea..." style="flex:1;padding:6px 8px;border:1px solid var(--border2);border-radius:var(--radius);font-size:12px;background:var(--bg);color:var(--text);outline:none"/>
-        <button class="btn btn-sm" onclick="addSubM('${taskId}')"><i class="ti ti-plus"></i></button>
+        <input id="new-sub-name" type="text" placeholder="Escribe una nueva subtarea..." style="flex:1;padding:6px 8px;border:1px solid var(--border2);border-radius:4px;font-size:12px;background:var(--bg);color:var(--text);outline:none"/>
+        <button class="btn btn-sm btn-primary" onclick="addSubM('${taskId}')"><i class="ti ti-plus"></i></button>
       </div>
     </div>`;
 
@@ -1326,7 +1438,7 @@ function openTask(taskId, stageId) {
     <h3 style="margin-bottom:4px">${t.name}</h3>
     <p style="font-size:12px;color:var(--text2);margin-bottom:14px"><span style="width:8px;height:8px;border-radius:50%;background:${stage.color};display:inline-block;margin-right:4px"></span>${stage.name} · ${badge(t.type)}</p>
     <div class="form-row">
-      <label>Responsable</label>
+      <label>Responsable de Actividad</label>
       <select id="modal-assignee"><option value="">Sin asignar</option>${teamOpts}</select>
     </div>
     <div class="form-row">
@@ -1356,10 +1468,10 @@ function openTask(taskId, stageId) {
       <textarea id="modal-note" placeholder="Escribe aquí los comentarios...">${note}</textarea>
     </div>
     <div class="modal-actions" style="justify-content:space-between">
-      <button class="btn btn-danger" onclick="deleteTaskModal('${taskId}')"><i class="ti ti-trash"></i> Eliminar</button>
+      <button class="btn btn-danger" style="background:transparent;border:1px solid #fcc;color:#c00" onclick="deleteTaskModal('${taskId}')"><i class="ti ti-trash"></i> Eliminar</button>
       <div style="display:flex;gap:8px">
         <button class="btn" onclick="closeModal()">Cancelar</button>
-        <button class="btn btn-primary" onclick="saveTaskModal('${taskId}')"><i class="ti ti-check"></i> Guardar</button>
+        <button class="btn btn-primary" onclick="saveTaskModal('${taskId}')"><i class="ti ti-check"></i> Guardar cambios</button>
       </div>
     </div>`);
 }
@@ -1394,7 +1506,8 @@ function addSubM(parentId) {
   if (!state.subtasks) state.subtasks = {};
   if (!state.subtasks[parentId]) state.subtasks[parentId] = [];
   state.subtasks[parentId].push({ id:'sub'+Date.now(), name, status:'pendiente', assignee:'', date:'' });
-  logAction(`Se creó subtarea en una actividad.`);
+  logAction(`Se agregó una subtarea en una actividad.`);
+  saveState();
   openTask(parentId, getAllTasks().find(t=>t.id===parentId).stageId);
 }
 function updateSubM(pId, sId, field, val) {
@@ -1425,7 +1538,7 @@ function saveTaskModal(id) {
   const start   = document.getElementById('modal-start').value;
   const end     = document.getElementById('modal-end').value;
   const assignee= document.getElementById('modal-assignee').value;
-  if (oldA!==assignee && assignee!=='') logAction(`Se asignó tarea a ${assignee}.`);
+  if (oldA!==assignee && assignee!=='') logAction(`Se asignó una tarea a ${assignee}.`);
   if (oldSt!==state.statuses[id]) logAction(`Cambio de estado a ${state.statuses[id]}.`);
   if (!state.taskOverrides) state.taskOverrides = {};
   state.taskOverrides[id] = { startDate: start, endDate: end, assignee };
@@ -1437,7 +1550,7 @@ function saveTaskModal(id) {
 }
 
 function deleteTaskModal(id) {
-  if (!confirm('¿Eliminar esta actividad para todo el equipo?')) return;
+  if (!confirm('¿Eliminar esta actividad permanentemente?')) return;
   if (!state.deletedIds) state.deletedIds = [];
   state.deletedIds.push(id);
   logAction(`Se eliminó una actividad.`);
@@ -1452,9 +1565,19 @@ function openAddTask(stageId) {
   const teamOpts= (state.team||[]).map(m=>`<option value="${m.name}">${m.name}</option>`).join('');
   const sd = toYMD(new Date());
   modal(`<h3>Nueva actividad</h3>
-    <div class="form-row"><label>Nombre</label><input id="nt-name" type="text" placeholder="Ej: Reunión de seguimiento"/></div>
+    <div class="form-row"><label>Nombre de la actividad</label><input id="nt-name" type="text" placeholder="Ej: Reunión de seguimiento"/></div>
     <div class="form-row"><label>Etapa</label><select id="nt-stage">${STAGES.map(s=>`<option value="${s.id}"${s.id==stageId?' selected':''}>${s.name}</option>`).join('')}</select></div>
-    <div class="form-row"><label>Tipo</label><select id="nt-type"><option value="tarea">Tarea</option><option value="hito">Hito</option><option value="revision">Revisión</option><option value="producto">Producto</option></select></div>
+    
+    <div class="form-row">
+      <label>Tipo</label>
+      <select id="nt-type">
+        <option value="tarea">Tarea</option>
+        <option value="hito">Hito</option>
+        <option value="producto">Producto</option>
+        <option value="revision">Revisión contraparte</option>
+      </select>
+    </div>
+    
     <div class="form-row"><label>Responsable</label><select id="nt-assignee"><option value="">Sin asignar</option>${teamOpts}</select></div>
     <div class="form-row"><label>Fechas (inicio – fin)</label>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
@@ -1463,7 +1586,12 @@ function openAddTask(stageId) {
       </div>
     </div>
     <div class="form-row"><label>Notas (opcional)</label><textarea id="nt-note" placeholder="Descripción..."></textarea></div>
-    <div class="modal-actions"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveNewTask()"><i class="ti ti-plus"></i> Guardar</button></div>`);
+    
+    <div style="font-size:11px; color:var(--text2); background:var(--bg2); padding:10px; border-radius:var(--radius); margin-bottom:14px; border:1px solid var(--border);">
+      <i class="ti ti-info-circle"></i> <b>Nota:</b> Podrás agregar Subtareas y sincronizar con Google Calendar una vez que guardes esta actividad.
+    </div>
+
+    <div class="modal-actions"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveNewTask()"><i class="ti ti-plus"></i> Guardar actividad</button></div>`);
 }
 
 function saveNewTask() {
@@ -1482,32 +1610,9 @@ function saveNewTask() {
     stageColor: stage.color,
     stageLight: stage.light
   });
-  logAction(`Agregó nueva actividad: '${name}'.`);
+  logAction(`Agregó la nueva actividad: '${name}'.`);
+  saveState(); closeModal();
 }
-
-// ═══════════════════════════════════════════════════════
-//  GOOGLE CALENDAR LINK
-// ═══════════════════════════════════════════════════════
-function generateGCalLink(task) {
-  const { start, end } = getTaskDates(task);
-  const s = start.toISOString().replace(/-|:|\.\d+/g,'').slice(0,8);
-  const eD = new Date(end); eD.setDate(eD.getDate()+1);
-  const e = eD.toISOString().replace(/-|:|\.\d+/g,'').slice(0,8);
-  const meta = currentProjId ? allProjects[currentProjId].meta : {};
-  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(task.name)}&dates=${s}/${e}&details=${encodeURIComponent(`Responsable: ${task.assignee||'Sin asignar'}\n\nProyecto: ${meta.name||''}`)}`;
-}
-
-// ═══════════════════════════════════════════════════════
-//  MODAL HELPER
-// ═══════════════════════════════════════════════════════
-function modal(html, large=false) {
-  document.getElementById('modal-root').innerHTML =
-    `<div class="modal-bg" onclick="closeModalBg(event)">
-      <div class="modal${large?' modal-lg':''}" onclick="event.stopPropagation()">${html}</div>
-    </div>`;
-}
-function closeModal()       { document.getElementById('modal-root').innerHTML=''; }
-function closeModalBg(e)    { if(e.target===e.currentTarget) closeModal(); }
 
 // ═══════════════════════════════════════════════════════
 //  INIT
