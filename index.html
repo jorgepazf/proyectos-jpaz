@@ -35,10 +35,11 @@
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
 
-/* ── LOADING ── */
+/* ── LOADING & ERRORS ── */
 #loading-overlay{position:fixed;inset:0;background:var(--bg);z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin 1s linear infinite;margin-bottom:14px}
 @keyframes spin{to{transform:rotate(360deg)}}
+.error-box{background:var(--bg);padding:24px;border-radius:var(--radius-lg);border:1px solid var(--red);max-width:420px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.1)}
 
 /* ── LAYOUT COMMON ── */
 .screen{display:none;max-width:1100px;margin:0 auto;padding:20px 16px}
@@ -60,7 +61,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-danger{color:#c00;border-color:#fcc}
 .btn-blue{background:var(--blue);border-color:var(--blue);color:#fff}
 .btn-red{background:var(--red);border-color:var(--red);color:#fff}
-.btn-sm{padding:4px 10px;font-size:12px}
 
 /* ── PROJECT CARDS ── */
 .section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:10px;display:flex;justify-content:space-between}
@@ -84,7 +84,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 /* 3 dots menu */
 .pc-menu-btn{position:absolute;top:10px;right:6px;width:24px;height:24px;border:none;background:transparent;color:var(--text3);cursor:pointer;border-radius:4px;font-size:16px}
 .pc-menu-btn:hover{background:var(--bg2)}
-.pc-dropdown{display:none;position:absolute;top:34px;right:6px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:20;min-width:140px;overflow:hidden}
+.pc-dropdown{display:none;position:absolute;top:34px;right:6px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 4px 12px rgba(0,0,0,.1);z-index:20;min-width:160px;overflow:hidden}
 .pc-dropdown.show{display:block}
 .pc-dd-item{padding:8px 12px;font-size:12px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px;}
 .pc-dd-item:hover{background:var(--bg2)}
@@ -101,7 +101,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .stat-card{background:var(--bg2);border-radius:var(--radius);padding:12px 14px;border:1px solid var(--border)}
 .stat-label{font-size:11px;color:var(--text2);margin-bottom:4px}
 .stat-val{font-size:22px;font-weight:600;color:var(--text)}
-.stat-sub{font-size:11px;color:var(--text3);margin-top:2px}
 .week-progress{background:var(--bg2);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;border:1px solid var(--border)}
 .pbar-outer{height:8px;background:var(--border);border-radius:4px;overflow:hidden}
 .pbar-inner{height:100%;background:var(--green);border-radius:4px;transition:width .4s}
@@ -135,7 +134,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .sub-row:last-child{border-bottom:none}
 .sub-row input[type="text"]{flex:1;background:var(--bg);border:1px solid var(--border2);padding:6px 8px;font-size:12px;border-radius:4px;outline:none}
 .sub-row input[type="date"]{width:110px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;outline:none}
-.sub-row select{width:120px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;outline:none}
+.sub-row select{width:130px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;outline:none; cursor:pointer;}
 .sub-prog-bar{height:4px;background:var(--border);border-radius:2px;width:60px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:6px}
 .sub-prog-inner{height:100%;background:var(--blue)}
 
@@ -144,14 +143,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .board-col{flex:1;min-width:240px;background:var(--bg2);border-radius:var(--radius-lg);padding:12px;border:1px solid var(--border);display:flex;flex-direction:column;gap:10px}
 .board-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:12px;cursor:pointer;border-left:4px solid var(--border2)}
 
-/* ── GANTT ── */
+/* ── GANTT (Cursor Manito y Texto bloqueado) ── */
 .gantt-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-lg)}
 .gantt-inner{min-width:820px}
 .gantt-head-row{display:grid;grid-template-columns:300px 1fr;font-size:11px;color:var(--text2);padding:8px 14px;background:var(--bg2);border-bottom:1px solid var(--border)}
-.gantt-row{display:grid;grid-template-columns:300px 1fr;align-items:center;padding:5px 14px;border-top:1px solid var(--border);font-size:12px;position:relative;cursor:pointer;}
+.gantt-row{display:grid;grid-template-columns:300px 1fr;align-items:center;padding:5px 14px;border-top:1px solid var(--border);font-size:12px;position:relative;cursor:pointer;user-select:none;}
 .gantt-row:hover{background:var(--bg2)!important}
 .gantt-bar-cell{position:relative;height:14px;width:100%}
-.gantt-bar{position:absolute;height:100%;border-radius:3px;z-index:1;cursor:default;}
+.gantt-bar{position:absolute;height:100%;border-radius:3px;z-index:1;pointer-events:none;}
 .gantt-today-line{position:absolute;top:0;width:2px;height:100%;background:rgba(216,90,48,.8);z-index:10;pointer-events:none}
 .month-labels{display:flex;font-size:10px;color:var(--text3);height:100%;align-items:center;}
 .month-col{flex:1;text-align:center;border-left:1px solid var(--border2);height:100%;display:flex;align-items:center;justify-content:center;font-weight:600;}
@@ -161,11 +160,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .notif-badge{position:absolute;top:-5px;right:-5px;background:var(--red);color:white;font-size:10px;font-weight:bold;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border-radius:50%;z-index:10}
 .dropdown-content{display:none;position:absolute;right:0;top:100%;margin-top:8px;width:280px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:9999}
 .dropdown-content.show{display:block}
+.notif-item{padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text);line-height:1.4;background:var(--bg);}
+.notif-time{font-size:10px;color:var(--text3);margin-top:4px}
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:99999;padding:16px}
 .modal{background:var(--bg);border-radius:var(--radius-lg);border:1px solid var(--border2);padding:20px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.15)}
 .form-row{margin-bottom:12px}
 .form-row label{font-size:12px;color:var(--text2);display:block;margin-bottom:4px;font-weight:500}
 .form-row input,.form-row textarea,.form-row select{width:100%;padding:8px 10px;border:1px solid var(--border2);border-radius:var(--radius);font-size:13px;background:var(--bg);color:var(--text);outline:none}
+.form-row input:focus,.form-row textarea:focus,.form-row select:focus{border-color:var(--green)}
 .modal-actions{display:flex;gap:8px;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)}
 .stars-input{display:flex;gap:4px}
 .star-btn{font-size:22px;cursor:pointer;color:var(--border2);background:none;border:none;padding:0;line-height:1}
@@ -181,7 +183,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </head>
 <body>
 
-<div id="loading-overlay"><div class="spinner"></div><p style="color:var(--text2)">Conectando...</p></div>
+<div id="loading-overlay">
+    <div class="spinner"></div>
+    <p style="color:var(--text2)">Conectando a Firebase...</p>
+</div>
 
 <div id="screen-home" class="screen active">
   <div class="topbar">
@@ -189,7 +194,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="brand-icon"><i class="ti ti-layout-dashboard"></i></div>
       <div>
         <h1>Mis Proyectos</h1>
-        <p>Sistema de gestión de consultoría · Proyectos Jorge Paz</p>
+        <p>Proyectos Jorge Paz</p>
       </div>
     </div>
     <div class="top-actions">
@@ -207,12 +212,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <p id="proj-subtitle">—</p>
     </div>
     <div class="top-actions">
-      <button class="btn" onclick="goHome()"><i class="ti ti-arrow-left"></i> Mis proyectos</button>
+      <button class="btn" onclick="goHome()"><i class="ti ti-arrow-left"></i> Panel Principal</button>
       <div class="dropdown">
-        <button class="btn" onclick="toggleNotifs(event)"><i class="ti ti-bell"></i> Actividad</button>
+        <button class="btn" onclick="toggleNotifs(event)"><i class="ti ti-bell"></i> Historial</button>
         <span class="notif-badge" id="notif-badge" style="display:none">0</span>
         <div class="dropdown-content" id="notif-dropdown">
-          <div style="padding:10px;font-size:12px;font-weight:600;border-bottom:1px solid var(--border);background:var(--bg2)">Últimos movimientos</div>
+          <div style="padding:10px 14px;font-size:12px;font-weight:600;border-bottom:1px solid var(--border);background:var(--bg2)">Últimos movimientos</div>
           <div id="notif-list"></div>
         </div>
       </div>
@@ -295,6 +300,28 @@ let unseenLogs    = 0;
 let isFirstLoad   = true;
 let hideCompletedGantt = false;
 let globalTasksData = [];
+let showArchived = false;
+let tempExcelStages = [];
+
+// ── SISTEMA DE AUTODIAGNÓSTICO (PREVIENE QUE SE QUEDE PEGADO) ──
+const connectionTimeout = setTimeout(() => {
+    const loader = document.getElementById('loading-overlay');
+    if(loader && loader.style.display !== 'none') {
+        loader.innerHTML = `
+            <div class="error-box">
+                <i class="ti ti-alert-triangle" style="font-size:36px;color:var(--red);margin-bottom:10px;"></i>
+                <h3 style="color:var(--red);margin-bottom:8px;">Tiempo de espera agotado</h3>
+                <p style="font-size:13px;color:var(--text2);margin-bottom:14px;">El sistema no pudo conectarse a la base de datos.</p>
+                <div style="font-size:12px;color:var(--text3);text-align:left;background:var(--bg2);padding:12px;border-radius:var(--radius);margin-bottom:14px;">
+                    <b>Posibles soluciones:</b><br><br>
+                    1. Ve a tu consola de Firebase y asegúrate de haber creado <b>Firestore Database</b>.<br>
+                    2. Revisa que las Reglas de Firestore estén en <b>Modo Prueba</b> (permitir lectura/escritura).
+                </div>
+                <button class="btn btn-primary" onclick="location.reload()">Reintentar conexión</button>
+            </div>
+        `;
+    }
+}, 8000);
 
 // ═══════════════════════════════════════════════════════
 //  BOOTSTRAP & HOME
@@ -304,33 +331,37 @@ async function loadProjectList() {
     const snap = await db.collection('projects').get();
     allProjects = {};
     
-    // Migración automática inicial (Para asegurar que no pierdas lo de PAE v1)
+    // Migración automática del proyecto PAE antiguo si la BD es nueva
     if (snap.empty) {
         try {
             const oldDoc = await db.collection('gantt').doc('pae_state_v1').get();
             if (oldDoc.exists) {
-                await migrateOldData(oldDoc.data());
+                const meta = { name: "Medición del desperdicio de alimentos · PAE", client: "JUNAEB", startDate: oldDoc.data().startDate || "2026-06-01", totalWeeks: 35, type: "proyecto", stages: [], accentColor: "#1D9E75", status: "active", createdAt: Date.now(), lastPct: 0 };
+                const ref = await db.collection('projects').add(meta);
+                await db.collection('projects').doc(ref.id).collection('runtime').doc('state').set(oldDoc.data());
+                
+                // Recargar tras migrar
+                const snap2 = await db.collection('projects').get();
+                snap2.forEach(doc => { allProjects[doc.id] = { meta: doc.data() }; });
+                renderHome();
+                clearTimeout(connectionTimeout);
+                document.getElementById('loading-overlay').style.display = 'none';
                 return; 
             }
-        } catch(e) {}
+        } catch(e) { console.warn("No hay datos antiguos que migrar."); }
     }
 
     snap.forEach(doc => { allProjects[doc.id] = { meta: doc.data() }; });
     renderHome();
-  } catch(e) { console.error(e); } 
-  finally { document.getElementById('loading-overlay').style.display = 'none'; }
+  } catch(e) { 
+      console.error(e); 
+      document.getElementById('loading-overlay').innerHTML = `<div class="error-box"><p style="color:var(--red)"><b>Error de base de datos</b><br>${e.message}</p></div>`;
+  } finally { 
+      clearTimeout(connectionTimeout);
+      const loader = document.getElementById('loading-overlay');
+      if(loader && !loader.innerHTML.includes("Error")) loader.style.display = 'none'; 
+  }
 }
-
-async function migrateOldData(oldState) {
-    const meta = { name: "Medición del desperdicio de alimentos · PAE", client: "JUNAEB", startDate: oldState.startDate || "2026-06-01", totalWeeks: 35, type: "proyecto", stages: [], accentColor: "#1D9E75", createdAt: Date.now(), lastPct: 0 };
-    try {
-        const ref = await db.collection('projects').add(meta);
-        await db.collection('projects').doc(ref.id).collection('runtime').doc('state').set(oldState);
-        loadProjectList(); 
-    } catch(e) {}
-}
-
-let showArchived = false;
 
 function renderHome() {
   const ids = Object.keys(allProjects);
@@ -369,7 +400,7 @@ function renderHome() {
 }
 
 function buildProjectCard(id) {
-  const m = allProjects[id].meta;
+  const m = allProjects[id].meta || {};
   const pct = m.lastPct || 0;
   
   let badgeHtml = '';
@@ -419,8 +450,8 @@ window.addEventListener('click', () => { document.querySelectorAll('.pc-dropdown
 async function changeProjState(id, field, val) {
     try {
         const update = {}; update[field] = val;
-        if(field === 'proposalStatus' && val === 'adjudicada') update.type = 'proyecto'; // Adjudicada pasa a proyecto
-        if(field === 'proposalStatus' && val === 'perdida') update.status = 'archived'; // Perdida se archiva
+        if(field === 'proposalStatus' && val === 'adjudicada') update.type = 'proyecto'; 
+        if(field === 'proposalStatus' && val === 'perdida') update.status = 'archived'; 
         
         await db.collection('projects').doc(id).update(update);
         allProjects[id].meta = { ...allProjects[id].meta, ...update };
@@ -469,7 +500,7 @@ function openNewProjectModal() {
     </div>
 
     <hr style="border:none;border-top:1px solid var(--border);margin:14px 0"/>
-    <p style="font-size:13px;font-weight:500;margin-bottom:8px">Carga Inicial de Actividades mediante Excel</p>
+    <p style="font-size:13px;font-weight:500;margin-bottom:8px">Carga de Actividades mediante Excel</p>
     
     <div class="import-area" onclick="document.getElementById('excel-file-input').click()">
       <i class="ti ti-file-spreadsheet" style="font-size:28px;color:var(--green)"></i>
@@ -493,9 +524,11 @@ function togglePropFields(val) {
     document.getElementById('prop-fields').style.display = val === 'propuesta' ? 'block' : 'none';
 }
 
-let tempExcelStages = [];
-
 function downloadExcelTemplate() {
+    if (typeof XLSX === 'undefined') {
+        alert("La librería de Excel no ha cargado correctamente. Revisa tu conexión a internet.");
+        return;
+    }
     const ws_data = [
         ["Etapa", "Actividad", "Tipo (tarea/hito/producto/revision)", "Responsable", "Semana Inicio", "Semana Fin"],
         ["Fase 1: Preparación", "Reunión Kickoff", "hito", "Ana García", 1, 1],
@@ -613,7 +646,6 @@ async function openGlobalTasks() {
                 if(pState.deletedIds && pState.deletedIds.includes(t.id)) return;
                 const ov = pState.taskOverrides && pState.taskOverrides[t.id];
                 const finalT = { ...t, ...(ov||{}), pId: id, pName: pMeta.name, status: pState.statuses?.[t.id]||'pendiente' };
-                // Fecha de inicio simplificada para calculo
                 let startStr = finalT.startDate;
                 if(!startStr) {
                     const d = new Date(pMeta.startDate);
@@ -663,7 +695,7 @@ function updateGlobalList() {
     const filtered = globalTasksData.filter(t => {
         let mP = globalFilterPerson === 'all' || t.assignee === globalFilterPerson;
         let mProj = globalFilterProj === 'all' || t.pId === globalFilterProj;
-        return mP && mProj && t.status !== 'completado'; // Mostrar solo pendientes/curso/retrasado
+        return mP && mProj && t.status !== 'completado'; 
     });
 
     if(filtered.length === 0) {
@@ -692,13 +724,13 @@ function updateGlobalList() {
 // ═══════════════════════════════════════════════════════
 function openProject(id) {
   currentProjId = id;
-  const meta = allProjects[id].meta;
+  const meta = allProjects[id].meta || {};
   isFirstLoad = true; unseenLogs = 0;
 
   STAGES = (meta.stages || []).map((s, i) => ({ ...s, color: STAGE_PALETTE[i % STAGE_PALETTE.length].color, light: STAGE_PALETTE[i % STAGE_PALETTE.length].light }));
 
   document.getElementById('proj-title').textContent = meta.name;
-  document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'} · Inicio: ${fmtDateStr(meta.startDate)} · ${meta.totalWeeks} semanas`;
+  document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'} · Inicio: ${fmtDateStr(meta.startDate)} · ${meta.totalWeeks||35} semanas`;
   setTab('tasks', document.querySelector('.tab'));
   showScreen('project');
 
@@ -909,10 +941,10 @@ function renderShare(){
 function copyShareMsg(){
     const s = calcStats(); const cw = currentWeek(); const nm = getNextUpcoming('hito'); 
     let hitoText = nm.item ? `${nm.item.name} (en ${nm.days} días)` : "Ninguno pendiente";
-    const meta = allProjects[currentProjId].meta;
+    const meta = allProjects[currentProjId].meta || {};
     
     // Formato exacto solicitado
-    const text = `📊 [${meta.name.toUpperCase()}]\nSemana actual: S${cw} (${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))})\nProgreso: ${s.pct}% (${s.done}/${s.total} actividades completadas)\n- Completadas: ${s.counts.completado}\n- En curso: ${s.counts.curso}\n- Pendientes: ${s.counts.pendiente}\n- Retrasadas: ${s.counts.retrasado}\nProductos: ${s.productsDone}/${s.products} entregados\nPróximo hito: ${hitoText}\n\nGenerado: ${fmtDate(new Date())} a las ${new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}`;
+    const text = `📊 [${(meta.name||'Proyecto').toUpperCase()}]\nSemana actual: S${cw} (${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))})\nProgreso: ${s.pct}% (${s.done}/${s.total} actividades completadas)\n- Completadas: ${s.counts.completado}\n- En curso: ${s.counts.curso}\n- Pendientes: ${s.counts.pendiente}\n- Retrasadas: ${s.counts.retrasado}\nProductos: ${s.productsDone}/${s.products} entregados\nPróximo hito: ${hitoText}\n\nGenerado: ${fmtDate(new Date())} a las ${new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}`;
     navigator.clipboard.writeText(text).then(()=>alert('Resumen copiado al portapapeles ✓'));
 }
 
@@ -939,7 +971,6 @@ function openTask(taskId, stageId) {
   const subs = state.subtasks[taskId] || [];
   let subsHTML = `<div class="modal-subtasks"><label><i class="ti ti-list-check"></i> Desglose y Subtareas</label>`;
   subs.forEach(s => {
-      // Subtarea: Option default para evitar errores
       const sTeam = (state.team||[]).map(m=>`<option value="${m.name}" ${s.assignee===m.name?'selected':''}>${m.name}</option>`).join('');
       subsHTML += `<div class="sub-row">
           <i class="ti ti-${s.status==='completado'?'check':'circle'}" style="color:${s.status==='completado'?'var(--green)':'var(--border2)'};font-size:20px;cursor:pointer;" onclick="toggleSubM('${taskId}','${s.id}')"></i>
@@ -996,7 +1027,7 @@ function toggleSubM(pId, sId) {
   }
 }
 
-// ── UTILS MODALES (COMPRIMIDOS POR ESPACIO) ──
+// ── UTILS MODALES ──
 function setStM(id, val) { state.statuses[id] = val; ['pendiente','curso','retrasado','completado'].forEach(st => { const b = document.getElementById('btn-st-'+st); if (b) b.className = 'btn'; }); const b = document.getElementById('btn-st-'+val); if (b) b.className = val==='curso'?'btn btn-blue':(val==='retrasado'?'btn btn-red':'btn btn-primary'); }
 function addSubM(pId) { const name = document.getElementById('new-sub-name').value.trim(); if (!name) return; if (!state.subtasks) state.subtasks = {}; if (!state.subtasks[pId]) state.subtasks[pId] = []; state.subtasks[pId].push({ id:'sub'+Date.now(), name, status:'pendiente', assignee:'', date:'' }); saveState(); openTask(pId, getAllTasks().find(t=>t.id===pId).stageId); }
 function updateSubM(pId, sId, f, v) { const sub = state.subtasks[pId].find(s=>s.id===sId); if (sub) { sub[f]=v; saveState(); } }
@@ -1005,8 +1036,8 @@ function setEvM(id, val, isC) { if (isC) { if(!state.evaluationsClient) state.ev
 function saveTaskModal(id) { const start=document.getElementById('modal-start').value; const end=document.getElementById('modal-end').value; const assg=document.getElementById('modal-assignee').value; if(!state.taskOverrides) state.taskOverrides={}; state.taskOverrides[id]={startDate:start,endDate:end,assignee:assg}; if(state.customTasks){ const ct=state.customTasks.find(x=>x.id===id); if(ct){ct.startDate=start;ct.endDate=end;ct.assignee=assg;} } if(!state.notes) state.notes={}; state.notes[id]=document.getElementById('modal-note').value; saveState(); closeModal(); }
 function deleteTaskModal(id) { if(!confirm('¿Eliminar actividad?')) return; if(!state.deletedIds) state.deletedIds=[]; state.deletedIds.push(id); saveState(); closeModal(); }
 
-// ¡IMPORTANTE! INICIO DEL SCRIPT
-loadProjectList();
+// ¡INICIA EL SCRIPT AHORA SÍ!
+window.onload = () => { loadProjectList(); };
 </script>
 </body>
 </html>
