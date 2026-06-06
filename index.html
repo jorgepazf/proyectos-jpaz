@@ -151,7 +151,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .gantt-row{display:grid;grid-template-columns:300px 1fr;align-items:center;padding:5px 14px;border-top:1px solid var(--border);font-size:12px;position:relative;cursor:pointer;}
 .gantt-row:hover{background:var(--bg2)!important}
 .gantt-bar-cell{position:relative;height:14px;width:100%}
-.gantt-bar{position:absolute;height:100%;border-radius:3px;z-index:1}
+.gantt-bar{position:absolute;height:100%;border-radius:3px;z-index:1;cursor:default;}
 .gantt-today-line{position:absolute;top:0;width:2px;height:100%;background:rgba(216,90,48,.8);z-index:10;pointer-events:none}
 .month-labels{display:flex;font-size:10px;color:var(--text3);height:100%;align-items:center;}
 .month-col{flex:1;text-align:center;border-left:1px solid var(--border2);height:100%;display:flex;align-items:center;justify-content:center;font-weight:600;}
@@ -212,7 +212,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <button class="btn" onclick="toggleNotifs(event)"><i class="ti ti-bell"></i> Actividad</button>
         <span class="notif-badge" id="notif-badge" style="display:none">0</span>
         <div class="dropdown-content" id="notif-dropdown">
-          <div style="padding:10px;font-size:12px;font-weight:600;border-bottom:1px solid var(--border);background:var(--bg2)">Últimos 5 movimientos</div>
+          <div style="padding:10px;font-size:12px;font-weight:600;border-bottom:1px solid var(--border);background:var(--bg2)">Últimos movimientos</div>
           <div id="notif-list"></div>
         </div>
       </div>
@@ -248,7 +248,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <p>Todas las actividades de todos los proyectos activos</p>
     </div>
     <div class="top-actions">
-      <button class="btn" onclick="goHome()"><i class="ti ti-arrow-left"></i> Volver</button>
+      <button class="btn" onclick="goHome()"><i class="ti ti-arrow-left"></i> Volver al panel</button>
     </div>
   </div>
   <div class="filter-bar" id="global-filters"></div>
@@ -279,7 +279,8 @@ const STAGE_PALETTE = [
   {color:'#1D9E75',light:'var(--green-light)'},
   {color:'#378ADD',light:'var(--blue-light)'},
   {color:'#D85A30',light:'var(--orange-light)'},
-  {color:'#7F77DD',light:'var(--purple-light)'}
+  {color:'#7F77DD',light:'var(--purple-light)'},
+  {color:'#EF9F27',light:'var(--amber-light)'}
 ];
 
 let allProjects   = {};        
@@ -302,10 +303,31 @@ async function loadProjectList() {
   try {
     const snap = await db.collection('projects').get();
     allProjects = {};
+    
+    // Migración automática inicial (Para asegurar que no pierdas lo de PAE v1)
+    if (snap.empty) {
+        try {
+            const oldDoc = await db.collection('gantt').doc('pae_state_v1').get();
+            if (oldDoc.exists) {
+                await migrateOldData(oldDoc.data());
+                return; 
+            }
+        } catch(e) {}
+    }
+
     snap.forEach(doc => { allProjects[doc.id] = { meta: doc.data() }; });
     renderHome();
   } catch(e) { console.error(e); } 
   finally { document.getElementById('loading-overlay').style.display = 'none'; }
+}
+
+async function migrateOldData(oldState) {
+    const meta = { name: "Medición del desperdicio de alimentos · PAE", client: "JUNAEB", startDate: oldState.startDate || "2026-06-01", totalWeeks: 35, type: "proyecto", stages: [], accentColor: "#1D9E75", createdAt: Date.now(), lastPct: 0 };
+    try {
+        const ref = await db.collection('projects').add(meta);
+        await db.collection('projects').doc(ref.id).collection('runtime').doc('state').set(oldState);
+        loadProjectList(); 
+    } catch(e) {}
 }
 
 let showArchived = false;
@@ -332,7 +354,7 @@ function renderHome() {
 
   html += `<div class="projects-grid"><div class="new-card" onclick="openNewProjectModal()"><i class="ti ti-plus"></i><span>Nuevo proyecto o propuesta</span></div></div>`;
 
-  // Archived section toggle
+  // Archived section
   html += `<div style="text-align:center; margin-top:30px; border-top:1px solid var(--border); padding-top:20px;">
     <button class="btn" onclick="showArchived=!showArchived; renderHome()"><i class="ti ti-archive"></i> ${showArchived ? 'Ocultar' : 'Ver'} proyectos archivados (${archivados.length})</button>
   </div>`;
@@ -368,12 +390,12 @@ function buildProjectCard(id) {
       
       <button class="pc-menu-btn" onclick="event.stopPropagation(); toggleMenu('menu-${id}')"><i class="ti ti-dots-vertical"></i></button>
       <div id="menu-${id}" class="pc-dropdown" onclick="event.stopPropagation()">
-        <div class="pc-dd-item" onclick="openProject('${id}')"><i class="ti ti-edit"></i> Abrir / Editar</div>
+        <div class="pc-dd-item" onclick="openProject('${id}')"><i class="ti ti-edit"></i> Editar Proyecto</div>
         ${m.type === 'propuesta' && m.status !== 'archived' ? `
           <div class="pc-dd-item" onclick="changeProjState('${id}', 'proposalStatus', 'adjudicada')"><i class="ti ti-trophy"></i> Marcar Adjudicada</div>
           <div class="pc-dd-item" onclick="changeProjState('${id}', 'proposalStatus', 'perdida')"><i class="ti ti-x"></i> Marcar Perdida</div>
         ` : ''}
-        ${m.status !== 'archived' ? `<div class="pc-dd-item" onclick="changeProjState('${id}', 'status', 'archived')"><i class="ti ti-archive"></i> Finalizar / Archivar</div>` : `<div class="pc-dd-item" onclick="changeProjState('${id}', 'status', 'active')"><i class="ti ti-arrow-back-up"></i> Desarchivar</div>`}
+        ${m.status !== 'archived' ? `<div class="pc-dd-item" onclick="changeProjState('${id}', 'status', 'archived')"><i class="ti ti-archive"></i> Proyecto finalizado (Archivar)</div>` : `<div class="pc-dd-item" onclick="changeProjState('${id}', 'status', 'active')"><i class="ti ti-arrow-back-up"></i> Desarchivar</div>`}
         <div class="pc-dd-item pc-dd-danger" onclick="deleteProject('${id}')"><i class="ti ti-trash"></i> Eliminar</div>
       </div>
 
@@ -447,7 +469,7 @@ function openNewProjectModal() {
     </div>
 
     <hr style="border:none;border-top:1px solid var(--border);margin:14px 0"/>
-    <p style="font-size:13px;font-weight:500;margin-bottom:8px">Carga Inicial de Actividades (Opcional)</p>
+    <p style="font-size:13px;font-weight:500;margin-bottom:8px">Carga Inicial de Actividades mediante Excel</p>
     
     <div class="import-area" onclick="document.getElementById('excel-file-input').click()">
       <i class="ti ti-file-spreadsheet" style="font-size:28px;color:var(--green)"></i>
@@ -476,10 +498,10 @@ let tempExcelStages = [];
 function downloadExcelTemplate() {
     const ws_data = [
         ["Etapa", "Actividad", "Tipo (tarea/hito/producto/revision)", "Responsable", "Semana Inicio", "Semana Fin"],
-        ["Fase 1: Preparación", "Reunión Kickoff", "hito", "Ana", 1, 1],
-        ["Fase 1: Preparación", "Elaborar Plan", "tarea", "Luis", 1, 2],
-        ["Fase 2: Ejecución", "Trabajo de campo", "tarea", "María", 3, 5],
-        ["Fase 2: Ejecución", "Informe Final", "producto", "Ana", 6, 6]
+        ["Fase 1: Preparación", "Reunión Kickoff", "hito", "Ana García", 1, 1],
+        ["Fase 1: Preparación", "Elaborar Plan", "tarea", "Luis Pérez", 1, 2],
+        ["Fase 2: Ejecución", "Trabajo de campo", "tarea", "María Soto", 3, 5],
+        ["Fase 2: Ejecución", "Informe Final", "producto", "Ana García", 6, 6]
     ];
     const ws = XLSX.utils.aoa_to_sheet(ws_data);
     const wb = XLSX.utils.book_new();
@@ -499,7 +521,6 @@ function handleExcelFile(e) {
             const sheet = workbook.Sheets[workbook.SheetNames[0]];
             const json = XLSX.utils.sheet_to_json(sheet);
             
-            // Agrupar por etapa
             const stageMap = {};
             json.forEach((row, i) => {
                 const etapa = row['Etapa'] || 'Etapa 1';
@@ -519,7 +540,7 @@ function handleExcelFile(e) {
                 const allW = tasks.flatMap(t=>t.weeks||[t.week]);
                 return { id: i+1, name: k, weeks: [Math.min(...allW), Math.max(...allW)], tasks };
             });
-            document.getElementById('excel-status').innerHTML = `<b>¡Éxito!</b> ${tempExcelStages.length} etapas cargadas listas para importar.`;
+            document.getElementById('excel-status').innerHTML = `<b>¡Éxito!</b> ${tempExcelStages.length} etapas preparadas para importar.`;
             document.getElementById('excel-status').style.color = "var(--green)";
         } catch(err) {
             document.getElementById('excel-status').innerText = "Error leyendo Excel. Revisa el formato.";
@@ -576,38 +597,40 @@ function goHome() {
 
 async function openGlobalTasks() {
     showScreen('global');
-    document.getElementById('global-tasks-list').innerHTML = `<div style="text-align:center;padding:40px"><div class="spinner" style="margin:0 auto"></div><p>Cargando datos globales...</p></div>`;
+    document.getElementById('global-tasks-list').innerHTML = `<div style="text-align:center;padding:40px"><div class="spinner" style="margin:0 auto"></div><p>Extrayendo tareas de todos los proyectos activos...</p></div>`;
     
-    // Obtener tareas de todos los proyectos activos
     globalTasksData = [];
     const activeIds = Object.keys(allProjects).filter(id => allProjects[id].meta.type === 'proyecto' && allProjects[id].meta.status !== 'archived');
     
-    // Generar promesas
     const promises = activeIds.map(id => db.collection('projects').doc(id).collection('runtime').doc('state').get().then(doc => {
         if(!doc.exists) return;
         const pState = doc.data();
         const pMeta = allProjects[id].meta;
         
-        // Recorrer tareas del proyecto
         const stgs = pMeta.stages || [];
         stgs.forEach(s => {
             s.tasks.forEach(t => {
                 if(pState.deletedIds && pState.deletedIds.includes(t.id)) return;
                 const ov = pState.taskOverrides && pState.taskOverrides[t.id];
                 const finalT = { ...t, ...(ov||{}), pId: id, pName: pMeta.name, status: pState.statuses?.[t.id]||'pendiente' };
-                // Fechas
-                const start = finalT.startDate ? parseLocal(finalT.startDate) : parseLocal(pMeta.startDate); // Simplificado para listado
-                finalT.time = start.getTime();
+                // Fecha de inicio simplificada para calculo
+                let startStr = finalT.startDate;
+                if(!startStr) {
+                    const d = new Date(pMeta.startDate);
+                    d.setDate(d.getDate() + ((finalT.weeks ? finalT.weeks[0] : finalT.week) - 1)*7);
+                    startStr = toYMD(d);
+                }
+                finalT.time = parseLocal(startStr).getTime();
+                finalT.startStr = startStr;
                 globalTasksData.push(finalT);
             });
         });
-        // Tareas custom
         (pState.customTasks||[]).forEach(t => {
             if(pState.deletedIds && pState.deletedIds.includes(t.id)) return;
             const ov = pState.taskOverrides && pState.taskOverrides[t.id];
             const finalT = { ...t, ...(ov||{}), pId: id, pName: pMeta.name, status: pState.statuses?.[t.id]||'pendiente' };
-            const start = finalT.startDate ? parseLocal(finalT.startDate) : new Date();
-            finalT.time = start.getTime();
+            finalT.time = finalT.startDate ? parseLocal(finalT.startDate).getTime() : new Date().getTime();
+            finalT.startStr = finalT.startDate;
             globalTasksData.push(finalT);
         });
     }));
@@ -624,14 +647,13 @@ function renderGlobalTasks() {
     const pOpts = Object.keys(allProjects).filter(id => allProjects[id].meta.type === 'proyecto' && allProjects[id].meta.status !== 'archived')
                     .map(id => `<option value="${id}">${allProjects[id].meta.name}</option>`).join('');
     
-    // Obtener personas únicas
     const people = new Set();
     globalTasksData.forEach(t => { if(t.assignee) people.add(t.assignee); });
     const uOpts = Array.from(people).map(p => `<option value="${p}">${p}</option>`).join('');
 
     document.getElementById('global-filters').innerHTML = `
-        <select onchange="globalFilterPerson=this.value; updateGlobalList()"><option value="all">Todas las personas</option>${uOpts}</select>
-        <select onchange="globalFilterProj=this.value; updateGlobalList()"><option value="all">Todos los proyectos</option>${pOpts}</select>
+        <select onchange="globalFilterPerson=this.value; updateGlobalList()"><option value="all">Todas las personas del equipo</option>${uOpts}</select>
+        <select onchange="globalFilterProj=this.value; updateGlobalList()"><option value="all">Todos los proyectos activos</option>${pOpts}</select>
     `;
     updateGlobalList();
 }
@@ -641,11 +663,11 @@ function updateGlobalList() {
     const filtered = globalTasksData.filter(t => {
         let mP = globalFilterPerson === 'all' || t.assignee === globalFilterPerson;
         let mProj = globalFilterProj === 'all' || t.pId === globalFilterProj;
-        return mP && mProj && t.status !== 'completado'; // Mostrar solo vigentes
+        return mP && mProj && t.status !== 'completado'; // Mostrar solo pendientes/curso/retrasado
     });
 
     if(filtered.length === 0) {
-        list.innerHTML = `<p style="padding:20px;text-align:center;color:var(--text3)">No hay tareas pendientes con estos filtros.</p>`;
+        list.innerHTML = `<p style="padding:20px;text-align:center;color:var(--text3)">No hay tareas vigentes con estos filtros.</p>`;
         return;
     }
 
@@ -658,7 +680,7 @@ function updateGlobalList() {
             </div>
             <div style="font-size:11px;color:var(--text2);text-align:right">
                 ${t.assignee ? `<div><i class="ti ti-user"></i> ${t.assignee}</div>` : ''}
-                <div style="color:var(--text3)"><i class="ti ti-calendar"></i> ${t.startDate ? fmtShort(parseLocal(t.startDate)) : 'S/F'}</div>
+                <div style="color:var(--text3)"><i class="ti ti-calendar"></i> ${t.startStr ? fmtShort(parseLocal(t.startStr)) : 'S/F'}</div>
             </div>
         </div>
     `).join('');
@@ -710,7 +732,6 @@ function ensureStateFallbacks(startDate) {
   if (!state.startDate) state.startDate = startDate || '';
 }
 
-// ... Todas las validaciones de fechas igual
 function getRelWeek(dateInput) {
     const d = (typeof dateInput === 'string') ? parseLocal(dateInput) : dateInput;
     const start = getStartDate();
@@ -719,7 +740,7 @@ function getRelWeek(dateInput) {
 }
 
 // ═══════════════════════════════════════════════════════
-//  RENDER TABS (MODIFICADAS SEGÚN REQUERIMIENTOS)
+//  RENDER TABS Y VISTAS
 // ═══════════════════════════════════════════════════════
 function renderTasks() {
   const el = document.getElementById('tab-tasks');
@@ -751,15 +772,15 @@ function renderTaskList(tasks, stage) {
     const status = getTaskStatus(t.id);
     const { start, end } = getTaskDates(t);
     const dateLabel = `${fmtShort(start)} — ${fmtShort(end)} · S${getRelWeek(start)}`;
-    const assigneeBadge = (t.assignee && typeof t.assignee==='string') ? `<span class="badge badge-tarea"><i class="ti ti-user"></i> ${t.assignee}</span>` : '';
+    const assigneeBadge = (t.assignee && typeof t.assignee==='string') ? `<span class="badge badge-tarea"><i class="ti ti-user"></i> ${t.assignee.split(' ')[0]}</span>` : '';
     
-    // Subtask Logic (Progress)
+    // Progreso Subtareas
     const subs = state.subtasks && state.subtasks[t.id] ? state.subtasks[t.id] : [];
     let subProgHtml = '';
     if(subs.length > 0) {
         const dSub = subs.filter(s=>s.status==='completado').length;
         const pSub = Math.round((dSub/subs.length)*100);
-        subProgHtml = `<span style="font-size:10px;color:var(--blue);margin-left:6px"><i class="ti ti-list-check"></i> ${dSub}/${subs.length}</span><div class="sub-prog-bar"><div class="sub-prog-inner" style="width:${pSub}%"></div></div>`;
+        subProgHtml = `<span style="font-size:10px;color:var(--blue);margin-left:8px"><i class="ti ti-list-check"></i> ${dSub}/${subs.length} (${pSub}%)</span><div class="sub-prog-bar"><div class="sub-prog-inner" style="width:${pSub}%"></div></div>`;
     }
 
     html += `<div class="task-row${status==='completado'?' done':''}" onclick="openTask('${t.id}',${stage.id})">
@@ -777,7 +798,7 @@ function renderTaskList(tasks, stage) {
       </div>`;
     });
   });
-  html += `<div class="add-task-btn" onclick="openAddTask(${stage.id})"><i class="ti ti-plus"></i> Agregar actividad</div></div>`;
+  html += `<div class="add-task-btn" onclick="openAddTask(${stage.id})"><i class="ti ti-plus"></i> Agregar actividad general</div></div>`;
   return html;
 }
 
@@ -865,9 +886,10 @@ function renderGantt() {
         const endD = Math.floor((end - projStart)/(24*3600*1000));
         const barColor = status==='completado'?'var(--green)': status==='retrasado'?'var(--red)': status==='curso'?'var(--blue)':stage.color;
         
-        html += `<div class="gantt-row" style="cursor:pointer" onclick="openTask('${t.id}',${stage.id})">
-          <div style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding-right:8px;color:${status==='completado'?'var(--text3)':'var(--text)'}${status==='completado'?';text-decoration:line-through':''}">${t.name}</div>
-          <div class="gantt-bar-cell">
+        // Puntero default en la fila del Gantt (manito retirada)
+        html += `<div class="gantt-row" style="cursor:default">
+          <div style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding-right:8px;cursor:pointer;color:${status==='completado'?'var(--text3)':'var(--text)'}${status==='completado'?';text-decoration:line-through':''}" onclick="openTask('${t.id}',${stage.id})">${t.name}</div>
+          <div class="gantt-bar-cell" style="cursor:pointer" onclick="openTask('${t.id}',${stage.id})">
             <div class="gantt-today-line" style="left:${tf*100}%"></div>
             <div class="gantt-bar" style="left:${Math.max(0,(startD/TOTAL_D)*100)}%; width:${Math.max(.5,((endD-startD+1)/TOTAL_D)*100)}%; background:${barColor}; ${status==='completado'?';opacity:.5':''}"></div>
           </div>
@@ -885,10 +907,12 @@ function renderShare(){
 }
 
 function copyShareMsg(){
-    const s = calcStats(); const cw = currentWeek(); const nm = getNextUpcoming('hito'); const np = getNextUpcoming('producto');
+    const s = calcStats(); const cw = currentWeek(); const nm = getNextUpcoming('hito'); 
     let hitoText = nm.item ? `${nm.item.name} (en ${nm.days} días)` : "Ninguno pendiente";
     const meta = allProjects[currentProjId].meta;
-    const text = `📊 ${meta.name}\nSemana actual: S${cw} (${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))})\nProgreso: ${s.pct}% (${s.done}/${s.total} actividades completadas)\n- Completadas: ${s.counts.completado}\n- En curso: ${s.counts.curso}\n- Pendientes: ${s.counts.pendiente}\n- Retrasadas: ${s.counts.retrasado}\nProductos: ${s.productsDone}/${s.products} entregados\nPróximo hito: ${hitoText}\nGenerado: ${fmtDate(new Date())} a las ${new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}`;
+    
+    // Formato exacto solicitado
+    const text = `📊 [${meta.name.toUpperCase()}]\nSemana actual: S${cw} (${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))})\nProgreso: ${s.pct}% (${s.done}/${s.total} actividades completadas)\n- Completadas: ${s.counts.completado}\n- En curso: ${s.counts.curso}\n- Pendientes: ${s.counts.pendiente}\n- Retrasadas: ${s.counts.retrasado}\nProductos: ${s.productsDone}/${s.products} entregados\nPróximo hito: ${hitoText}\n\nGenerado: ${fmtDate(new Date())} a las ${new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}`;
     navigator.clipboard.writeText(text).then(()=>alert('Resumen copiado al portapapeles ✓'));
 }
 
@@ -902,7 +926,6 @@ function openTask(taskId, stageId) {
   const note = state.notes[taskId]||'';
   
   const teamOpts = (state.team||[]).map(m=>`<option value="${m.name}" ${t.assignee===m.name?'selected':''}>${m.name}</option>`).join('');
-  const gcalLink = generateGCalLink(t);
 
   let evalSection = '';
   if(t.type === 'producto') {
@@ -910,12 +933,13 @@ function openTask(taskId, stageId) {
       evalSection = `<div style="background:var(--green-light);border:1px solid var(--green);border-radius:var(--radius);padding:12px;margin-bottom:12px"><label style="color:var(--green);"><i class="ti ti-star-filled"></i> Autoevaluación del Equipo</label><div class="stars-input"><div>${[1,2,3,4,5].map(i=>`<button class="star-btn ${ev>=i?'on-green':''}" onclick="setEvM('${taskId}',${i},false)">★</button>`).join('')}</div><span style="font-size:11px;color:var(--green);margin-left:12px;cursor:pointer;text-decoration:underline" onclick="setEvM('${taskId}',0,false)">Desmarcar</span></div></div>`;
   } else if(t.type === 'revision') {
       const evC = state.evaluationsClient[taskId]||0;
-      evalSection = `<div style="background:var(--amber-light);border:1px solid var(--amber);border-radius:var(--radius);padding:12px;margin-bottom:12px"><label style="color:#a87000;"><i class="ti ti-building-bank"></i> Feedback del Cliente (JUNAEB)</label><div class="stars-input"><div>${[1,2,3,4,5].map(i=>`<button class="star-btn ${evC>=i?'on':''}" onclick="setEvM('${taskId}',${i},true)">★</button>`).join('')}</div><span style="font-size:11px;color:#a87000;margin-left:12px;cursor:pointer;text-decoration:underline" onclick="setEvM('${taskId}',0,true)">Desmarcar</span></div></div>`;
+      evalSection = `<div style="background:var(--amber-light);border:1px solid var(--amber);border-radius:var(--radius);padding:12px;margin-bottom:12px"><label style="color:#a87000;"><i class="ti ti-building-bank"></i> Feedback del Cliente</label><div class="stars-input"><div>${[1,2,3,4,5].map(i=>`<button class="star-btn ${evC>=i?'on':''}" onclick="setEvM('${taskId}',${i},true)">★</button>`).join('')}</div><span style="font-size:11px;color:#a87000;margin-left:12px;cursor:pointer;text-decoration:underline" onclick="setEvM('${taskId}',0,true)">Desmarcar</span></div></div>`;
   }
 
   const subs = state.subtasks[taskId] || [];
   let subsHTML = `<div class="modal-subtasks"><label><i class="ti ti-list-check"></i> Desglose y Subtareas</label>`;
   subs.forEach(s => {
+      // Subtarea: Option default para evitar errores
       const sTeam = (state.team||[]).map(m=>`<option value="${m.name}" ${s.assignee===m.name?'selected':''}>${m.name}</option>`).join('');
       subsHTML += `<div class="sub-row">
           <i class="ti ti-${s.status==='completado'?'check':'circle'}" style="color:${s.status==='completado'?'var(--green)':'var(--border2)'};font-size:20px;cursor:pointer;" onclick="toggleSubM('${taskId}','${s.id}')"></i>
@@ -934,12 +958,17 @@ function openTask(taskId, stageId) {
   modal(`
     <h3 style="margin-bottom:4px">${t.name}</h3>
     <div style="display:flex;gap:6px;margin-bottom:14px">${badge(t.type)}</div>
-    <div class="form-row"><label>Responsable</label><select id="modal-assignee"><option value="">Sin asignar</option>${teamOpts}</select></div>
+    <div class="form-row"><label>Responsable General</label>
+        <select id="modal-assignee">
+            <option value="" disabled hidden ${!t.assignee?'selected':''}>Responsable...</option>
+            <option value="">Sin asignar</option>
+            ${teamOpts}
+        </select>
+    </div>
     <div class="form-row"><label>Fechas</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input id="modal-start" type="date" value="${!isNaN(start)?toYMD(start):''}"/><input id="modal-end" type="date" value="${!isNaN(end)?toYMD(end):''}"/></div></div>
-    <div class="form-row"><a href="${gcalLink}" target="_blank" class="btn" style="width:100%;justify-content:center;border-color:var(--blue);color:var(--blue)"><i class="ti ti-calendar-plus"></i> Agregar a Google Calendar</a></div>
     
     <div class="form-row" style="margin-top:16px">
-      <label>Estado</label>
+      <label>Estado Principal</label>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn${status==='pendiente'?' btn-primary':''}" id="btn-st-pendiente" onclick="setStM('${taskId}','pendiente')"><i class="ti ti-circle"></i> Pendiente</button>
         <button class="btn${status==='curso'?' btn-blue':''}" id="btn-st-curso" onclick="setStM('${taskId}','curso')"><i class="ti ti-player-play"></i> En curso</button>
@@ -958,17 +987,16 @@ function toggleSubM(pId, sId) {
   const sub = state.subtasks[pId].find(s=>s.id===sId);
   if(sub) {
       sub.status = sub.status==='completado'?'pendiente':'completado';
-      // Lógica inteligente: Si todas están completadas, completar la tarea madre.
-      const allDone = state.subtasks[pId].every(s => s.status === 'completado');
+      const allDone = state.subtasks[pId].length > 0 && state.subtasks[pId].every(s => s.status === 'completado');
       if(allDone) {
           state.statuses[pId] = 'completado';
-          logAction(`Tarea madre completada automáticamente (Subtareas finalizadas).`);
+          logAction(`Tarea completada automáticamente por subtareas.`);
       }
       saveState(); openTask(pId, getAllTasks().find(t=>t.id===pId).stageId);
   }
 }
 
-// Conserva las funciones originales necesarias que se acortaron arriba por espacio (setStM, addSubM, etc) idénticas a versiones previas funcionales.
+// ── UTILS MODALES (COMPRIMIDOS POR ESPACIO) ──
 function setStM(id, val) { state.statuses[id] = val; ['pendiente','curso','retrasado','completado'].forEach(st => { const b = document.getElementById('btn-st-'+st); if (b) b.className = 'btn'; }); const b = document.getElementById('btn-st-'+val); if (b) b.className = val==='curso'?'btn btn-blue':(val==='retrasado'?'btn btn-red':'btn btn-primary'); }
 function addSubM(pId) { const name = document.getElementById('new-sub-name').value.trim(); if (!name) return; if (!state.subtasks) state.subtasks = {}; if (!state.subtasks[pId]) state.subtasks[pId] = []; state.subtasks[pId].push({ id:'sub'+Date.now(), name, status:'pendiente', assignee:'', date:'' }); saveState(); openTask(pId, getAllTasks().find(t=>t.id===pId).stageId); }
 function updateSubM(pId, sId, f, v) { const sub = state.subtasks[pId].find(s=>s.id===sId); if (sub) { sub[f]=v; saveState(); } }
@@ -976,6 +1004,9 @@ function deleteSubM(pId, sId) { state.subtasks[pId] = state.subtasks[pId].filter
 function setEvM(id, val, isC) { if (isC) { if(!state.evaluationsClient) state.evaluationsClient={}; if(state.evaluationsClient[id]===val) val=0; state.evaluationsClient[id]=val; document.querySelectorAll('#modal-stars-client .star-btn').forEach((b,i)=>b.className='star-btn'+(val>=i+1?' on':'')); } else { if(!state.evaluations) state.evaluations={}; if(state.evaluations[id]===val) val=0; state.evaluations[id]=val; document.querySelectorAll('#modal-stars .star-btn').forEach((b,i)=>b.className='star-btn'+(val>=i+1?' on-green':'')); } }
 function saveTaskModal(id) { const start=document.getElementById('modal-start').value; const end=document.getElementById('modal-end').value; const assg=document.getElementById('modal-assignee').value; if(!state.taskOverrides) state.taskOverrides={}; state.taskOverrides[id]={startDate:start,endDate:end,assignee:assg}; if(state.customTasks){ const ct=state.customTasks.find(x=>x.id===id); if(ct){ct.startDate=start;ct.endDate=end;ct.assignee=assg;} } if(!state.notes) state.notes={}; state.notes[id]=document.getElementById('modal-note').value; saveState(); closeModal(); }
 function deleteTaskModal(id) { if(!confirm('¿Eliminar actividad?')) return; if(!state.deletedIds) state.deletedIds=[]; state.deletedIds.push(id); saveState(); closeModal(); }
+
+// ¡IMPORTANTE! INICIO DEL SCRIPT
+loadProjectList();
 </script>
 </body>
 </html>
