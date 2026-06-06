@@ -148,7 +148,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .gantt-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-lg)}
 .gantt-inner{min-width:820px}
 .gantt-head-row{display:grid;grid-template-columns:300px 1fr;font-size:11px;color:var(--text2);padding:8px 14px;background:var(--bg2);border-bottom:1px solid var(--border);font-weight:500;align-items:center;}
-.gantt-row{display:grid;grid-template-columns:300px 1fr;align-items:center;padding:5px 14px;border-top:1px solid var(--border);font-size:12px;position:relative}
+.gantt-row{display:grid;grid-template-columns:300px 1fr;align-items:center;padding:5px 14px;border-top:1px solid var(--border);font-size:12px;position:relative;cursor:pointer}
 .gantt-row:hover{background:var(--bg2)!important}
 .gantt-bar-cell{position:relative;height:14px;width:100%}
 .gantt-bar{position:absolute;height:100%;border-radius:3px;z-index:1}
@@ -208,6 +208,39 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .import-area:hover{border-color:var(--green)}
 .import-area input{display:none}
 
+/* ── THREE DOT MENU ── */
+.proj-menu-btn{position:absolute;bottom:10px;right:10px;padding:4px 6px;font-size:16px;border:none;background:transparent;color:var(--text3);cursor:pointer;transition:color .15s;border-radius:var(--radius);line-height:1}
+.proj-menu-btn:hover{color:var(--text);background:var(--bg2)}
+.ctx-menu{position:absolute;right:10px;bottom:36px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius);box-shadow:0 4px 16px rgba(0,0,0,.14);z-index:1000;min-width:180px;overflow:hidden}
+.ctx-menu-item{padding:9px 14px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--text);transition:background .12s}
+.ctx-menu-item:hover{background:var(--bg2)}
+.ctx-menu-item.danger{color:var(--red)}
+/* ── ARCHIVED BADGE ── */
+.badge-archivado{background:var(--bg3);color:var(--text3)}
+.badge-perdida{background:var(--red-light);color:var(--red)}
+.badge-adjudicada{background:var(--green-light);color:var(--green)}
+.badge-postulada{background:var(--purple-light);color:var(--purple)}
+.archived-card{opacity:.55;filter:grayscale(.4)}
+.archive-toggle-btn{margin-bottom:10px;font-size:12px}
+/* ── SUBTASK PROGRESS IN CARD ── */
+.subtask-progress-bar{height:3px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden}
+.subtask-progress-inner{height:100%;border-radius:2px;background:var(--green);transition:width .3s}
+.subtask-pct-label{font-size:10px;color:var(--text3);margin-top:3px}
+/* ── TEAM CALENDAR ── */
+.team-cal-wrap{overflow-x:auto}
+.cal-header-row{display:grid;font-size:11px;font-weight:600;background:var(--bg2);border-bottom:1px solid var(--border);padding:6px 10px;color:var(--text2)}
+.cal-task-row{display:flex;align-items:center;gap:10px;padding:7px 10px;border-top:1px solid var(--border);font-size:12px;cursor:pointer;transition:background .12s}
+.cal-task-row:hover{background:var(--bg2)}
+.member-dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
+.filter-chip{padding:4px 12px;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid var(--border2);background:var(--bg);color:var(--text2);transition:all .15s}
+.filter-chip.active{background:var(--green);border-color:var(--green);color:#fff}
+.pill-status{font-size:10px;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.pill-pendiente{background:var(--bg3);color:var(--text2)}
+.pill-curso{background:var(--blue-light);color:var(--blue)}
+.pill-retrasado{background:var(--red-light);color:var(--red)}
+.pill-completado{background:var(--green-light);color:var(--green)}
+/* ── PIPELINE STATUS BUTTONS ── */
+.pipeline-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 @media(max-width:600px){
   .topbar{flex-direction:column}
   .stats{grid-template-columns:1fr 1fr}
@@ -232,10 +265,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="brand-icon"><i class="ti ti-layout-dashboard"></i></div>
       <div>
         <h1>Mis Proyectos</h1>
-        <p>Sistema de gestión de consultoría · Firebase en tiempo real</p>
+        <p>Proyectos Jorge Paz</p>
       </div>
     </div>
     <div class="top-actions">
+      <button class="btn" onclick="showTeamCalendar()"><i class="ti ti-calendar-stats"></i> Vista de equipo</button>
       <button class="btn btn-primary" onclick="openNewProjectModal()"><i class="ti ti-plus"></i> Nuevo proyecto</button>
     </div>
   </div>
@@ -288,6 +322,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div id="tab-team"  style="display:none"></div>
   <div id="tab-share" style="display:none"></div>
   <div id="tab-config" style="display:none"></div>
+</div>
+
+<div id="screen-team-calendar" class="screen">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-icon"><i class="ti ti-calendar-stats"></i></div>
+      <div>
+        <h1>Vista de Equipo</h1>
+        <p>Actividades por persona y proyecto</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="btn" onclick="goHome()"><i class="ti ti-arrow-left"></i> Inicio</button>
+    </div>
+  </div>
+  <div id="team-cal-content"></div>
 </div>
 
 <div id="modal-root"></div>
@@ -395,6 +445,7 @@ async function migrateOldData(oldState) {
 // ═══════════════════════════════════════════════════════
 //  HOME SCREEN
 // ═══════════════════════════════════════════════════════
+let showArchived = false;
 function renderHome() {
   const ids = Object.keys(allProjects);
   const el  = document.getElementById('home-projects-list');
@@ -410,8 +461,9 @@ function renderHome() {
     return;
   }
 
-  const proyectos  = ids.filter(id => allProjects[id].meta.type === 'proyecto');
-  const propuestas = ids.filter(id => allProjects[id].meta.type === 'propuesta');
+  const proyectos  = ids.filter(id => allProjects[id].meta.type === 'proyecto' && !allProjects[id].meta.archived);
+  const propuestas = ids.filter(id => allProjects[id].meta.type === 'propuesta' && !allProjects[id].meta.archived);
+  const archivados = ids.filter(id => allProjects[id].meta.archived);
   let html = '';
 
   if (proyectos.length > 0) {
@@ -427,18 +479,37 @@ function renderHome() {
   }
 
   html += `<div class="projects-grid"><div class="new-card" onclick="openNewProjectModal()"><i class="ti ti-plus"></i><span>Nuevo proyecto o propuesta</span></div></div>`;
+
+  if (archivados.length > 0) {
+    html += `<div style="margin-top:16px">
+      <button class="btn archive-toggle-btn" onclick="showArchived=!showArchived;renderHome()">
+        <i class="ti ti-archive"></i> Ver proyectos archivados (${archivados.length})
+      </button>
+      ${showArchived ? `<div class="projects-grid">` + archivados.map(id => buildProjectCard(id, true)).join('') + `</div>` : ''}
+    </div>`;
+  }
+
   el.innerHTML = html;
 }
 
-function buildProjectCard(id) {
+function buildProjectCard(id, isArch=false) {
   const m  = allProjects[id].meta;
   const pal = STAGE_PALETTE[0];
   const pct = m.lastPct || 0;
-  const typeBadge = m.type === 'propuesta'
-    ? '<span class="pc-type-badge badge-propuesta">Propuesta</span>'
-    : '<span class="pc-type-badge badge-proyecto">Proyecto</span>';
+  let typeBadgeClass = 'badge-proyecto';
+  let typeBadgeLabel = 'Proyecto';
+  if (m.type === 'propuesta') {
+    if (m.pipelineStatus === 'postulada')    { typeBadgeClass='badge-postulada'; typeBadgeLabel='Postulada'; }
+    else if (m.pipelineStatus === 'adjudicada') { typeBadgeClass='badge-adjudicada'; typeBadgeLabel='Adjudicada'; }
+    else if (m.pipelineStatus === 'perdida')  { typeBadgeClass='badge-perdida'; typeBadgeLabel='Perdida'; }
+    else { typeBadgeClass='badge-propuesta'; typeBadgeLabel='Propuesta'; }
+  }
+  if (m.archived && m.archivedReason === 'finalizado') { typeBadgeClass='badge-archivado'; typeBadgeLabel='Finalizado'; }
+  else if (m.archived) { typeBadgeClass='badge-archivado'; typeBadgeLabel='Archivado'; }
+  
+  const typeBadge = `<span class="pc-type-badge ${typeBadgeClass}">${typeBadgeLabel}</span>`;
   return `
-    <div class="project-card" onclick="openProject('${id}')">
+    <div class="project-card${isArch?' archived-card':''}" onclick="openProject('${id}')">
       <div class="pc-accent" style="background:${m.accentColor||pal.color}"></div>
       ${typeBadge}
       <div class="pc-title">${m.name}</div>
@@ -449,8 +520,102 @@ function buildProjectCard(id) {
         <span><i class="ti ti-chart-pie"></i> ${pct}%</span>
       </div>
       <div class="pc-pbar"><div class="pc-pbar-inner" style="width:${pct}%;background:${m.accentColor||pal.color}"></div></div>
-      <button class="delete-proj-btn" title="Eliminar proyecto" onclick="event.stopPropagation(); deleteProject('${id}')"><i class="ti ti-trash"></i></button>
+      <button class="proj-menu-btn" title="Opciones" onclick="event.stopPropagation(); toggleProjMenu('${id}',this)"><i class="ti ti-dots-vertical"></i></button>
     </div>`;
+}
+
+function toggleProjMenu(id, btn) {
+  // remove any open menu
+  document.querySelectorAll('.ctx-menu').forEach(m => m.remove());
+  const m = allProjects[id].meta;
+  const isProp = m.type === 'propuesta';
+  let items = `<div class="ctx-menu-item" onclick="event.stopPropagation();closeCtxMenu();openEditProjectModal('${id}')"><i class="ti ti-edit"></i> Editar proyecto</div>`;
+  if (!m.archived) {
+    if (isProp) {
+      items += `<div class="ctx-menu-item" onclick="event.stopPropagation();closeCtxMenu();setPipelineStatus('${id}','postulada')"><i class="ti ti-send"></i> Marcar como Postulada</div>
+      <div class="ctx-menu-item" onclick="event.stopPropagation();closeCtxMenu();setPipelineStatus('${id}','adjudicada')"><i class="ti ti-trophy"></i> Adjudicada → Crear proyecto</div>
+      <div class="ctx-menu-item" onclick="event.stopPropagation();closeCtxMenu();setPipelineStatus('${id}','perdida')"><i class="ti ti-x"></i> Perdida → Archivar</div>`;
+    }
+    items += `<div class="ctx-menu-item" onclick="event.stopPropagation();closeCtxMenu();archiveProject('${id}','finalizado')"><i class="ti ti-check-circle"></i> Proyecto finalizado</div>`;
+    items += `<div class="ctx-menu-item danger" onclick="event.stopPropagation();closeCtxMenu();deleteProject('${id}')"><i class="ti ti-trash"></i> Eliminar proyecto</div>`;
+  } else {
+    items += `<div class="ctx-menu-item" onclick="event.stopPropagation();closeCtxMenu();unarchiveProject('${id}')"><i class="ti ti-archive-off"></i> Desarchivar</div>`;
+    items += `<div class="ctx-menu-item danger" onclick="event.stopPropagation();closeCtxMenu();deleteProject('${id}')"><i class="ti ti-trash"></i> Eliminar proyecto</div>`;
+  }
+  const menu = document.createElement('div');
+  menu.className = 'ctx-menu';
+  menu.innerHTML = items;
+  btn.closest('.project-card').appendChild(menu);
+  setTimeout(() => document.addEventListener('click', closeCtxMenu, {once:true}), 50);
+}
+function closeCtxMenu() { document.querySelectorAll('.ctx-menu').forEach(m=>m.remove()); }
+
+async function archiveProject(id, reason='archivado') {
+  try {
+    await db.collection('projects').doc(id).update({ archived:true, archivedReason: reason });
+    allProjects[id].meta.archived = true;
+    allProjects[id].meta.archivedReason = reason;
+    renderHome();
+  } catch(e) { alert('Error al archivar.'); }
+}
+async function unarchiveProject(id) {
+  try {
+    await db.collection('projects').doc(id).update({ archived:false, archivedReason:'' });
+    allProjects[id].meta.archived = false;
+    allProjects[id].meta.archivedReason = '';
+    renderHome();
+  } catch(e) { alert('Error al desarchivar.'); }
+}
+async function setPipelineStatus(id, status) {
+  try {
+    if (status === 'adjudicada') {
+      if (!confirm('¿Adjudicada? Se creará un nuevo proyecto a partir de esta propuesta.')) return;
+      // Convert propuesta to proyecto
+      await db.collection('projects').doc(id).update({ pipelineStatus:'adjudicada', type:'proyecto' });
+      allProjects[id].meta.pipelineStatus = 'adjudicada';
+      allProjects[id].meta.type = 'proyecto';
+    } else if (status === 'perdida') {
+      await db.collection('projects').doc(id).update({ pipelineStatus:'perdida', archived:true, archivedReason:'perdida' });
+      allProjects[id].meta.pipelineStatus = 'perdida';
+      allProjects[id].meta.archived = true;
+      allProjects[id].meta.archivedReason = 'perdida';
+    } else {
+      await db.collection('projects').doc(id).update({ pipelineStatus: status });
+      allProjects[id].meta.pipelineStatus = status;
+    }
+    renderHome();
+  } catch(e) { alert('Error al actualizar estado.'); }
+}
+
+function openEditProjectModal(id) {
+  const m = allProjects[id].meta;
+  modal(`<h3><i class="ti ti-edit" style="color:var(--blue)"></i> Editar proyecto</h3>
+    <div class="form-row"><label>Nombre</label><input id="ep-name" type="text" value="${m.name||''}"/></div>
+    <div class="form-row"><label>Cliente / Mandante</label><input id="ep-client" type="text" value="${m.client||''}"/></div>
+    ${m.type==='propuesta'?`
+    <div class="form-row"><label>ID Licitación</label><input id="ep-licit" type="text" value="${m.licitacionId||''}"/></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div class="form-row"><label>Fecha de cierre</label><input id="ep-close" type="date" value="${m.fechaCierre||''}"/></div>
+      <div class="form-row"><label>Fecha adjudicación</label><input id="ep-adj" type="date" value="${m.fechaAdjudicacion||''}"/></div>
+    </div>`:''}
+    <div class="modal-actions"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveEditProject('${id}')"><i class="ti ti-check"></i> Guardar</button></div>`);
+}
+async function saveEditProject(id) {
+  const m = allProjects[id].meta;
+  const upd = {
+    name: document.getElementById('ep-name').value.trim()||m.name,
+    client: document.getElementById('ep-client').value.trim()
+  };
+  if (m.type==='propuesta') {
+    const li = document.getElementById('ep-licit'); if(li) upd.licitacionId=li.value;
+    const cl = document.getElementById('ep-close'); if(cl) upd.fechaCierre=cl.value;
+    const aj = document.getElementById('ep-adj');   if(aj) upd.fechaAdjudicacion=aj.value;
+  }
+  try {
+    await db.collection('projects').doc(id).update(upd);
+    Object.assign(allProjects[id].meta, upd);
+    closeModal(); renderHome();
+  } catch(e) { alert('Error al guardar.'); }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -575,7 +740,7 @@ function openNewProjectModal() {
     <h3><i class="ti ti-plus" style="color:var(--green)"></i> Nuevo proyecto o propuesta</h3>
     <div class="form-row">
       <label>Tipo</label>
-      <select id="np-type">
+      <select id="np-type" onchange="togglePropFields()">
         <option value="proyecto">Proyecto</option>
         <option value="propuesta">Propuesta técnica</option>
       </select>
@@ -588,6 +753,13 @@ function openNewProjectModal() {
       <label>Cliente / Mandante</label>
       <input id="np-client" type="text" placeholder="Ej: MINSAL"/>
     </div>
+    <div id="np-prop-fields" style="display:none">
+      <div class="form-row"><label>ID Licitación</label><input id="np-licit" type="text" placeholder="Ej: 2024-001"/></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-row"><label>Fecha de cierre</label><input id="np-close" type="date"/></div>
+        <div class="form-row"><label>Fecha adjudicación</label><input id="np-adj" type="date"/></div>
+      </div>
+    </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div class="form-row">
         <label>Fecha inicio (Semana 1)</label>
@@ -599,45 +771,104 @@ function openNewProjectModal() {
       </div>
     </div>
     <hr style="border:none;border-top:1px solid var(--border);margin:12px 0"/>
-    <p style="font-size:13px;font-weight:500;margin-bottom:10px">¿Cómo quieres definir las etapas y tareas?</p>
-    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-      <button class="btn btn-primary btn-sm" id="btn-method-form" onclick="setCreateMethod('form')"><i class="ti ti-forms"></i> Formulario</button>
-      <button class="btn btn-sm" id="btn-method-json" onclick="setCreateMethod('json')"><i class="ti ti-file-code"></i> Importar JSON</button>
+    <p style="font-size:13px;font-weight:500;margin-bottom:10px">Importar etapas y tareas desde Excel</p>
+    <div class="tip-box">
+      <i class="ti ti-info-circle" style="flex-shrink:0;margin-top:1px"></i>
+      <div>Sube un archivo <b>.xlsx</b> con las columnas: <b>Etapa, Actividad, Tipo, Responsable, Fecha Inicio, Fecha Fin</b>. <a href="#" onclick="downloadXlsxTemplate();return false" style="color:var(--blue)">Descargar plantilla Excel</a></div>
     </div>
-
-    <div id="create-form-section">
-      <div class="tip-box">
-        <i class="ti ti-info-circle" style="flex-shrink:0;margin-top:1px"></i>
-        <div>Define las etapas una a una. Dentro de cada etapa agrega las actividades con su semana de inicio y fin.</div>
-      </div>
-      <div id="stages-container"></div>
-      <button class="btn btn-sm" onclick="addStageRow()" style="margin-bottom:14px"><i class="ti ti-plus"></i> Agregar etapa</button>
+    <div class="import-area" onclick="document.getElementById('xlsx-file-input').click()">
+      <i class="ti ti-table-import" style="font-size:28px;color:var(--text3)"></i>
+      <p style="font-size:13px;color:var(--text2);margin-top:6px">Arrastra un .xlsx o haz clic para seleccionar</p>
+      <input id="xlsx-file-input" type="file" accept=".xlsx,.xls" onchange="handleXlsxFile(event)"/>
     </div>
-
-    <div id="create-json-section" style="display:none">
-      <div class="tip-box">
-        <i class="ti ti-info-circle" style="flex-shrink:0;margin-top:1px"></i>
-        <div>Sube un archivo <b>.json</b> o pega el JSON directamente. <a href="#" onclick="downloadJsonTemplate();return false" style="color:var(--blue)">Descargar plantilla PAE</a></div>
-      </div>
-      <div class="import-area" onclick="document.getElementById('json-file-input').click()">
-        <i class="ti ti-upload" style="font-size:28px;color:var(--text3)"></i>
-        <p style="font-size:13px;color:var(--text2);margin-top:6px">Arrastra un .json o haz clic para seleccionar</p>
-        <input id="json-file-input" type="file" accept=".json" onchange="handleJsonFile(event)"/>
-      </div>
-      <div class="form-row" style="margin-top:10px">
-        <label>O pega el JSON aquí</label>
-        <textarea id="json-paste" rows="6" placeholder='[{"id":1,"name":"Etapa 1","weeks":[1,10],"tasks":[...]}]'></textarea>
-      </div>
-    </div>
-
+    <div id="xlsx-preview" style="margin-top:10px"></div>
     <div class="modal-actions">
       <button class="btn" onclick="closeModal()">Cancelar</button>
       <button class="btn btn-primary" onclick="saveNewProject()"><i class="ti ti-check"></i> Crear proyecto</button>
     </div>
   `, true);
-
-  addStageRow();
 }
+
+function togglePropFields() {
+  const t = document.getElementById('np-type').value;
+  document.getElementById('np-prop-fields').style.display = t==='propuesta'?'block':'none';
+}
+
+let parsedXlsxStages = null;
+
+function downloadXlsxTemplate() {
+  // Create a simple CSV that can be opened in Excel
+  const csv = `Etapa,Actividad,Tipo,Responsable,Fecha Inicio,Fecha Fin\nEtapa 1: Análisis,Reunión de inicio,hito,Juan Pérez,2025-01-06,2025-01-06\nEtapa 1: Análisis,Revisión bibliográfica,tarea,Ana López,2025-01-06,2025-01-31\nEtapa 1: Análisis,Producto N°1,producto,Juan Pérez,2025-02-03,2025-02-03\nEtapa 2: Terreno,Trabajo de campo,tarea,Ana López,2025-02-10,2025-03-07`;
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'plantilla_actividades.csv'; a.click();
+}
+
+function handleXlsxFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      // Parse CSV/XLSX using simple approach
+      const text = ev.target.result;
+      let rows = [];
+      
+      // Try to detect if it's CSV or binary XLSX
+      if (typeof text === 'string') {
+        // CSV parsing
+        rows = text.trim().split('\n').map(r => r.split(',').map(c => c.replace(/^"|"$/g,'').trim()));
+      }
+      
+      if (rows.length < 2) { document.getElementById('xlsx-preview').innerHTML='<p style="color:var(--red);font-size:12px">No se pudo leer el archivo.</p>'; return; }
+      
+      const header = rows[0].map(h => h.toLowerCase().trim());
+      const etapaIdx = header.findIndex(h=>h.includes('etapa'));
+      const nameIdx  = header.findIndex(h=>h.includes('actividad')||h.includes('nombre'));
+      const typeIdx  = header.findIndex(h=>h.includes('tipo'));
+      const assgIdx  = header.findIndex(h=>h.includes('responsable'));
+      const sdIdx    = header.findIndex(h=>h.includes('inicio'));
+      const edIdx    = header.findIndex(h=>h.includes('fin'));
+      
+      const stagesMap = {};
+      const stagesOrder = [];
+      rows.slice(1).forEach((r,ri) => {
+        if (r.length < 2) return;
+        const etapa = r[etapaIdx>=0?etapaIdx:0]||`Etapa 1`;
+        const name  = r[nameIdx>=0?nameIdx:1]||'';
+        if (!name) return;
+        if (!stagesMap[etapa]) { stagesMap[etapa]=[]; stagesOrder.push(etapa); }
+        stagesMap[etapa].push({
+          id: `xl-${ri}`,
+          name,
+          type: typeIdx>=0?(r[typeIdx]||'tarea'):'tarea',
+          assignee: assgIdx>=0?(r[assgIdx]||''):'',
+          startDate: sdIdx>=0?(r[sdIdx]||''):'',
+          endDate:   edIdx>=0?(r[edIdx]||''):'',
+        });
+      });
+      
+      parsedXlsxStages = stagesOrder.map((name,i) => {
+        const tasks = stagesMap[name];
+        const dates = tasks.map(t=>t.startDate).filter(Boolean).map(d=>new Date(d)).filter(d=>!isNaN(d));
+        return { id: i+1, name, tasks, _rawName: name };
+      });
+      
+      const prev = document.getElementById('xlsx-preview');
+      prev.innerHTML = `<div style="background:var(--green-light);border:1px solid var(--green);border-radius:var(--radius);padding:10px 14px;font-size:12px">
+        <b style="color:var(--green)"><i class="ti ti-check"></i> Archivo cargado correctamente</b><br/>
+        ${parsedXlsxStages.length} etapas · ${parsedXlsxStages.reduce((a,s)=>a+s.tasks.length,0)} actividades
+        <ul style="margin-top:8px;padding-left:16px;color:var(--text2)">
+          ${parsedXlsxStages.map(s=>`<li>${s.name} (${s.tasks.length} tareas)</li>`).join('')}
+        </ul>
+      </div>`;
+    } catch(err) {
+      document.getElementById('xlsx-preview').innerHTML=`<p style="color:var(--red);font-size:12px">Error al procesar el archivo: ${err.message}</p>`;
+    }
+  };
+  reader.readAsText(file);
+}
+
 
 let createMethod = 'form';
 function setCreateMethod(m) {
@@ -753,12 +984,29 @@ async function saveNewProject() {
   if (!name) { alert('El nombre del proyecto es obligatorio.'); return; }
 
   let stages = [];
-  if (createMethod === 'form') {
-    stages = collectStagesFromForm();
-  } else {
-    const raw = document.getElementById('json-paste').value.trim();
-    try { stages = JSON.parse(raw); }
-    catch(e) { alert('El JSON no es válido. Revisa el formato.'); return; }
+  if (parsedXlsxStages && parsedXlsxStages.length > 0) {
+    // Convert parsed xlsx stages to proper format
+    stages = parsedXlsxStages.map((s, si) => {
+      const tasks = s.tasks.map((t, ti) => {
+        const task = { ...t, id: `${si+1}-${ti+1}` };
+        // Convert dates to week numbers if start date provided
+        if (start && task.startDate) {
+          const projStart = parseLocal(start);
+          const taskStart = parseLocal(task.startDate);
+          const taskEnd   = task.endDate ? parseLocal(task.endDate) : taskStart;
+          if (!isNaN(taskStart) && !isNaN(projStart)) {
+            const ws = Math.max(1, Math.floor((taskStart - projStart)/(7*24*3600*1000))+1);
+            const we = Math.max(ws, Math.floor((taskEnd - projStart)/(7*24*3600*1000))+1);
+            if (task.type === 'hito') { task.week = ws; }
+            else { task.weeks = [ws, we]; }
+          }
+        } else if (!task.weeks && !task.week) { task.weeks=[1,1]; }
+        return task;
+      });
+      // Calculate stage weeks span
+      const allWeeks = tasks.flatMap(t=>t.weeks||[t.week||1]);
+      return { id: si+1, name: s.name, weeks:[Math.min(...allWeeks)||1, Math.max(...allWeeks)||1], tasks };
+    });
   }
 
   const pal = STAGE_PALETTE[0];
@@ -767,16 +1015,22 @@ async function saveNewProject() {
     type, stages, accentColor: pal.color,
     createdAt: Date.now(), lastPct: 0
   };
+  
+  if (type === 'propuesta') {
+    const li = document.getElementById('np-licit'); if(li&&li.value) meta.licitacionId=li.value;
+    const cl = document.getElementById('np-close'); if(cl&&cl.value) meta.fechaCierre=cl.value;
+    const aj = document.getElementById('np-adj');   if(aj&&aj.value) meta.fechaAdjudicacion=aj.value;
+    meta.pipelineStatus = 'borrador';
+  }
 
   try {
     const ref = await db.collection('projects').add(meta);
     allProjects[ref.id] = { meta };
-    stageCount = 0; taskCounters = {};
+    parsedXlsxStages = null;
     closeModal();
     openProject(ref.id);
   } catch(e) { console.error(e); alert('Error al guardar el proyecto en Firebase.'); }
 }
-
 // ═══════════════════════════════════════════════════════
 //  UTILS FECHAS
 // ═══════════════════════════════════════════════════════
@@ -1054,11 +1308,19 @@ function renderTaskList(tasks, stage) {
     
     const assigneeBadge = (t.assignee && typeof t.assignee==='string')
       ? `<span class="badge" style="background:var(--bg3);color:var(--text2)"><i class="ti ti-user"></i> ${t.assignee}</span>` : '';
+    const subs = state.subtasks && state.subtasks[t.id] ? state.subtasks[t.id] : [];
+    const subsTotal = subs.length;
+    const subsDoneC = subs.filter(s=>s.status==='completado').length;
+    const subsPctC  = subsTotal > 0 ? Math.round(subsDoneC/subsTotal*100) : -1;
+    const subtaskBar = subsPctC >= 0
+      ? `<div class="subtask-progress-bar"><div class="subtask-progress-inner" style="width:${subsPctC}%"></div></div><div class="subtask-pct-label">${subsDoneC}/${subsTotal} subtareas</div>`
+      : '';
     html += `<div class="task-row${status==='completado'?' done':''}" onclick="openTask('${t.id}',${stage.id})">
       <div class="status-icon si-${status}" onclick="quickToggle(event,'${t.id}')">${getStatusIconHTML(status)}</div>
       <div class="task-info">
         <div class="task-name">${t.name}</div>
         <div class="task-date"><i class="ti ti-calendar-event" style="font-size:11px"></i> ${dateLabel}</div>
+        ${subtaskBar}
       </div>
       <div class="task-right">${assigneeBadge}${badge(t.type)}</div>
     </div>`;
@@ -1228,7 +1490,7 @@ function renderGantt() {
           }
 
           const safeName = (t.name||'').replace(/"/g, '&quot;');
-          html += `<div class="gantt-row" onclick="openTask('${t.id}',${stage.id})">
+          html += `<div class="gantt-row" style="cursor:pointer" onclick="openTask('${t.id}',${stage.id})">
             <div style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding-right:8px;color:${status==='completado'?'var(--text3)':'var(--text)'}${status==='completado'?';text-decoration:line-through':''}" title="${safeName}">${t.name}</div>
             <div class="gantt-bar-cell">
               <div class="gantt-today-line" style="left:${tf*100}%"></div>
@@ -1321,25 +1583,52 @@ function saveMember() {
   saveState(); closeModal(); renderTeam();
 }
 
-// ═══════════════════════════════════════════════════════
-//  RENDER PUBLICAR (SHARE)
-// ═══════════════════════════════════════════════════════
 function renderShare(){
   const el = document.getElementById('tab-share');
   if(!el) return;
+  const meta = currentProjId ? allProjects[currentProjId].meta : {};
   el.innerHTML=`<div style="margin-bottom:14px">
     <p style="font-size:13px;color:var(--text2);margin-bottom:12px">¡La base de datos en tiempo real de Firebase está activada! No necesitas exportar archivos para colaborar.</p>
     <div class="export-row"><button class="btn btn-blue" onclick="copyShareMsg()"><i class="ti ti-copy"></i> Copiar resumen para equipo</button></div>
+    <div id="share-preview" style="margin-top:14px"></div>
   </div>`;
+  // Show preview
+  buildShareText(true);
+}
+
+function buildShareText(previewOnly=false) {
+  const s = calcStats();
+  const cw = currentWeek();
+  const nm = getNextUpcoming('hito');
+  const np = getNextUpcoming('producto');
+  const meta = currentProjId ? allProjects[currentProjId].meta : {};
+  let hitoText = nm.item ? `${nm.item.name} (en ${nm.days} días)` : "Ninguno pendiente";
+  const text =
+`📊 ${meta.name||'Proyecto'}
+Semana actual: S${cw} (${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))})
+Progreso: ${s.pct}% (${s.done}/${s.total} actividades completadas)
+- Completadas: ${s.counts.completado}
+- En curso: ${s.counts.curso}
+- Pendientes: ${s.counts.pendiente}
+- Retrasadas: ${s.counts.retrasado}
+Productos: ${s.productsDone}/${s.products} entregados
+Próximo hito: ${hitoText}
+Generado: ${fmtDate(new Date())} a las ${new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}`;
+  if (previewOnly) {
+    const prev = document.getElementById('share-preview');
+    if (prev) prev.innerHTML = `<pre style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;font-size:12px;white-space:pre-wrap;color:var(--text)">${text}</pre>`;
+  }
+  return text;
 }
 
 function copyShareMsg(){
-  const s = calcStats(); const cw = currentWeek(); const nm = getNextUpcoming('hito'); const np = getNextUpcoming('producto');
-  let hitoText = nm.item ? `${nm.item.name} (en ${nm.days} días)` : "Ninguno pendiente";
-  let prodText = np.item ? `${np.item.name} (en ${np.days} días)` : "Ninguno pendiente";
-  const meta = currentProjId ? allProjects[currentProjId].meta : {};
-  const text = `📊 Resumen de Proyecto – ${meta.name}\n\nSemana actual: S${cw} (${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))})\nProgreso: ${s.pct}% (${s.done}/${s.total} completadas)\n- En curso: ${s.counts.curso}\n- Retrasadas: ${s.counts.retrasado}\n\nPróximo hito: ${hitoText}\nPróximo producto: ${prodText}\n\nGenerado: ${fmtDate(new Date())}`;
-  navigator.clipboard.writeText(text).then(()=>alert('Resumen copiado al portapapeles ✓'));
+  const text = buildShareText(false);
+  navigator.clipboard.writeText(text).then(()=>alert('Resumen copiado al portapapeles ✓')).catch(()=>{
+    // Fallback
+    const ta = document.createElement('textarea'); ta.value=text;
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta); alert('Resumen copiado al portapapeles ✓');
+  });
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1447,17 +1736,23 @@ function openTask(taskId, stageId) {
   }
 
   const subs = state.subtasks&&state.subtasks[taskId] ? state.subtasks[taskId] : [];
+  const subsTotal = subs.length;
+  const subsDone  = subs.filter(s=>s.status==='completado').length;
+  const subsPct   = subsTotal > 0 ? Math.round(subsDone/subsTotal*100) : 0;
+  const teamSubOpts = (state.team||[]).map(m=>`<option value="${m.name}">${m.name}</option>`).join('');
   let subsHTML = `
     <div style="margin-bottom:12px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:12px;">
-      <p style="font-size:12px;font-weight:500;margin-bottom:8px;color:var(--text2)"><i class="ti ti-list-check"></i> Subtareas y Desglose</p>
-      ${subs.length === 0 ? '<p style="font-size:11px;color:var(--text3);margin-bottom:8px">No hay subtareas. Puedes agregar micro-actividades aquí.</p>' : ''}
+      <p style="font-size:12px;font-weight:500;margin-bottom:${subsTotal>0?'6':'8'}px;color:var(--text2)"><i class="ti ti-list-check"></i> Subtareas y Desglose</p>
+      ${subsTotal > 0 ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:${subsPct}%;background:var(--green);border-radius:3px;transition:width .3s"></div></div><span style="font-size:11px;color:var(--text2);white-space:nowrap">${subsDone}/${subsTotal} (${subsPct}%)</span></div>` : '<p style="font-size:11px;color:var(--text3);margin-bottom:8px">No hay subtareas. Puedes agregar micro-actividades aquí.</p>'}
       
       <div style="margin-bottom:8px">
         ${subs.map((s,si)=>`
         <div class="sub-row">
           <i class="ti ti-${s.status==='completado'?'check':'circle'}" style="color:${s.status==='completado'?'var(--green)':'var(--border2)'}; font-size:18px; cursor:pointer;" onclick="toggleSubM('${taskId}','${s.id}')"></i>
           <input type="text" value="${(s.name||'').replace(/"/g, '&quot;')}" onchange="updateSubM('${taskId}','${s.id}','name',this.value)" placeholder="Descripción de subtarea" style="flex:1;min-width:0"/>
-          <input type="text" value="${(s.assignee||'').replace(/"/g, '&quot;')}" onchange="updateSubM('${taskId}','${s.id}','assignee',this.value)" placeholder="Responsable..." style="width:115px;"/>
+          <select onchange="updateSubM('${taskId}','${s.id}','assignee',this.value)" style="width:130px;padding:6px 6px;border:1px solid var(--border2);border-radius:4px;font-size:12px;background:var(--bg);color:var(--text);outline:none">
+            <option value="">Responsable</option>${teamSubOpts.replace(`value="${s.assignee||''}"`,`value="${s.assignee||''}" selected`)}
+          </select>
           <input type="date" value="${s.date||''}" onchange="updateSubM('${taskId}','${s.id}','date',this.value)"/>
           <i class="ti ti-trash" onclick="deleteSubM('${taskId}','${s.id}')" style="cursor:pointer; color:var(--red); font-size:16px; margin-left:4px;"></i>
         </div>`).join('')}
@@ -1553,6 +1848,14 @@ function toggleSubM(pId, sId) {
   if (sub) {
     sub.status = sub.status==='completado'?'pendiente':'completado';
     logAction(`Subtarea marcada como ${sub.status}.`);
+    // Auto-complete parent if all subtasks done
+    const allSubs = state.subtasks[pId];
+    if (allSubs.length > 0 && allSubs.every(s=>s.status==='completado')) {
+      state.statuses[pId] = 'completado';
+      logAction(`Tarea padre completada automáticamente (todas las subtareas completadas).`);
+    } else if (sub.status === 'pendiente' && state.statuses[pId] === 'completado') {
+      state.statuses[pId] = 'curso';
+    }
     saveState();
     openTask(pId, getAllTasks().find(t=>t.id===pId).stageId);
   }
@@ -1681,9 +1984,192 @@ function closeModal() { document.getElementById('modal-root').innerHTML=''; }
 function closeModalBg(e) { if(e.target===e.currentTarget) closeModal(); }
 
 // ═══════════════════════════════════════════════════════
+//  VISTA DE EQUIPO (TEAM CALENDAR)
+// ═══════════════════════════════════════════════════════
+let tcFilterPerson = 'all';
+let tcFilterProject = 'all';
+let tcFilterStatus = 'all';
+
+async function showTeamCalendar() {
+  showScreen('team-calendar');
+  document.getElementById('team-cal-content').innerHTML = `<div style="text-align:center;padding:40px;color:var(--text3)"><div class="spinner" style="margin:0 auto 10px"></div>Cargando actividades...</div>`;
+  
+  // Load all projects states
+  try {
+    const snap = await db.collection('projects').get();
+    const projects = {};
+    const statePromises = [];
+    snap.forEach(doc => { projects[doc.id] = { meta: doc.data(), state: {} }; });
+    
+    const ids = Object.keys(projects);
+    for (const id of ids) {
+      try {
+        const stateDoc = await db.collection('projects').doc(id).collection('runtime').doc('state').get();
+        if (stateDoc.exists) projects[id].state = stateDoc.data();
+      } catch(e) {}
+    }
+    renderTeamCalendar(projects);
+  } catch(e) {
+    document.getElementById('team-cal-content').innerHTML = `<p style="color:var(--red)">Error al cargar datos.</p>`;
+  }
+}
+
+function renderTeamCalendar(projects) {
+  // Collect all tasks with person + project info
+  const allItems = [];
+  const allPersons = new Set();
+  const allProjNames = {};
+
+  Object.entries(projects).forEach(([pid, proj]) => {
+    if (proj.meta.archived) return;
+    const meta = proj.meta;
+    const st   = proj.state;
+    allProjNames[pid] = meta.name;
+    
+    if (!meta.stages) return;
+    const palette = STAGE_PALETTE;
+    const stages = (meta.stages||[]).map((s,i)=>({...s, color:palette[i%palette.length].color}));
+    const startDate = st.startDate || meta.startDate || '';
+    
+    const getAllTasksForProj = () => {
+      const all = [];
+      stages.forEach(s => (s.tasks||[]).forEach(t => {
+        if (st.deletedIds && st.deletedIds.includes(t.id)) return;
+        const ov = st.taskOverrides && st.taskOverrides[t.id];
+        all.push({...t, stageId:s.id, stageColor:s.color, ...(ov||{})});
+      }));
+      (st.customTasks||[]).forEach(t => {
+        if (st.deletedIds && st.deletedIds.includes(t.id)) return;
+        const ov = st.taskOverrides && st.taskOverrides[t.id];
+        all.push({...t, ...(ov||{})});
+      });
+      return all;
+    };
+    
+    const getDateForProj = (t) => {
+      const parseL = ds => { if(!ds) return new Date(); const p=ds.split('T')[0].split('-'); return new Date(p[0],p[1]-1,p[2]); };
+      const wStart = w => { const d=new Date(parseL(startDate)); d.setDate(d.getDate()+(w-1)*7); return d; };
+      const wEnd   = w => { const d=wStart(w); d.setDate(d.getDate()+6); return d; };
+      const s = t.startDate ? parseL(t.startDate) : wStart(t.weeks?t.weeks[0]:(t.week||1));
+      const e = t.endDate   ? parseL(t.endDate)   : wEnd(t.weeks?t.weeks[1]:(t.week||1));
+      return {start:s, end:e};
+    };
+    
+    getAllTasksForProj().forEach(t => {
+      const assignee = t.assignee || '';
+      const status = (st.statuses&&st.statuses[t.id]) || 'pendiente';
+      const {start,end} = getDateForProj(t);
+      if (assignee) allPersons.add(assignee);
+      allItems.push({ taskId:t.id, name:t.name, assignee, status, start, end, projId:pid, projName:meta.name, type:t.type, stageColor:t.stageColor||'#ccc' });
+    });
+  });
+
+  const persons = Array.from(allPersons).sort();
+  const personColors = {};
+  persons.forEach((p,i)=>{ personColors[p]=STAGE_PALETTE[i%STAGE_PALETTE.length].color; });
+  
+  // Build filter UI
+  const personChips = `<button class="filter-chip ${tcFilterPerson==='all'?'active':''}" onclick="tcFilterPerson='all';applyTCFilters()">Todos</button>`
+    + persons.map(p=>`<button class="filter-chip ${tcFilterPerson===p?'active':''}" onclick="tcFilterPerson='${p.replace(/'/g,"\\'")}';applyTCFilters()" style="${tcFilterPerson===p?'':'border-left:3px solid '+personColors[p]}">
+      <span class="member-dot" style="background:${personColors[p]}"></span> ${p}
+    </button>`).join('');
+  
+  const projIds = Object.keys(allProjNames);
+  const projChips = `<button class="filter-chip ${tcFilterProject==='all'?'active':''}" onclick="tcFilterProject='all';applyTCFilters()">Todos los proyectos</button>`
+    + projIds.map(id=>`<button class="filter-chip ${tcFilterProject===id?'active':''}" onclick="tcFilterProject='${id}';applyTCFilters()">${allProjNames[id]}</button>`).join('');
+
+  const statusChips = ['all','pendiente','curso','retrasado','completado'].map(s=>
+    `<button class="filter-chip ${tcFilterStatus===s?'active':''}" onclick="tcFilterStatus='${s}';applyTCFilters()">${s==='all'?'Todos los estados':s.charAt(0).toUpperCase()+s.slice(1)}</button>`
+  ).join('');
+
+  // Filter items
+  let filtered = allItems.filter(item => {
+    if (tcFilterPerson!=='all' && item.assignee!==tcFilterPerson) return false;
+    if (tcFilterProject!=='all' && item.projId!==tcFilterProject) return false;
+    if (tcFilterStatus!=='all' && item.status!==tcFilterStatus) return false;
+    return true;
+  }).sort((a,b)=>a.end-b.end);
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const fmtD = d => { if(!d||isNaN(d)) return '—'; return d.toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'}); };
+
+  let taskRows = '';
+  if (filtered.length === 0) {
+    taskRows = `<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px">No hay actividades que coincidan con los filtros.</div>`;
+  } else {
+    // Group by person
+    const grouped = {};
+    filtered.forEach(item => {
+      const key = item.assignee || 'Sin asignar';
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(item);
+    });
+    
+    Object.entries(grouped).forEach(([person, items]) => {
+      const color = personColors[person] || 'var(--text3)';
+      taskRows += `<div style="background:var(--bg2);padding:8px 14px;font-size:12px;font-weight:600;color:${color};border-top:2px solid ${color};display:flex;align-items:center;gap:6px">
+        <span class="member-dot" style="background:${color}"></span>${person} <span style="font-weight:400;color:var(--text3);font-size:11px">(${items.length} actividades)</span>
+      </div>`;
+      items.forEach(item => {
+        const overdue = item.status!=='completado' && item.end < today;
+        const endColor = overdue ? 'var(--red)' : 'var(--text2)';
+        taskRows += `<div class="cal-task-row">
+          <span class="member-dot" style="background:${item.stageColor}"></span>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.name}</div>
+            <div style="font-size:11px;color:var(--text3)">${item.projName}</div>
+          </div>
+          <div style="font-size:11px;color:${endColor};white-space:nowrap;min-width:90px;text-align:right">${fmtD(item.end)}</div>
+          <span class="pill-status pill-${item.status}">${item.status}</span>
+        </div>`;
+      });
+    });
+  }
+
+  // Stats summary
+  const byPerson = {};
+  persons.forEach(p => {
+    const mine = allItems.filter(i=>i.assignee===p);
+    byPerson[p] = { total:mine.length, done:mine.filter(i=>i.status==='completado').length, delayed:mine.filter(i=>i.status==='retrasado').length };
+  });
+  
+  let teamSummary = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin-bottom:16px">`;
+  persons.forEach(p => {
+    const color = personColors[p]||'var(--green)';
+    const d = byPerson[p];
+    const pct = d.total>0?Math.round(d.done/d.total*100):0;
+    teamSummary += `<div class="stat-card" style="border-left:3px solid ${color}">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px"><span class="member-dot" style="background:${color}"></span><span style="font-size:12px;font-weight:600">${p}</span></div>
+      <div style="font-size:20px;font-weight:700">${d.total}</div>
+      <div style="font-size:11px;color:var(--text3)">${d.done} completadas · ${d.delayed} retrasadas</div>
+      <div style="height:4px;background:var(--border);border-radius:2px;margin-top:6px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${color}"></div></div>
+    </div>`;
+  });
+  teamSummary += `</div>`;
+
+  document.getElementById('team-cal-content').innerHTML = `
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Por persona</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">${personChips}</div>
+      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin:10px 0 8px">Por proyecto</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">${projChips}</div>
+      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin:10px 0 8px">Por estado</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">${statusChips}</div>
+    </div>
+    ${teamSummary}
+    <div style="border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden">
+      <div style="background:var(--bg2);padding:8px 14px;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;display:grid;grid-template-columns:1fr 100px 90px;gap:10px">
+        <span>Actividad / Proyecto</span><span style="text-align:right">Fecha fin</span><span>Estado</span>
+      </div>
+      ${taskRows}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════════
 loadProjectList();
+
 </script>
 </body>
 </html>
