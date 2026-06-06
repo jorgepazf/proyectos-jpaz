@@ -31,6 +31,11 @@
     --orange-light:#3a1a0a;--purple-light:#1a1845;
     --amber-light:#3a2500;--red-light:#3d1010;
   }
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    opacity: 0.8;
+    cursor: pointer;
+  }
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
 
@@ -134,6 +139,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .subtask-indented:hover{background:var(--bg2)}
 .subtask-indented .st-name{flex:1;color:var(--text2)}
 .subtask-indented.done .st-name{text-decoration:line-through;color:var(--text3)}
+.modal-subtasks{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:12px}
+.sub-row{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--border)}
+.sub-row:last-child{border-bottom:none}
+.sub-row input[type="text"]{flex:1;background:var(--bg);border:1px solid var(--border2);padding:6px 8px;font-size:12px;border-radius:4px;color:var(--text);outline:none}
+.sub-row input[type="date"]{width:110px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;color:var(--text);outline:none}
+.sub-row select{width:120px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;color:var(--text);outline:none}
+.sub-row input:focus, .sub-row select:focus{border-color:var(--green)}
+.sub-prog-bar{height:4px;background:var(--border);border-radius:2px;width:60px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:6px}
+.sub-prog-inner{height:100%;background:var(--blue)}
 
 /* ── KANBAN ── */
 .board-container{display:flex;gap:14px;overflow-x:auto;padding-bottom:10px;align-items:flex-start}
@@ -148,7 +162,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .gantt-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-lg)}
 .gantt-inner{min-width:820px}
 .gantt-head-row{display:grid;grid-template-columns:300px 1fr;font-size:11px;color:var(--text2);padding:8px 14px;background:var(--bg2);border-bottom:1px solid var(--border);font-weight:500;align-items:center;}
-/* APLICADA MEJORA DEL CURSOR "MANITO" Y NO TEXTO */
 .gantt-row{display:grid;grid-template-columns:300px 1fr;align-items:center;padding:5px 14px;border-top:1px solid var(--border);font-size:12px;position:relative;cursor:pointer;user-select:none;}
 .gantt-row:hover{background:var(--bg2)!important}
 .gantt-bar-cell{position:relative;height:14px;width:100%}
@@ -158,7 +171,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .month-col{flex:1;text-align:center;border-left:1px solid var(--border2);height:100%;display:flex;align-items:center;justify-content:center;font-weight:600;}
 .month-col:first-child{border-left:none;}
 
-/* ── MODALS ── */
+/* ── MODALS & NOTIFICATIONS ── */
+.dropdown{position:relative;display:inline-block}
+.notif-badge{position:absolute;top:-5px;right:-5px;background:var(--red);color:white;font-size:10px;font-weight:bold;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid var(--bg);z-index:10}
+.dropdown-content{display:none;position:absolute;right:0;top:100%;margin-top:8px;width:280px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:9999;overflow:hidden}
+.dropdown-content.show{display:block}
+.notif-item{padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text);line-height:1.4;background:var(--bg)}
+.notif-item:last-child{border-bottom:none}
+.notif-time{font-size:10px;color:var(--text3);margin-top:4px}
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:99999;padding:16px}
 .modal{background:var(--bg);border-radius:var(--radius-lg);border:1px solid var(--border2);padding:20px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.15)}
 .modal h3{font-size:16px;font-weight:600;margin-bottom:14px}
@@ -182,35 +202,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tag-active{background:var(--green-light);color:var(--green);font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500}
 .team-member{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--border)}
 .avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
-.sub-row{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--border)}
-.sub-row:last-child{border-bottom:none}
-.sub-row i.ti-circle, .sub-row i.ti-check {font-size:18px; cursor:pointer;}
-.sub-row input[type="text"]{flex:1;background:var(--bg);border:1px solid var(--border2);padding:6px 8px;font-size:12px;border-radius:4px;color:var(--text);outline:none}
-.sub-row input[type="date"]{width:115px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;color:var(--text);outline:none}
-.sub-row select{width:125px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;color:var(--text);outline:none;cursor:pointer;}
-.sub-prog-bar{height:4px;background:var(--border);border-radius:2px;width:60px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:6px}
-.sub-prog-inner{height:100%;background:var(--blue);transition:width .3s;}
-.dropdown{position:relative;display:inline-block}
-.notif-badge{position:absolute;top:-5px;right:-5px;background:var(--red);color:white;font-size:10px;font-weight:bold;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid var(--bg);z-index:10}
-.dropdown-content{display:none;position:absolute;right:0;top:100%;margin-top:8px;width:280px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:9999;overflow:hidden}
-.dropdown-content.show{display:block}
-.notif-item{padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text);line-height:1.4}
-.notif-item:last-child{border-bottom:none}
-.notif-time{font-size:10px;color:var(--text3);margin-top:4px}
-
-/* ── STAGE BUILDER ── */
-.stage-builder{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:10px}
-.stage-builder-head{background:var(--bg2);padding:10px 12px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500}
-.stage-builder-body{padding:10px 12px}
-.task-builder-row{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
-.task-builder-row input{flex:1;min-width:140px;padding:5px 8px;border:1px solid var(--border2);border-radius:var(--radius);font-size:12px;background:var(--bg);color:var(--text);outline:none}
-.task-builder-row select{padding:5px 6px;border:1px solid var(--border2);border-radius:var(--radius);font-size:12px;background:var(--bg);color:var(--text);outline:none}
-.week-pair{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)}
-.week-pair input[type=number]{width:52px;padding:5px 6px;border:1px solid var(--border2);border-radius:var(--radius);font-size:12px;background:var(--bg);color:var(--text);outline:none;text-align:center}
-.tip-box{background:var(--amber-light);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;font-size:12px;margin-bottom:14px;display:flex;gap:8px}
-.import-area{border:2px dashed var(--border2);border-radius:var(--radius);padding:16px;text-align:center;cursor:pointer;transition:border-color .15s}
-.import-area:hover{border-color:var(--green)}
-.import-area input{display:none}
 
 @media(max-width:600px){
   .topbar{flex-direction:column}
@@ -898,20 +889,6 @@ function calcStats() {
   };
 }
 
-function getNextUpcoming(type) {
-   const all = getAllTasks();
-   const items = all.filter(t => t.type === type && getTaskStatus(t.id) !== 'completado');
-   const today = new Date(); today.setHours(0,0,0,0);
-   let next = null; let minDiff = Infinity;
-   items.forEach(h => {
-       const { start } = getTaskDates(h);
-       const startNoTime = new Date(start); startNoTime.setHours(0,0,0,0);
-       const diff = Math.ceil((startNoTime - today) / (1000*3600*24));
-       if (diff >= 0 && diff < minDiff) { minDiff = diff; next = h; }
-   });
-   return { item: next, days: minDiff };
-}
-
 function toggleNotifs(e) {
   if (e) e.stopPropagation();
   document.getElementById('notif-dropdown').classList.toggle('show');
@@ -1072,6 +1049,7 @@ function renderTaskList(tasks, stage) {
     const assigneeBadge = (t.assignee && typeof t.assignee==='string')
       ? `<span class="badge" style="background:var(--bg3);color:var(--text2)"><i class="ti ti-user"></i> ${t.assignee}</span>` : '';
     
+    // Subtareas y Progreso Integrado
     const subs = state.subtasks && state.subtasks[t.id] ? state.subtasks[t.id] : [];
     let subProgHtml = '';
     if(subs.length > 0) {
@@ -1094,8 +1072,10 @@ function renderTaskList(tasks, stage) {
       const sst   = s.status||'pendiente';
       const sassg = (s.assignee&&typeof s.assignee==='string') ? ` <i class="ti ti-user"></i> ${s.assignee.split(' ')[0]}` : '';
       const sdate = s.date ? ` · <i class="ti ti-calendar-event"></i> ${fmtShort(parseLocal(s.date))}` : '';
+      
+      // StopPropagation en el icono para que no abra el modal madre
       html += `<div class="subtask-indented ${sst==='completado'?'done':''}" onclick="openTask('${t.id}',${stage.id})">
-        <i class="ti ti-${sst==='completado'?'check':'circle'}" style="color:${sst==='completado'?'var(--green)':'var(--border2)'}; font-size:16px;"></i>
+        <i class="ti ti-${sst==='completado'?'check-box':'square'}" onclick="event.stopPropagation(); toggleSubM('${t.id}', '${s.id}')" style="color:${sst==='completado'?'var(--green)':'var(--text3)'}; font-size:16px; cursor:pointer;"></i>
         <span class="st-name">${s.name}<span style="font-size:11px;color:var(--text3)"> ${sassg}${sdate}</span></span>
       </div>`;
     });
@@ -1234,7 +1214,7 @@ function renderGantt() {
           }
       }
 
-      html += `<div class="gantt-row" style="background:${stage.light}; cursor:pointer; user-select:none;" onclick="toggleGanttSection(${stage.id})">
+      html += `<div class="gantt-row" style="background:${stage.light}; cursor:pointer" onclick="toggleGanttSection(${stage.id})">
         <div style="font-weight:600; font-size:12px; display:flex; align-items:center; gap:6px; z-index:3; color:${stage.color}">
           <i class="ti ti-chevron-${scol?'right':'down'}" style="font-size:14px;color:${stage.color}"></i>
           <span style="width:8px;height:8px;border-radius:50%;background:${stage.color};display:inline-block;flex-shrink:0"></span>
@@ -1260,8 +1240,8 @@ function renderGantt() {
           }
 
           const safeName = (t.name||'').replace(/"/g, '&quot;');
-          html += `<div class="gantt-row" onclick="openTask('${t.id}',${stage.id})" style="cursor:pointer; user-select:none;">
-            <div style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding-right:8px;color:${status==='completado'?'var(--text3)':'var(--text)'}${status==='completado'?';text-decoration:line-through':''}" title="${safeName}">${t.name}</div>
+          html += `<div class="gantt-row" onclick="openTask('${t.id}',${stage.id})">
+            <div style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding-right:8px;color:${status==='completado'?'var(--text3)':'var(--text)'}${status==='completado'?';text-decoration:line-through':''}">${t.name}</div>
             <div class="gantt-bar-cell">
               <div class="gantt-today-line" style="left:${tf*100}%"></div>
               <div class="gantt-bar" style="left:${leftPct}%; width:${widthPct}%; ${barStyle} ${status==='completado'?';opacity:.5':''}" title="${safeName}"></div>
@@ -1353,6 +1333,20 @@ function saveMember() {
   saveState(); closeModal(); renderTeam();
 }
 
+function getNextUpcoming(type) {
+   const all = getAllTasks();
+   const items = all.filter(t => t.type === type && getTaskStatus(t.id) !== 'completado');
+   const today = new Date(); today.setHours(0,0,0,0);
+   let next = null; let minDiff = Infinity;
+   items.forEach(h => {
+       const { start } = getTaskDates(h);
+       const startNoTime = new Date(start); startNoTime.setHours(0,0,0,0);
+       const diff = Math.ceil((startNoTime - today) / (1000*3600*24));
+       if (diff >= 0 && diff < minDiff) { minDiff = diff; next = h; }
+   });
+   return { item: next, days: minDiff };
+}
+
 // ═══════════════════════════════════════════════════════
 //  RENDER PUBLICAR (SHARE)
 // ═══════════════════════════════════════════════════════
@@ -1368,9 +1362,10 @@ function renderShare(){
 function copyShareMsg(){
   const s = calcStats(); const cw = currentWeek(); const nm = getNextUpcoming('hito'); const np = getNextUpcoming('producto');
   let hitoText = nm.item ? `${nm.item.name} (en ${nm.days} días)` : "Ninguno pendiente";
+  let prodText = np.item ? `${np.item.name} (en ${np.days} días)` : "Ninguno pendiente";
   const meta = currentProjId ? allProjects[currentProjId].meta : {};
   
-  const text = `📊 [${(meta.name||'PROYECTO').toUpperCase()}]\nSemana actual: S${cw} (${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))})\nProgreso: ${s.pct}% (${s.done}/${s.total} actividades completadas)\n- Completadas: ${s.counts.completado}\n- En curso: ${s.counts.curso}\n- Pendientes: ${s.counts.pendiente}\n- Retrasadas: ${s.counts.retrasado}\nProductos: ${s.productsDone}/${s.products} entregados\nPróximo hito: ${hitoText}\n\nGenerado: ${fmtDate(new Date())} a las ${new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}`;
+  const text = `📊 [${(meta.name||'PROYECTO').toUpperCase()}]\nSemana actual: S${cw} (${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))})\nProgreso: ${s.pct}% (${s.done}/${s.total} actividades completadas)\n- Completadas: ${s.counts.completado}\n- En curso: ${s.counts.curso}\n- Pendientes: ${s.counts.pendiente}\n- Retrasadas: ${s.counts.retrasado}\nPróximo hito: ${hitoText}\nPróximo producto: ${prodText}\n\nGenerado: ${fmtDate(new Date())} a las ${new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}`;
   
   navigator.clipboard.writeText(text).then(()=>alert('Resumen copiado al portapapeles ✓'));
 }
@@ -1490,12 +1485,12 @@ function openTask(taskId, stageId) {
           const sTeam = (state.team||[]).map(m=>`<option value="${m.name}" ${s.assignee===m.name?'selected':''}>${m.name}</option>`).join('');
           return `
         <div class="sub-row">
-          <i class="ti ti-${s.status==='completado'?'check':'circle'}" style="color:${s.status==='completado'?'var(--green)':'var(--border2)'}; font-size:18px; cursor:pointer;" onclick="toggleSubM('${taskId}','${s.id}')"></i>
+          <i class="ti ti-${s.status==='completado'?'check-box':'square'}" style="color:${s.status==='completado'?'var(--green)':'var(--text3)'}; font-size:18px; cursor:pointer;" onclick="toggleSubM('${taskId}','${s.id}')"></i>
           <input type="text" value="${(s.name||'').replace(/"/g, '&quot;')}" onchange="updateSubM('${taskId}','${s.id}','name',this.value)" placeholder="Descripción de subtarea" style="flex:1;min-width:0"/>
-          <select onchange="updateSubM('${taskId}','${s.id}','assignee',this.value)" style="width:130px;cursor:pointer;">
-             <option value="" disabled hidden ${!s.assignee?'selected':''}>Responsable...</option>
-             <option value="">Sin asignar</option>
-             ${sTeam}
+          <select onchange="updateSubM('${taskId}','${s.id}','assignee',this.value)">
+              <option value="" disabled hidden ${!s.assignee?'selected':''}>Responsable...</option>
+              <option value="">Sin asignar</option>
+              ${sTeam}
           </select>
           <input type="date" value="${s.date||''}" onchange="updateSubM('${taskId}','${s.id}','date',this.value)"/>
           <i class="ti ti-trash" onclick="deleteSubM('${taskId}','${s.id}')" style="cursor:pointer; color:var(--red); font-size:16px; margin-left:4px;"></i>
@@ -1513,7 +1508,11 @@ function openTask(taskId, stageId) {
     <p style="font-size:12px;color:var(--text2);margin-bottom:14px"><span style="width:8px;height:8px;border-radius:50%;background:${stage.color};display:inline-block;margin-right:4px"></span>${stage.name} · ${badge(t.type)}</p>
     <div class="form-row">
       <label>Responsable de Actividad</label>
-      <select id="modal-assignee"><option value="">Sin asignar</option>${teamOpts}</select>
+      <select id="modal-assignee">
+        <option value="" disabled hidden ${!t.assignee?'selected':''}>Responsable...</option>
+        <option value="">Sin asignar</option>
+        ${teamOpts}
+      </select>
     </div>
     <div class="form-row">
       <label>Fechas exactas (inicio – fin)</label>
@@ -1528,7 +1527,7 @@ function openTask(taskId, stageId) {
       </a>
     </div>
     <div class="form-row" style="margin-top:16px">
-      <label>Estado</label>
+      <label>Estado Principal</label>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn${status==='pendiente'?' btn-primary':''}" id="btn-st-pendiente" onclick="setStM('${taskId}','pendiente')"><i class="ti ti-circle"></i> Pendiente</button>
         <button class="btn${status==='curso'?' btn-blue':''}" id="btn-st-curso" onclick="setStM('${taskId}','curso')"><i class="ti ti-player-play"></i> En curso</button>
@@ -1594,9 +1593,8 @@ function toggleSubM(pId, sId) {
   const sub = state.subtasks[pId].find(s=>s.id===sId);
   if (sub) {
     sub.status = sub.status==='completado'?'pendiente':'completado';
-    logAction(`Subtarea marcada como ${sub.status}.`);
     
-    // Autocompletado inteligente de tarea madre
+    // Si todas las subtareas estan listas, la tarea madre se completa sola
     const allSubs = state.subtasks[pId];
     if (allSubs && allSubs.length > 0) {
         const allDone = allSubs.every(s => s.status === 'completado');
@@ -1607,7 +1605,10 @@ function toggleSubM(pId, sId) {
     }
 
     saveState();
-    openTask(pId, getAllTasks().find(t=>t.id===pId).stageId);
+    // Re-renderizamos modal SOLO si esta abierto (Para no interrumpir la lista base)
+    if(document.getElementById('modal-root').innerHTML.trim() !== '') {
+        openTask(pId, getAllTasks().find(t=>t.id===pId).stageId);
+    }
   }
 }
 
@@ -1666,7 +1667,7 @@ function openAddTask(stageId) {
       </select>
     </div>
     
-    <div class="form-row"><label>Responsable</label><select id="nt-assignee"><option value="">Sin asignar</option>${teamOpts}</select></div>
+    <div class="form-row"><label>Responsable</label><select id="nt-assignee"><option value="" disabled hidden selected>Responsable...</option><option value="">Sin asignar</option>${teamOpts}</select></div>
     <div class="form-row"><label>Fechas (inicio – fin)</label>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <input id="nt-start" type="date" value="${sd}"/>
