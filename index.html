@@ -189,7 +189,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
 .sub-row{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--border)}
 .sub-row:last-child{border-bottom:none}
-.sub-row i.ti-circle, .sub-row i.ti-check {font-size:18px; cursor:pointer;}
+.sub-row i.ti-circle, .sub-row i.ti-circle-check-filled {font-size:18px; cursor:pointer;}
 .sub-row input[type="text"]{flex:1;background:var(--bg);border:1px solid var(--border2);padding:6px 8px;font-size:12px;border-radius:4px;color:var(--text);outline:none}
 .sub-row select{width:130px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;color:var(--text);outline:none}
 .sub-row input[type="date"]{width:115px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;color:var(--text);outline:none}
@@ -1088,7 +1088,7 @@ function renderTaskList(tasks, stage) {
       const sdate = s.date ? ` · <i class="ti ti-calendar-event"></i> ${fmtShort(parseLocal(s.date))}` : '';
       
       html += `<div class="subtask-indented ${sst==='completado'?'done':''}" onclick="openTask('${t.id}',${stage.id})">
-        <i class="ti ti-${sst==='completado'?'check-box':'square'}" onclick="event.stopPropagation(); toggleSubM('${t.id}', '${s.id}')" style="color:${sst==='completado'?'var(--green)':'var(--text3)'}; font-size:16px; cursor:pointer;"></i>
+        <i class="ti ti-${sst==='completado'?'circle-check-filled':'circle'}" onclick="event.stopPropagation(); toggleSubM('${t.id}', '${s.id}')" style="color:${sst==='completado'?'var(--green)':'var(--text3)'}; font-size:16px; cursor:pointer;"></i>
         <span class="st-name">${s.name}<span style="font-size:11px;color:var(--text3)"> ${sassg}${sdate}</span></span>
       </div>`;
     });
@@ -1484,7 +1484,7 @@ function openTask(taskId, stageId) {
           const sTeam = (state.team||[]).map(m=>`<option value="${m.name}" ${s.assignee===m.name?'selected':''}>${m.name}</option>`).join('');
           return `
         <div class="sub-row">
-          <i class="ti ti-${s.status==='completado'?'check-box':'square'}" style="color:${s.status==='completado'?'var(--green)':'var(--text3)'}; font-size:18px; cursor:pointer;" onclick="toggleSubM('${taskId}','${s.id}')"></i>
+          <i class="ti ti-${s.status==='completado'?'circle-check-filled':'circle'}" style="color:${s.status==='completado'?'var(--green)':'var(--text3)'}; font-size:18px; cursor:pointer;" onclick="toggleSubM('${taskId}','${s.id}')"></i>
           <input type="text" value="${(s.name||'').replace(/"/g, '&quot;')}" onchange="updateSubM('${taskId}','${s.id}','name',this.value)" placeholder="Descripción de subtarea" style="flex:1;min-width:0"/>
           <select onchange="updateSubM('${taskId}','${s.id}','assignee',this.value)">
              <option value="" disabled hidden ${!s.assignee?'selected':''}>Responsable...</option>
