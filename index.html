@@ -189,7 +189,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
 .sub-row{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--border)}
 .sub-row:last-child{border-bottom:none}
-.sub-row i.ti-circle, .sub-row i.ti-circle-check-filled {font-size:18px; cursor:pointer;}
 .sub-row input[type="text"]{flex:1;background:var(--bg);border:1px solid var(--border2);padding:6px 8px;font-size:12px;border-radius:4px;color:var(--text);outline:none}
 .sub-row select{width:130px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;color:var(--text);outline:none}
 .sub-row input[type="date"]{width:115px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;color:var(--text);outline:none}
@@ -336,7 +335,7 @@ let filterAssignee = 'all';
 let filterStatus   = 'all';
 let unseenLogs     = 0;
 let isFirstLoad    = true;
-let hideCompletedGantt = false; // VARIABLE GLOBAL PARA OCULTAR COMPLETADAS EN GANTT
+let hideCompletedGantt = false; 
 
 // ═══════════════════════════════════════════════════════
 //  BOOTSTRAP: cargar lista de proyectos
@@ -984,8 +983,8 @@ function renderStats() {
   document.getElementById('stats-bar').innerHTML = `
     <div class="stat-card"><div class="stat-label">Progreso general</div><div class="stat-val">${s.pct}%</div><div class="stat-sub">${s.done} de ${s.total} completadas</div></div>
     <div class="stat-card"><div class="stat-label">Semana actual</div><div class="stat-val">S${cw}</div><div class="stat-sub">${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))}</div></div>
-    <div class="stat-card"><div class="stat-label">Próximo producto</div><div class="stat-val" style="font-size:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${prodVal}">${prodVal}</div><div class="stat-sub">${prodSub}</div></div>
-    <div class="stat-card"><div class="stat-label">Fecha de término</div><div class="stat-val" style="font-size:16px">${fmtShort(end)}</div><div class="stat-sub">Fin S${tw} · ${end.getFullYear()}</div></div>`;
+    <div class="stat-card"><div class="stat-label">Próximo producto</div><div class="stat-val" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${prodVal}">${prodVal}</div><div class="stat-sub">${prodSub}</div></div>
+    <div class="stat-card"><div class="stat-label">Fecha de término</div><div class="stat-val">${fmtShort(end)}</div><div class="stat-sub">Fin S${tw} · ${end.getFullYear()}</div></div>`;
   
   const pct = Math.round(todayFraction()*100);
   document.getElementById('week-progress-bar').innerHTML = `
@@ -1088,7 +1087,7 @@ function renderTaskList(tasks, stage) {
       const sdate = s.date ? ` · <i class="ti ti-calendar-event"></i> ${fmtShort(parseLocal(s.date))}` : '';
       
       html += `<div class="subtask-indented ${sst==='completado'?'done':''}" onclick="openTask('${t.id}',${stage.id})">
-        <i class="ti ti-${sst==='completado'?'circle-check-filled':'circle'}" onclick="event.stopPropagation(); toggleSubM('${t.id}', '${s.id}')" style="color:${sst==='completado'?'var(--green)':'var(--text3)'}; font-size:16px; cursor:pointer;"></i>
+        <div class="status-icon si-${sst}" onclick="event.stopPropagation(); toggleSubM('${t.id}', '${s.id}')" style="cursor:pointer; transform: scale(0.8); margin-right: -2px;">${getStatusIconHTML(sst)}</div>
         <span class="st-name">${s.name}<span style="font-size:11px;color:var(--text3)"> ${sassg}${sdate}</span></span>
       </div>`;
     });
@@ -1484,7 +1483,7 @@ function openTask(taskId, stageId) {
           const sTeam = (state.team||[]).map(m=>`<option value="${m.name}" ${s.assignee===m.name?'selected':''}>${m.name}</option>`).join('');
           return `
         <div class="sub-row">
-          <i class="ti ti-${s.status==='completado'?'circle-check-filled':'circle'}" style="color:${s.status==='completado'?'var(--green)':'var(--text3)'}; font-size:18px; cursor:pointer;" onclick="toggleSubM('${taskId}','${s.id}')"></i>
+          <div class="status-icon si-${s.status}" onclick="toggleSubM('${taskId}','${s.id}')" style="cursor:pointer; flex-shrink: 0;">${getStatusIconHTML(s.status)}</div>
           <input type="text" value="${(s.name||'').replace(/"/g, '&quot;')}" onchange="updateSubM('${taskId}','${s.id}','name',this.value)" placeholder="Descripción de subtarea" style="flex:1;min-width:0"/>
           <select onchange="updateSubM('${taskId}','${s.id}','assignee',this.value)">
              <option value="" disabled hidden ${!s.assignee?'selected':''}>Responsable...</option>
@@ -1607,6 +1606,7 @@ function toggleSubM(pId, sId) {
     saveState();
     if(document.getElementById('modal-root').innerHTML.trim() !== '') {
         openTask(pId, getAllTasks().find(t=>t.id===pId).stageId);
+        renderAllViews();
     } else {
         renderAllViews();
     }
