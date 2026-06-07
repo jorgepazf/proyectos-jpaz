@@ -474,8 +474,16 @@ function openProject(id) {
     light: STAGE_PALETTE[i % STAGE_PALETTE.length].light,
   }));
 
-  document.getElementById('proj-title').textContent    = meta.name;
-  document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'} · Inicio: ${fmtDateStr(meta.startDate)} · ${meta.totalWeeks} semanas · ${STAGES.length} etapas`;
+  document.getElementById('proj-title').textContent = meta.name;
+  
+  if (meta.type === 'propuesta') {
+      const lici = meta.licitationId ? ` · ID: ${meta.licitationId}` : '';
+      const cierre = meta.closingDate ? ` · Cierre: ${fmtDateStr(meta.closingDate)}` : '';
+      document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'}${lici}${cierre} · ${meta.totalWeeks} semanas`;
+  } else {
+      document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'} · Inicio: ${fmtDateStr(meta.startDate)} · ${meta.totalWeeks} semanas · ${STAGES.length} etapas`;
+  }
+
   setTab('tasks', document.querySelector('.tab'));
   showScreen('project');
 
@@ -564,13 +572,13 @@ function openNewProjectModal() {
     <h3><i class="ti ti-plus" style="color:var(--green)"></i> Nuevo proyecto o propuesta</h3>
     <div class="form-row">
       <label>Tipo</label>
-      <select id="np-type">
+      <select id="np-type" onchange="toggleProjectType(this.value)">
         <option value="proyecto">Proyecto</option>
         <option value="propuesta">Propuesta técnica</option>
       </select>
     </div>
     <div class="form-row">
-      <label>Nombre del proyecto</label>
+      <label>Nombre del proyecto / propuesta</label>
       <input id="np-name" type="text" placeholder="Ej: Evaluación de Programas Sociales"/>
     </div>
     <div class="form-row">
@@ -587,45 +595,74 @@ function openNewProjectModal() {
         <input id="np-weeks" type="number" min="1" max="104" value="20"/>
       </div>
     </div>
-    <hr style="border:none;border-top:1px solid var(--border);margin:12px 0"/>
-    <p style="font-size:13px;font-weight:500;margin-bottom:10px">¿Cómo quieres definir las etapas y tareas?</p>
-    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-      <button class="btn btn-primary btn-sm" id="btn-method-form" onclick="setCreateMethod('form')"><i class="ti ti-forms"></i> Formulario</button>
-      <button class="btn btn-sm" id="btn-method-json" onclick="setCreateMethod('json')"><i class="ti ti-file-code"></i> Importar JSON</button>
+    
+    <div id="propuesta-fields" style="display:none; margin-top:14px; border-top:1px solid var(--border); padding-top:14px;">
+      <p style="font-size:13px;font-weight:500;margin-bottom:10px">Datos de la Licitación / Propuesta</p>
+      <div class="form-row">
+        <label>ID de licitación</label>
+        <input id="np-licitation" type="text" placeholder="Ej: 1234-56-LQ23"/>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="form-row">
+          <label>Fecha de cierre</label>
+          <input id="np-closing" type="date"/>
+        </div>
+        <div class="form-row">
+          <label>Fecha de adjudicación</label>
+          <input id="np-award" type="date"/>
+        </div>
+      </div>
     </div>
 
-    <div id="create-form-section">
-      <div class="tip-box">
-        <i class="ti ti-info-circle" style="flex-shrink:0;margin-top:1px"></i>
-        <div>Define las etapas una a una. Dentro de cada etapa agrega las actividades con su semana de inicio y fin.</div>
+    <div id="np-etapas-section">
+      <hr style="border:none;border-top:1px solid var(--border);margin:12px 0"/>
+      <p style="font-size:13px;font-weight:500;margin-bottom:10px">¿Cómo quieres definir las etapas?</p>
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap" id="method-selector">
+        <button class="btn btn-primary btn-sm" id="btn-method-form" onclick="setCreateMethod('form')"><i class="ti ti-forms"></i> Formulario</button>
+        <button class="btn btn-sm" id="btn-method-json" onclick="setCreateMethod('json')"><i class="ti ti-file-code"></i> Importar JSON</button>
       </div>
-      <div id="stages-container"></div>
-      <button class="btn btn-sm" onclick="addStageRow()" style="margin-bottom:14px"><i class="ti ti-plus"></i> Agregar etapa</button>
-    </div>
 
-    <div id="create-json-section" style="display:none">
-      <div class="tip-box">
-        <i class="ti ti-info-circle" style="flex-shrink:0;margin-top:1px"></i>
-        <div>Sube un archivo <b>.json</b> o pega el JSON directamente. <a href="#" onclick="downloadJsonTemplate();return false" style="color:var(--blue)">Descargar plantilla PAE</a></div>
+      <div id="create-form-section">
+        <div class="tip-box" style="font-size:11px; color:var(--text2); background:var(--bg2); padding:10px; border-radius:var(--radius); margin-bottom:14px; border:1px solid var(--border);">
+          <i class="ti ti-info-circle"></i> <b>Nota:</b> Agrega únicamente los nombres de las etapas. Las actividades y fechas específicas podrás crearlas libremente una vez que el proyecto esté generado.
+        </div>
+        <div id="stages-container"></div>
+        <button class="btn btn-sm" onclick="addStageRow()" style="margin-bottom:14px"><i class="ti ti-plus"></i> Agregar etapa</button>
       </div>
-      <div class="import-area" onclick="document.getElementById('json-file-input').click()">
-        <i class="ti ti-upload" style="font-size:28px;color:var(--text3)"></i>
-        <p style="font-size:13px;color:var(--text2);margin-top:6px">Arrastra un .json o haz clic para seleccionar</p>
-        <input id="json-file-input" type="file" accept=".json" onchange="handleJsonFile(event)"/>
-      </div>
-      <div class="form-row" style="margin-top:10px">
-        <label>O pega el JSON aquí</label>
-        <textarea id="json-paste" rows="6" placeholder='[{"id":1,"name":"Etapa 1","weeks":[1,10],"tasks":[...]}]'></textarea>
+
+      <div id="create-json-section" style="display:none">
+        <div class="tip-box" style="font-size:11px; color:var(--text2); background:var(--bg2); padding:10px; border-radius:var(--radius); margin-bottom:14px; border:1px solid var(--border);">
+          <i class="ti ti-info-circle"></i> <div>Sube un archivo <b>.json</b> o pega el JSON directamente. <a href="#" onclick="downloadJsonTemplate();return false" style="color:var(--blue)">Descargar plantilla PAE</a></div>
+        </div>
+        <div class="import-area" onclick="document.getElementById('json-file-input').click()" style="border:2px dashed var(--border); padding:20px; text-align:center; border-radius:var(--radius-lg); cursor:pointer;">
+          <i class="ti ti-upload" style="font-size:28px;color:var(--text3)"></i>
+          <p style="font-size:13px;color:var(--text2);margin-top:6px">Arrastra un .json o haz clic para seleccionar</p>
+          <input id="json-file-input" type="file" accept=".json" onchange="handleJsonFile(event)" style="display:none;"/>
+        </div>
+        <div class="form-row" style="margin-top:10px">
+          <label>O pega el JSON aquí</label>
+          <textarea id="json-paste" rows="6" placeholder='[{"id":1,"name":"Etapa 1","weeks":[1,10],"tasks":[...]}]'></textarea>
+        </div>
       </div>
     </div>
 
     <div class="modal-actions">
       <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveNewProject()"><i class="ti ti-check"></i> Crear proyecto</button>
+      <button class="btn btn-primary" onclick="saveNewProject()"><i class="ti ti-check"></i> Guardar</button>
     </div>
   `, true);
 
   addStageRow();
+}
+
+function toggleProjectType(type) {
+  if (type === 'propuesta') {
+    document.getElementById('np-etapas-section').style.display = 'none';
+    document.getElementById('propuesta-fields').style.display = 'block';
+  } else {
+    document.getElementById('np-etapas-section').style.display = 'block';
+    document.getElementById('propuesta-fields').style.display = 'none';
+  }
 }
 
 let createMethod = 'form';
@@ -645,49 +682,19 @@ function addStageRow() {
   const div = document.createElement('div');
   div.className = 'stage-builder';
   div.id = 'stage-' + stageCount;
+  div.style.marginBottom = '10px';
   div.innerHTML = `
-    <div class="stage-builder-head" style="border-left:4px solid ${pal.color}">
+    <div class="stage-builder-head" style="border-left:4px solid ${pal.color}; padding-left:10px; display:flex; align-items:center; gap:8px;">
       <span style="width:10px;height:10px;border-radius:50%;background:${pal.color};display:inline-block;flex-shrink:0"></span>
-      <input type="text" placeholder="Nombre de la etapa" style="flex:1;background:transparent;border:none;font-size:13px;font-weight:500;color:var(--text);outline:none" id="stage-name-${stageCount}"/>
-      <button class="btn btn-sm btn-danger" onclick="removeStage(${stageCount})" style="padding:2px 8px"><i class="ti ti-trash"></i></button>
-    </div>
-    <div class="stage-builder-body">
-      <div id="tasks-of-${stageCount}"></div>
-      <button class="btn btn-sm" onclick="addTaskRow(${stageCount})"><i class="ti ti-plus"></i> Agregar actividad</button>
+      <input type="text" placeholder="Nombre de la etapa" style="flex:1;background:transparent;border:1px solid var(--border2);border-radius:4px;padding:6px 10px;font-size:13px;font-weight:500;color:var(--text);outline:none" id="stage-name-${stageCount}"/>
+      <button class="btn btn-sm btn-danger" onclick="removeStage(${stageCount})" style="padding:6px 10px"><i class="ti ti-trash"></i></button>
     </div>`;
   c.appendChild(div);
-  addTaskRow(stageCount);
 }
 
 function removeStage(n) {
   const el = document.getElementById('stage-' + n);
   if (el) el.remove();
-}
-
-let taskCounters = {};
-function addTaskRow(stageN) {
-  if (!taskCounters[stageN]) taskCounters[stageN] = 0;
-  taskCounters[stageN]++;
-  const tid = `t-${stageN}-${taskCounters[stageN]}`;
-  const c = document.getElementById('tasks-of-' + stageN);
-  const div = document.createElement('div');
-  div.className = 'task-builder-row';
-  div.id = tid;
-  div.innerHTML = `
-    <input type="text" placeholder="Nombre de la actividad" id="${tid}-name"/>
-    <select id="${tid}-type">
-      <option value="tarea">Tarea</option>
-      <option value="hito">Hito</option>
-      <option value="producto">Producto</option>
-      <option value="revision">Revisión contraparte</option>
-    </select>
-    <div class="week-pair">
-      S<input type="number" id="${tid}-ws" min="1" placeholder="ini" value="1"/>
-      –
-      S<input type="number" id="${tid}-we" min="1" placeholder="fin" value="2"/>
-    </div>
-    <button class="btn btn-sm btn-danger" onclick="document.getElementById('${tid}').remove()" style="padding:3px 8px"><i class="ti ti-trash"></i></button>`;
-  c.appendChild(div);
 }
 
 function collectStagesFromForm() {
@@ -696,25 +703,7 @@ function collectStagesFromForm() {
   stageEls.forEach((el, si) => {
     const sn = el.id.replace('stage-','');
     const name = document.getElementById('stage-name-'+sn).value.trim() || `Etapa ${si+1}`;
-    const taskEls = document.querySelectorAll(`#tasks-of-${sn} .task-builder-row`);
-    const tasks = [];
-    taskEls.forEach((tel, ti) => {
-      const tid = tel.id;
-      const tname = document.getElementById(tid+'-name').value.trim();
-      if (!tname) return;
-      const type = document.getElementById(tid+'-type').value;
-      const ws   = parseInt(document.getElementById(tid+'-ws').value)||1;
-      const we   = parseInt(document.getElementById(tid+'-we').value)||ws;
-      const id   = `${si+1}-${ti+1}`;
-      const task = { id, name: tname, type };
-      if (type === 'hito') { task.week = ws; }
-      else { task.weeks = [ws, we]; }
-      tasks.push(task);
-    });
-    const allWeeks = tasks.flatMap(t => t.weeks||[t.week]);
-    const minW = allWeeks.length ? Math.min(...allWeeks) : 1;
-    const maxW = allWeeks.length ? Math.max(...allWeeks) : 1;
-    stages.push({ id: si+1, name, weeks: [minW, maxW], tasks });
+    stages.push({ id: si+1, name, weeks: [1, 2], tasks: [] });
   });
   return stages;
 }
@@ -742,12 +731,21 @@ async function saveNewProject() {
   if (!name) { alert('El nombre del proyecto es obligatorio.'); return; }
 
   let stages = [];
-  if (createMethod === 'form') {
-    stages = collectStagesFromForm();
+  let licitationId = '', closingDate = '', awardDate = '';
+
+  if (type === 'propuesta') {
+      stages = [{ id: 1, name: 'Armado de la propuesta', weeks: [1, weeks], tasks: [] }];
+      licitationId = document.getElementById('np-licitation').value.trim();
+      closingDate = document.getElementById('np-closing').value;
+      awardDate = document.getElementById('np-award').value;
   } else {
-    const raw = document.getElementById('json-paste').value.trim();
-    try { stages = JSON.parse(raw); }
-    catch(e) { alert('El JSON no es válido. Revisa el formato.'); return; }
+      if (createMethod === 'form') {
+        stages = collectStagesFromForm();
+      } else {
+        const raw = document.getElementById('json-paste').value.trim();
+        try { stages = JSON.parse(raw); }
+        catch(e) { alert('El JSON no es válido. Revisa el formato.'); return; }
+      }
   }
 
   const pal = STAGE_PALETTE[0];
@@ -757,13 +755,19 @@ async function saveNewProject() {
     createdAt: Date.now(), lastPct: 0
   };
 
+  if(type === 'propuesta') {
+      meta.licitationId = licitationId;
+      meta.closingDate = closingDate;
+      meta.awardDate = awardDate;
+  }
+
   try {
     const ref = await db.collection('projects').add(meta);
     allProjects[ref.id] = { meta };
-    stageCount = 0; taskCounters = {};
+    stageCount = 0;
     closeModal();
     openProject(ref.id);
-  } catch(e) { console.error(e); alert('Error al guardar el proyecto en Firebase.'); }
+  } catch(e) { console.error(e); alert('Error al guardar en Firebase.'); }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1375,12 +1379,36 @@ function renderConfig() {
   const el = document.getElementById('tab-config');
   if (!el) return;
   const meta = currentProjId ? allProjects[currentProjId].meta : {};
+  
+  let extraFields = '';
+  if (meta.type === 'propuesta') {
+      extraFields = `
+        <div style="margin-top:16px; border-top:1px solid var(--border); padding-top:16px;">
+            <p style="font-size:13px;font-weight:600;margin-bottom:10px">Datos de la Propuesta / Licitación</p>
+            <div class="form-row">
+              <label>ID de licitación</label>
+              <input type="text" id="cfg-licitation" value="${meta.licitationId||''}"/>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div class="form-row">
+                <label>Fecha de cierre</label>
+                <input type="date" id="cfg-closing" value="${meta.closingDate||''}"/>
+              </div>
+              <div class="form-row">
+                <label>Fecha de adjudicación</label>
+                <input type="date" id="cfg-award" value="${meta.awardDate||''}"/>
+              </div>
+            </div>
+        </div>
+      `;
+  }
+
   el.innerHTML = `
     <div class="section"><div style="padding:16px">
-      <p style="font-size:14px;font-weight:600;margin-bottom:12px"><i class="ti ti-edit"></i> Editar información del proyecto</p>
+      <p style="font-size:14px;font-weight:600;margin-bottom:12px"><i class="ti ti-edit"></i> Editar información general</p>
       
       <div class="form-row">
-        <label>Nombre del proyecto</label>
+        <label>Nombre del proyecto / propuesta</label>
         <input type="text" id="cfg-name" value="${meta.name||''}"/>
       </div>
       <div class="form-row">
@@ -1395,7 +1423,7 @@ function renderConfig() {
         </div>
         <div class="form-row">
           <label>Tipo</label>
-          <select id="cfg-type">
+          <select id="cfg-type" disabled>
             <option value="proyecto" ${meta.type==='proyecto'?'selected':''}>Proyecto</option>
             <option value="propuesta" ${meta.type==='propuesta'?'selected':''}>Propuesta técnica</option>
           </select>
@@ -1407,8 +1435,10 @@ function renderConfig() {
         <input type="date" value="${state.startDate||''}" onchange="state.startDate=this.value;saveState();"/>
         <p style="font-size:11px;color:var(--text3);margin-top:4px">Al guardar abajo, el Gantt se ajustará a la nueva fecha y semanas.</p>
       </div>
+
+      ${extraFields}
       
-      <button class="btn btn-primary" style="margin-top:8px" onclick="updateProjectMeta()"><i class="ti ti-check"></i> Guardar configuración</button>
+      <button class="btn btn-primary" style="margin-top:12px" onclick="updateProjectMeta()"><i class="ti ti-check"></i> Guardar configuración</button>
     </div></div>`;
 }
 
@@ -1417,11 +1447,22 @@ function updateProjectMeta() {
   meta.name = document.getElementById('cfg-name').value.trim() || 'Proyecto sin nombre';
   meta.client = document.getElementById('cfg-client').value.trim();
   meta.totalWeeks = parseInt(document.getElementById('cfg-weeks').value) || 35;
-  meta.type = document.getElementById('cfg-type').value;
+  
+  if (meta.type === 'propuesta') {
+      meta.licitationId = document.getElementById('cfg-licitation').value.trim();
+      meta.closingDate = document.getElementById('cfg-closing').value;
+      meta.awardDate = document.getElementById('cfg-award').value;
+  }
   
   db.collection('projects').doc(currentProjId).update(meta).then(() => {
      document.getElementById('proj-title').textContent = meta.name;
-     document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'} · Inicio: ${fmtDateStr(state.startDate)} · ${meta.totalWeeks} semanas`;
+     if (meta.type === 'propuesta') {
+         const lici = meta.licitationId ? ` · ID: ${meta.licitationId}` : '';
+         const cierre = meta.closingDate ? ` · Cierre: ${fmtDateStr(meta.closingDate)}` : '';
+         document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'}${lici}${cierre} · ${meta.totalWeeks} semanas`;
+     } else {
+         document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'} · Inicio: ${fmtDateStr(state.startDate)} · ${meta.totalWeeks} semanas · ${STAGES.length} etapas`;
+     }
      renderAllViews();
      alert('Configuración actualizada ✓');
   }).catch(e => { console.error(e); alert('Error al actualizar.'); });
