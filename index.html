@@ -69,25 +69,37 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 /* ── PROJECT CARDS (home) ── */
 .section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:10px}
 .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:24px}
-.project-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:box-shadow .15s,border-color .15s;position:relative;overflow:hidden}
+.project-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:box-shadow .15s,border-color .15s;position:relative;overflow:visible}
 .project-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08);border-color:var(--border2)}
+.project-card.archived{opacity:0.65; filter: grayscale(40%);}
+.project-card.archived:hover{opacity:1; filter: grayscale(0%);}
+
 .pc-accent{position:absolute;top:0;left:0;right:0;height:3px}
-/* Ajuste de título para que no choque con la etiqueta (Req 8) */
-.pc-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;margin-top:10px;line-height:1.3;padding-right:110px;}
+.pc-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;margin-top:6px;line-height:1.3;padding-right:24px;}
 .pc-client{font-size:12px;color:var(--text2);margin-bottom:12px}
 .pc-meta{display:flex;gap:12px;font-size:11px;color:var(--text3)}
 .pc-meta span{display:flex;align-items:center;gap:4px}
 .pc-pbar{height:4px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden}
 .pc-pbar-inner{height:100%;border-radius:2px}
-.pc-type-badge{position:absolute;top:14px;right:14px;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500}
+.pc-type-badge{position:absolute;top:14px;right:34px;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500}
 .badge-propuesta{background:var(--amber-light);color:#8a5c00}
 .badge-proyecto{background:var(--green-light);color:var(--green)}
+.badge-finalizado{background:var(--bg3);color:var(--text2)}
+.badge-perdida{background:var(--red-light);color:var(--red)}
+
 .new-card{border:2px dashed var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:border-color .15s,background .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:130px;color:var(--text3)}
 .new-card:hover{border-color:var(--green);background:var(--green-light);color:var(--green)}
 .new-card i{font-size:24px}
 .new-card span{font-size:13px;font-weight:500}
-.delete-proj-btn{position:absolute;bottom:12px;right:12px;padding:5px;font-size:14px;border:none;background:transparent;color:var(--text3);cursor:pointer;transition:color .15s}
-.delete-proj-btn:hover{color:var(--red)}
+
+/* Menu Kebab */
+.pc-menu-btn{position:absolute;top:10px;right:6px;width:24px;height:24px;border:none;background:transparent;color:var(--text3);cursor:pointer;border-radius:4px;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background 0.1s}
+.pc-menu-btn:hover{background:var(--bg2);color:var(--text)}
+.pc-dropdown{display:none;position:absolute;top:38px;right:6px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 6px 16px rgba(0,0,0,.15);z-index:20;min-width:180px;overflow:hidden}
+.pc-dropdown.show{display:block}
+.pc-dd-item{padding:10px 14px;font-size:13px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:8px;}
+.pc-dd-item:hover{background:var(--bg2)}
+.pc-dd-danger{color:var(--red); border-top:1px solid var(--border);}
 
 /* ── BACK BUTTON / PROJECT TOPBAR ── */
 .proj-topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:16px;flex-wrap:wrap}
@@ -100,22 +112,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tab{padding:8px 16px;border-radius:var(--radius) var(--radius) 0 0;font-size:13px;cursor:pointer;border:1px solid transparent;background:transparent;color:var(--text2);margin-bottom:-1px;display:flex;align-items:center;gap:5px;white-space:nowrap}
 .tab.active{background:var(--bg);border-color:var(--border);border-bottom-color:var(--bg);color:var(--text);font-weight:500}
 
-/* ── STATS ── */
+/* ── STATS & PROGRESS ── */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:16px}
-.stat-card{background:var(--bg2);border-radius:var(--radius);padding:12px 14px;border:1px solid var(--border)}
+.stat-card{background:var(--bg2);border-radius:var(--radius);padding:12px 14px;border:1px solid var(--border); display:flex; flex-direction:column; justify-content:space-between;}
 .stat-label{font-size:11px;color:var(--text2);margin-bottom:4px}
-.stat-val{font-size:22px;font-weight:600;color:var(--text)}
+.stat-val{font-size:22px;font-weight:600;color:var(--text); line-height:1.2;}
 .stat-sub{font-size:11px;color:var(--text3);margin-top:2px}
 .week-progress{background:var(--bg2);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;border:1px solid var(--border)}
-.week-progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:6px}
 .pbar-outer{height:8px;background:var(--border);border-radius:4px;overflow:hidden}
 .pbar-inner{height:100%;background:var(--green);border-radius:4px;transition:width .4s}
 
 /* ── TASK LIST ── */
 .section{margin-bottom:10px;border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
-.section-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg2);cursor:pointer;user-select:none;gap:10px}
-.section-title{font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;flex:1;color:var(--text)}
-.section-meta{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text2);flex-shrink:0}
+.section-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg2);cursor:pointer;gap:10px}
+.section-title{font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;flex:1}
 .pbar-sm{width:70px;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
 .pbar-sm-inner{height:100%;border-radius:3px}
 .task-row{display:flex;align-items:flex-start;gap:10px;padding:8px 14px;border-top:1px solid var(--border);cursor:pointer;transition:background .12s}
@@ -140,6 +150,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .subtask-indented:hover{background:var(--bg2)}
 .subtask-indented .st-name{flex:1;color:var(--text2)}
 .subtask-indented.done .st-name{text-decoration:line-through;color:var(--text3)}
+.modal-subtasks{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:12px}
+.sub-row{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--border)}
+.sub-row:last-child{border-bottom:none}
+
+/* Fix 2: Alineación visual de los inputs de las subtareas */
+.sub-row input[type="text"],
+.sub-row input[type="date"],
+.sub-row select {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    color: var(--text);
+    outline: none;
+    height: 29px; /* Asegura que texto, fecha y selector midan exactamente igual */
+}
+.sub-row input[type="text"] { flex: 1; }
+.sub-row input[type="date"] { width: 110px; }
+.sub-row select { width: 130px; cursor: pointer; }
+.sub-row input:focus, .sub-row select:focus { border-color: var(--green); }
+
+.sub-prog-bar{height:4px;background:var(--border);border-radius:2px;width:60px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:6px}
+.sub-prog-inner{height:100%;background:var(--blue);transition:width .3s}
 
 /* ── KANBAN ── */
 .board-container{display:flex;gap:14px;overflow-x:auto;padding-bottom:10px;align-items:flex-start}
@@ -154,18 +188,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .gantt-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-lg)}
 .gantt-inner{min-width:820px}
 .gantt-head-row{display:grid;grid-template-columns:300px 1fr;font-size:11px;color:var(--text2);padding:8px 14px;background:var(--bg2);border-bottom:1px solid var(--border);font-weight:500;align-items:center;}
-/* Cursores forzados a Manito / Pointer (Req 1) */
+/* Fix 1: Cursor Manito + No I-Beam (Incluso en los textos internos) */
 .gantt-row{display:grid;grid-template-columns:300px 1fr;align-items:center;padding:5px 14px;border-top:1px solid var(--border);font-size:12px;position:relative;cursor:pointer !important;user-select:none !important;}
 .gantt-row * {cursor:pointer !important;user-select:none !important;}
 .gantt-row:hover{background:var(--bg2)!important}
-.gantt-bar-cell{position:relative;height:14px;width:100%;cursor:default !important;} /* Excepción a la barra de fondo */
+.gantt-bar-cell{position:relative;height:14px;width:100%;cursor:default !important;} /* Solo la celda de fondo es default */
 .gantt-bar{position:absolute;height:100%;border-radius:3px;z-index:1;pointer-events:none;}
 .gantt-today-line{position:absolute;top:0;width:2px;height:100%;background:rgba(216,90,48,.8);z-index:10;pointer-events:none}
 .month-labels{display:flex;font-size:10px;color:var(--text3);height:100%;align-items:center;}
 .month-col{flex:1;text-align:center;border-left:1px solid var(--border2);height:100%;display:flex;align-items:center;justify-content:center;font-weight:600;}
 .month-col:first-child{border-left:none;}
 
-/* ── MODALS ── */
+/* ── MODALS & NOTIFICATIONS ── */
+.dropdown{position:relative;display:inline-block}
+.notif-badge{position:absolute;top:-5px;right:-5px;background:var(--red);color:white;font-size:10px;font-weight:bold;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid var(--bg);z-index:10}
+.dropdown-content{display:none;position:absolute;right:0;top:100%;margin-top:8px;width:280px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:9999;overflow:hidden}
+.dropdown-content.show{display:block}
+.notif-item{padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text);line-height:1.4;background:var(--bg);}
+.notif-time{font-size:10px;color:var(--text3);margin-top:4px}
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:99999;padding:16px}
 .modal{background:var(--bg);border-radius:var(--radius-lg);border:1px solid var(--border2);padding:20px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.15)}
 .modal h3{font-size:16px;font-weight:600;margin-bottom:14px}
@@ -175,41 +215,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .form-row textarea{resize:vertical;min-height:70px}
 .form-row input:focus,.form-row textarea:focus,.form-row select:focus{border-color:var(--green)}
 .modal-actions{display:flex;gap:8px;margin-top:16px;padding-top:12px;border-top:1px solid var(--border)}
-
-/* ── MISC ── */
-.notice{background:var(--blue-light);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;font-size:12px;color:var(--text);margin-bottom:14px;display:flex;gap:8px;align-items:flex-start}
-.filter-bar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;background:var(--bg2);padding:10px 14px;border-radius:var(--radius);border:1px solid var(--border)}
-.filter-bar select{padding:6px 10px;border:1px solid var(--border2);border-radius:var(--radius);font-size:12px;background:var(--bg);color:var(--text);outline:none;min-width:180px}
 .eval-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:12px 14px;margin-bottom:10px}
 .eval-card h4{font-size:13px;font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:8px}
-.eval-section h4{font-size:12px;color:var(--text2);margin-bottom:6px}
 .stars-input{display:flex;gap:4px}
 .star-btn{font-size:22px;cursor:pointer;color:var(--border2);transition:color .1s;background:none;border:none;padding:0;line-height:1}
 .star-btn.on{color:var(--amber)}.star-btn.on-green{color:var(--green)}
 .tag-active{background:var(--green-light);color:var(--green);font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500}
-.team-member{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--border)}
-.avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
-.sub-row{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--border)}
-.sub-row:last-child{border-bottom:none}
-.sub-row i.ti-circle, .sub-row i.ti-check {font-size:18px; cursor:pointer;}
-.sub-row input[type="text"]{flex:1;background:var(--bg);border:1px solid var(--border2);padding:6px 8px;font-size:12px;border-radius:4px;color:var(--text);outline:none}
-.sub-row input[type="date"]{width:115px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;color:var(--text);outline:none}
-.dropdown{position:relative;display:inline-block}
-.notif-badge{position:absolute;top:-5px;right:-5px;background:var(--red);color:white;font-size:10px;font-weight:bold;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid var(--bg);z-index:10}
-.dropdown-content{display:none;position:absolute;right:0;top:100%;margin-top:8px;width:280px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:9999;overflow:hidden}
-.dropdown-content.show{display:block}
-.notif-item{padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text);line-height:1.4}
-.notif-item:last-child{border-bottom:none}
-.notif-time{font-size:10px;color:var(--text3);margin-top:4px}
 
 @media(max-width:600px){
   .topbar{flex-direction:column}
   .stats{grid-template-columns:1fr 1fr}
   .task-right{flex-wrap:wrap}
   .tab{padding:6px 10px;font-size:12px}
-  .filter-bar select{flex:1;min-width:100%}
-  .gantt-row {grid-template-columns: 240px 1fr;}
-  .gantt-head-row {grid-template-columns: 240px 1fr;}
+  .gantt-row, .gantt-head-row {grid-template-columns: 240px 1fr;}
 }
 </style>
 </head>
@@ -235,6 +253,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 
   <div id="home-projects-list"></div>
+  
+  <div style="text-align:center; margin-top:30px; border-top:1px solid var(--border); padding-top:20px;">
+    <button class="btn" onclick="toggleArchivedView()"><i class="ti ti-archive"></i> <span id="btn-archived-text">Ver proyectos archivados (0)</span></button>
+  </div>
+  <div id="home-archived-list" style="display:none; margin-top:20px;"></div>
 </div>
 
 <div id="screen-project" class="screen">
@@ -244,9 +267,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <p id="proj-subtitle">—</p>
     </div>
     <div class="top-actions">
-      <button class="btn" onclick="goHome()"><i class="ti ti-arrow-left"></i> Mis proyectos</button>
+      <button class="btn" onclick="goHome()"><i class="ti ti-arrow-left"></i> Panel Principal</button>
       <div class="dropdown">
-        <button class="btn" onclick="toggleNotifs(event)"><i class="ti ti-bell"></i> Actividad</button>
+        <button class="btn" onclick="toggleNotifs(event)"><i class="ti ti-bell"></i> Historial</button>
         <span class="notif-badge" id="notif-badge" style="display:none">0</span>
         <div class="dropdown-content" id="notif-dropdown">
           <div style="padding:10px 14px;font-size:12px;font-weight:600;color:var(--text);border-bottom:1px solid var(--border);background:var(--bg2)">Últimos 5 movimientos</div>
@@ -255,11 +278,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       </div>
       <button class="btn btn-primary" onclick="openAddTask()"><i class="ti ti-plus"></i> Nueva tarea</button>
     </div>
-  </div>
-
-  <div class="notice">
-    <i class="ti ti-cloud-check" style="font-size:16px;flex-shrink:0;margin-top:1px;color:var(--blue)"></i>
-    <div><b>Sincronización en la nube activada.</b> Todos los miembros del equipo ven los cambios en tiempo real.</div>
   </div>
 
   <div id="week-progress-bar"></div>
@@ -298,154 +316,340 @@ const firebaseConfig = {
   messagingSenderId: "656956112515",
   appId:             "1:656956112515:web:bea06ac8c3df2b25a8e5b6"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 // ═══════════════════════════════════════════════════════
-//  CONSTANTES DE DISEÑO Y DATOS POR DEFECTO
+//  GLOBAL STATE
 // ═══════════════════════════════════════════════════════
 const STAGE_PALETTE = [
   {color:'#1D9E75',light:'var(--green-light)'},
   {color:'#378ADD',light:'var(--blue-light)'},
   {color:'#D85A30',light:'var(--orange-light)'},
   {color:'#7F77DD',light:'var(--purple-light)'},
-  {color:'#EF9F27',light:'var(--amber-light)'},
-  {color:'#D4537E',light:'var(--red-light)'},
+  {color:'#EF9F27',light:'var(--amber-light)'}
 ];
 
-const DEFAULT_PAE_STAGES = [
-  {id:1,name:'Etapa 1: Análisis bibliográfico',weeks:[1,13],tasks:[
-    {id:'1-1',name:'Reunión de inicio con la contraparte técnica JUNAEB',week:1,type:'hito'},
-    {id:'1-2',name:'Ajuste metodológico y elaboración de carta Gantt definitiva',weeks:[1,1],type:'tarea'},
-    {id:'1-3',name:'Revisión de información administrativa y técnica sobre el PAE',weeks:[1,4],type:'tarea'},
-    {id:'1-P1',name:'Producto N°1',week:5,type:'producto'},
-    {id:'1-R1',name:'Revisión contraparte técnica',weeks:[5,7],type:'revision'}
-  ]}
-];
-
-// ═══════════════════════════════════════════════════════
-//  ESTADO GLOBAL
-// ═══════════════════════════════════════════════════════
 let allProjects   = {};        
 let currentProjId = null;
 let projListener  = null;     
 let state         = {};       
 let STAGES        = [];       
 let currentTab    = 'tasks';
-let filterAssignee = 'all';
-let filterStatus   = 'all';
-let unseenLogs     = 0;
-let isFirstLoad    = true;
-let hideCompletedGantt = false; // VARIABLE GLOBAL PARA OCULTAR COMPLETADAS EN GANTT
+let filterAssignee= 'all';
+let filterStatus  = 'all';
+let unseenLogs    = 0;
+let isFirstLoad   = true;
+let hideCompletedGantt = false;
+let showArchived = false;
+
+window.addEventListener('click', (e) => {
+    if (!e.target.closest('.pc-menu-btn')) {
+        document.querySelectorAll('.pc-dropdown').forEach(d => d.classList.remove('show'));
+    }
+    if (!e.target.closest('.dropdown')) {
+        const nd = document.getElementById('notif-dropdown');
+        if (nd) nd.classList.remove('show');
+    }
+});
 
 // ═══════════════════════════════════════════════════════
-//  BOOTSTRAP: cargar lista de proyectos
+//  BOOTSTRAP & HOME
 // ═══════════════════════════════════════════════════════
 async function loadProjectList() {
   try {
     const snap = await db.collection('projects').get();
     allProjects = {};
-    if (snap.empty) {
-        try {
-            const oldDoc = await db.collection('gantt').doc('pae_state_v1').get();
-            if (oldDoc.exists) {
-                await migrateOldData(oldDoc.data());
-                return; 
-            }
-        } catch(e) {}
-    }
     snap.forEach(doc => { allProjects[doc.id] = { meta: doc.data() }; });
     renderHome();
-  } catch(e) {
-    console.error('Error cargando proyectos:', e);
-  } finally {
-    document.getElementById('loading-overlay').style.display = 'none';
-  }
+  } catch(e) { console.error(e); } 
+  finally { document.getElementById('loading-overlay').style.display = 'none'; }
 }
 
-async function migrateOldData(oldState) {
-    const meta = {
-        name: "Medición del desperdicio de alimentos · PAE",
-        client: "JUNAEB",
-        startDate: oldState.startDate || "2026-06-01",
-        totalWeeks: 35,
-        type: "proyecto",
-        stages: DEFAULT_PAE_STAGES, 
-        accentColor: "#1D9E75",
-        createdAt: Date.now(),
-        lastPct: 0
-    };
-    try {
-        const ref = await db.collection('projects').add(meta);
-        await db.collection('projects').doc(ref.id).collection('runtime').doc('state').set(oldState);
-        loadProjectList(); 
-    } catch(e) {}
-}
-
-// ═══════════════════════════════════════════════════════
-//  HOME SCREEN
-// ═══════════════════════════════════════════════════════
 function renderHome() {
   const ids = Object.keys(allProjects);
   const el  = document.getElementById('home-projects-list');
+  const arcEl = document.getElementById('home-archived-list');
+  const btnArc = document.getElementById('btn-archived-text');
 
   if (ids.length === 0) {
-    el.innerHTML = `
-      <p style="font-size:13px;color:var(--text2);margin-bottom:20px">Aún no tienes proyectos. Crea el primero.</p>
-      <div class="projects-grid">
-        <div class="new-card" onclick="openNewProjectModal()">
-          <i class="ti ti-plus"></i><span>Nuevo proyecto o propuesta</span>
-        </div>
-      </div>`;
+    el.innerHTML = `<p style="font-size:13px;color:var(--text2);margin-bottom:20px">Aún no tienes proyectos.</p><div class="projects-grid"><div class="new-card" onclick="openNewProjectModal()"><i class="ti ti-plus"></i><span>Nuevo proyecto o propuesta</span></div></div>`;
+    arcEl.style.display = 'none';
+    btnArc.parentElement.style.display = 'none';
     return;
   }
 
-  const proyectos  = ids.filter(id => allProjects[id].meta.type === 'proyecto');
-  const propuestas = ids.filter(id => allProjects[id].meta.type === 'propuesta');
-  let html = '';
+  const activos    = ids.filter(id => allProjects[id].meta.type === 'proyecto' && allProjects[id].meta.status !== 'archived');
+  const propuestas = ids.filter(id => allProjects[id].meta.type === 'propuesta' && allProjects[id].meta.status !== 'archived');
+  const archivados = ids.filter(id => allProjects[id].meta.status === 'archived');
 
-  if (proyectos.length > 0) {
+  let html = '';
+  if (activos.length > 0) {
     html += `<div class="section-label"><i class="ti ti-briefcase"></i> Proyectos activos</div><div class="projects-grid">`;
-    proyectos.forEach(id => { html += buildProjectCard(id); });
+    activos.forEach(id => { html += buildProjectCard(id); });
     html += `</div>`;
   }
-
   if (propuestas.length > 0) {
-    html += `<div class="section-label" style="margin-top:8px"><i class="ti ti-file-description"></i> Propuestas técnicas</div><div class="projects-grid">`;
+    html += `<div class="section-label" style="margin-top:8px"><i class="ti ti-file-description"></i> Propuestas técnicas / Pipeline</div><div class="projects-grid">`;
     propuestas.forEach(id => { html += buildProjectCard(id); });
     html += `</div>`;
   }
 
   html += `<div class="projects-grid"><div class="new-card" onclick="openNewProjectModal()"><i class="ti ti-plus"></i><span>Nuevo proyecto o propuesta</span></div></div>`;
   el.innerHTML = html;
+
+  btnArc.parentElement.style.display = 'inline-block';
+  btnArc.textContent = `Ver proyectos archivados (${archivados.length})`;
+  
+  if (showArchived && archivados.length > 0) {
+      arcEl.style.display = 'block';
+      let arcHtml = `<div class="projects-grid">`;
+      archivados.forEach(id => { arcHtml += buildProjectCard(id); });
+      arcHtml += `</div>`;
+      arcEl.innerHTML = arcHtml;
+  } else {
+      arcEl.style.display = 'none';
+  }
 }
 
+function toggleArchivedView() { showArchived = !showArchived; renderHome(); }
+
 function buildProjectCard(id) {
-  const m  = allProjects[id].meta;
-  const pal = STAGE_PALETTE[0];
+  const m = allProjects[id].meta || {};
   const pct = m.lastPct || 0;
-  const typeBadge = m.type === 'propuesta'
-    ? '<span class="pc-type-badge badge-propuesta">Propuesta</span>'
-    : '<span class="pc-type-badge badge-proyecto">Proyecto Activo</span>';
+  const isArchived = m.status === 'archived';
+  
+  let badgeHtml = '';
+  if (isArchived) {
+      if (m.archiveReason === 'perdida') badgeHtml = '<span class="pc-type-badge badge-perdida">Propuesta Perdida</span>';
+      else badgeHtml = '<span class="pc-type-badge badge-finalizado">Proyecto Finalizado</span>';
+  } else {
+      if (m.type === 'propuesta') badgeHtml = '<span class="pc-type-badge badge-propuesta">Postulada</span>';
+      else badgeHtml = '<span class="pc-type-badge badge-proyecto">Proyecto Activo</span>';
+  }
+
+  let menuHtml = '';
+  if (!isArchived) {
+      menuHtml += `<div class="pc-dd-item" onclick="openProjectConfig(event, '${id}')"><i class="ti ti-edit"></i> Editar Proyecto</div>`;
+      if (m.type === 'propuesta') {
+          menuHtml += `<div class="pc-dd-item" onclick="changeProjState(event, '${id}', 'adjudicada')"><i class="ti ti-trophy" style="color:var(--green)"></i> Marcar Adjudicada</div>
+                        <div class="pc-dd-item" onclick="changeProjState(event, '${id}', 'perdida')"><i class="ti ti-x" style="color:var(--red)"></i> Marcar Perdida</div>`;
+      } else {
+          menuHtml += `<div class="pc-dd-item" onclick="changeProjState(event, '${id}', 'finalizado')"><i class="ti ti-archive"></i> Proyecto finalizado (Archivar)</div>`;
+      }
+  } else {
+      menuHtml += `<div class="pc-dd-item" onclick="changeProjState(event, '${id}', 'restaurar')"><i class="ti ti-arrow-back-up"></i> Desarchivar</div>`;
+  }
+  menuHtml += `<div class="pc-dd-item pc-dd-danger" onclick="deleteProject(event, '${id}')"><i class="ti ti-trash"></i> Eliminar</div>`;
+
+  let propMetaHtml = '';
+  if (m.type === 'propuesta') {
+      const isToday = m.fechaAdjudicacion === toYMD(new Date());
+      const adjStyle = isToday ? 'background:var(--amber-light);color:#8a5c00;padding:2px 6px;border-radius:4px;font-weight:bold;' : 'color:var(--text2);';
+      propMetaHtml = `
+      <div style="font-size:11px; margin-bottom:12px; display:flex; flex-direction:column; gap:6px;">
+          <div style="display:flex; align-items:center; gap:6px; color:var(--text2)">
+              <span>ID Lic: <b>${m.idLicitacion || 'N/A'}</b></span>
+              <button onclick="event.stopPropagation(); navigator.clipboard.writeText('${m.idLicitacion||''}').then(()=>alert('ID copiado al portapapeles'));" style="background:none;border:none;cursor:pointer;color:var(--blue);font-size:14px;" title="Copiar ID"><i class="ti ti-copy"></i></button>
+          </div>
+          <div>Adjudicación: <span style="${adjStyle}">${m.fechaAdjudicacion ? fmtShort(parseLocal(m.fechaAdjudicacion)) : '—'}</span></div>
+      </div>`;
+  }
+
   return `
-    <div class="project-card" onclick="openProject('${id}')">
-      <div class="pc-accent" style="background:${m.accentColor||pal.color}"></div>
-      ${typeBadge}
+    <div class="project-card ${isArchived ? 'archived' : ''}" onclick="openProject('${id}')">
+      <div class="pc-accent" style="background:${m.accentColor||'var(--green)'}"></div>
+      ${badgeHtml}
+      <button class="pc-menu-btn" onclick="toggleMenu(event, 'menu-${id}')"><i class="ti ti-dots-vertical"></i></button>
+      <div id="menu-${id}" class="pc-dropdown" onclick="event.stopPropagation()">${menuHtml}</div>
       <div class="pc-title">${m.name}</div>
       <div class="pc-client">${m.client||'Sin cliente'}</div>
+      ${propMetaHtml}
       <div class="pc-meta">
         <span><i class="ti ti-calendar"></i> ${m.startDate||'—'}</span>
-        <span><i class="ti ti-clock"></i> ${m.totalWeeks||0} semanas</span>
-        <span><i class="ti ti-chart-pie"></i> ${pct}%</span>
+        <span><i class="ti ti-clock"></i> ${m.totalWeeks||0} sem</span>
+        ${m.type==='proyecto' ? `<span><i class="ti ti-chart-pie"></i> ${pct}%</span>` : ''}
       </div>
-      <div class="pc-pbar"><div class="pc-pbar-inner" style="width:${pct}%;background:${m.accentColor||pal.color}"></div></div>
-      <button class="delete-proj-btn" title="Eliminar proyecto" onclick="event.stopPropagation(); deleteProject('${id}')"><i class="ti ti-trash"></i></button>
+      ${m.type==='proyecto' && !isArchived ? `<div class="pc-pbar"><div class="pc-pbar-inner" style="width:${pct}%;background:${m.accentColor||'var(--green)'}"></div></div>` : ''}
     </div>`;
 }
 
+function toggleMenu(event, menuId) {
+    event.stopPropagation();
+    document.querySelectorAll('.pc-dropdown').forEach(d => { if(d.id !== menuId) d.classList.remove('show'); });
+    const menu = document.getElementById(menuId);
+    if(menu) menu.classList.toggle('show');
+}
+
+function openProjectConfig(event, id) {
+    event.stopPropagation();
+    openProject(id);
+    setTimeout(() => { setTab('config', document.querySelectorAll('.tab')[6]); }, 100);
+}
+
+async function changeProjState(event, id, action) {
+    event.stopPropagation();
+    try {
+        const update = {};
+        if (action === 'adjudicada') { update.type = 'proyecto'; update.proposalStatus = 'adjudicada'; update.status = 'active'; }
+        else if (action === 'perdida') { update.status = 'archived'; update.archiveReason = 'perdida'; }
+        else if (action === 'finalizado') { update.status = 'archived'; update.archiveReason = 'finalizado'; }
+        else if (action === 'restaurar') { update.status = 'active'; update.archiveReason = null; update.proposalStatus = 'postulada'; } 
+        await db.collection('projects').doc(id).update(update);
+        allProjects[id].meta = { ...allProjects[id].meta, ...update };
+        renderHome();
+    } catch(e) { alert("Error actualizando estado."); }
+}
+
+async function deleteProject(event, id) {
+  event.stopPropagation();
+  if (!confirm(`¿Eliminar permanentemente el proyecto? Esta acción es irreversible.`)) return;
+  try {
+    await db.collection('projects').doc(id).collection('runtime').doc('state').delete();
+    await db.collection('projects').doc(id).delete();
+    delete allProjects[id]; renderHome();
+  } catch(e) { alert('Error al eliminar.'); }
+}
+
 // ═══════════════════════════════════════════════════════
-//  NAVEGACIÓN
+//  CREAR NUEVO PROYECTO
+// ═══════════════════════════════════════════════════════
+function openNewProjectModal() {
+  modal(`
+    <h3><i class="ti ti-plus" style="color:var(--green)"></i> Nuevo proyecto o propuesta</h3>
+    <div class="form-row">
+      <label>Tipo</label>
+      <select id="np-type" onchange="togglePropFields(this.value)">
+        <option value="proyecto">Proyecto Activo</option>
+        <option value="propuesta">Propuesta Técnica (Pipeline)</option>
+      </select>
+    </div>
+    <div class="form-row"><label>Nombre</label><input id="np-name" type="text" placeholder="Ej: Evaluación de Programas Sociales"/></div>
+    <div class="form-row"><label>Cliente / Mandante</label><input id="np-client" type="text" placeholder="Ej: MINSAL"/></div>
+
+    <div id="prop-fields" style="display:none; background:var(--bg2); padding:10px; border-radius:var(--radius); margin-bottom:12px; border:1px solid var(--border)">
+        <div class="form-row"><label>ID Licitación *</label><input id="np-licitacion" type="text" placeholder="Ej: 1234-56-LQ24"/></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="form-row"><label>Fecha Cierre *</label><input id="np-cierre" type="date"/></div>
+            <div class="form-row"><label>Fecha Adjudicación *</label><input id="np-adjudica" type="date"/></div>
+        </div>
+    </div>
+
+    <div id="proj-fields">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="form-row"><label>Fecha inicio (Semana 1)</label><input id="np-start" type="date" value="${toYMD(new Date())}"/></div>
+          <div class="form-row"><label>Semanas estimadas</label><input id="np-weeks" type="number" min="1" value="20"/></div>
+        </div>
+        <hr style="border:none;border-top:1px solid var(--border);margin:14px 0"/>
+        <p style="font-size:13px;font-weight:500;margin-bottom:8px">Carga Inicial de Actividades mediante Excel</p>
+        <div class="import-area" onclick="document.getElementById('excel-file-input').click()">
+          <i class="ti ti-file-spreadsheet" style="font-size:28px;color:var(--green)"></i>
+          <p style="font-size:13px;color:var(--text2);margin-top:6px">Haz clic para subir archivo Excel (.xlsx)</p>
+          <input id="excel-file-input" type="file" accept=".xlsx, .xls" onchange="handleExcelFile(event)" style="display:none"/>
+        </div>
+        <p id="excel-status" style="font-size:11px;color:var(--blue);margin-top:6px;text-align:center"></p>
+        <div style="text-align:center; margin-top:8px">
+            <a href="#" onclick="downloadExcelTemplate();return false" style="font-size:11px; color:var(--text3); text-decoration:underline;">Descargar plantilla Excel</a>
+        </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveNewProject()"><i class="ti ti-check"></i> Crear en sistema</button>
+    </div>
+  `);
+}
+
+function togglePropFields(val) {
+    const isProp = val === 'propuesta';
+    document.getElementById('prop-fields').style.display = isProp ? 'block' : 'none';
+    document.getElementById('proj-fields').style.display = isProp ? 'none' : 'block';
+}
+
+function downloadExcelTemplate() {
+    if (typeof XLSX === 'undefined') { alert("La librería de Excel no ha cargado. Revisa tu conexión a internet."); return; }
+    const ws_data = [
+        ["Etapa", "Actividad", "Tipo (tarea/hito/producto/revision)", "Responsable", "Semana Inicio", "Semana Fin"],
+        ["Fase 1: Preparación", "Reunión Kickoff", "hito", "Ana García", 1, 1],
+        ["Fase 1: Preparación", "Elaborar Plan", "tarea", "Luis Pérez", 1, 2],
+        ["Fase 2: Ejecución", "Trabajo de campo", "tarea", "María Soto", 3, 5],
+        ["Fase 2: Ejecución", "Informe Final", "producto", "Ana García", 6, 6]
+    ];
+    const ws = XLSX.utils.aoa_to_sheet(ws_data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Actividades"); XLSX.writeFile(wb, "Plantilla_Proyectos.xlsx");
+}
+
+function handleExcelFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    document.getElementById('excel-status').innerText = "Procesando archivo...";
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        try {
+            const data = new Uint8Array(evt.target.result);
+            const workbook = XLSX.read(data, {type: 'array'});
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const json = XLSX.utils.sheet_to_json(sheet);
+            const stageMap = {};
+            json.forEach((row, i) => {
+                const etapa = row['Etapa'] || 'Etapa 1';
+                if(!stageMap[etapa]) stageMap[etapa] = [];
+                stageMap[etapa].push({
+                    id: `e${Date.now()}-${i}`, name: row['Actividad'] || 'Tarea sin nombre', type: (row['Tipo (tarea/hito/producto/revision)'] || 'tarea').toLowerCase(),
+                    assignee: row['Responsable'] || '', week: parseInt(row['Semana Inicio']) || 1, weeks: [parseInt(row['Semana Inicio']) || 1, parseInt(row['Semana Fin']) || parseInt(row['Semana Inicio']) || 1]
+                });
+            });
+            tempExcelStages = Object.keys(stageMap).map((k, i) => {
+                const tasks = stageMap[k]; const allW = tasks.flatMap(t=>t.weeks||[t.week]);
+                return { id: i+1, name: k, weeks: [Math.min(...allW), Math.max(...allW)], tasks };
+            });
+            document.getElementById('excel-status').innerHTML = `<b>¡Éxito!</b> ${tempExcelStages.length} etapas preparadas para importar.`;
+            document.getElementById('excel-status').style.color = "var(--green)";
+        } catch(err) {
+            document.getElementById('excel-status').innerText = "Error leyendo Excel. Revisa el formato.";
+            document.getElementById('excel-status').style.color = "var(--red)";
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+async function saveNewProject() {
+  const name   = document.getElementById('np-name').value.trim();
+  const client = document.getElementById('np-client').value.trim();
+  const type   = document.getElementById('np-type').value;
+  if (!name) { alert('El nombre es obligatorio.'); return; }
+
+  let meta = {
+    name, client, type, 
+    accentColor: STAGE_PALETTE[Object.keys(allProjects).length % STAGE_PALETTE.length].color,
+    status: 'active', createdAt: Date.now(), lastPct: 0
+  };
+
+  if(type === 'propuesta') {
+      const lici = document.getElementById('np-licitacion').value.trim();
+      const cie = document.getElementById('np-cierre').value;
+      const adj = document.getElementById('np-adjudica').value;
+      if(!lici || !cie || !adj) { alert('Licitación y Fechas son obligatorias para propuestas.'); return; }
+      
+      meta.idLicitacion = lici; meta.fechaCierre = cie; meta.fechaAdjudicacion = adj; meta.proposalStatus = 'postulada';
+      meta.startDate = toYMD(new Date()); meta.totalWeeks = 4;
+      meta.stages = [{ id: 1, name: 'Fase de Postulación', weeks: [1,4], tasks: [{ id: 't1', name: 'Armado de propuesta', type: 'tarea', week: 1, weeks: [1,4], assignee: '' }] }];
+  } else {
+      meta.startDate = document.getElementById('np-start').value;
+      meta.totalWeeks = parseInt(document.getElementById('np-weeks').value)||20;
+      meta.stages = tempExcelStages.length > 0 ? tempExcelStages : [];
+  }
+
+  try {
+    const ref = await db.collection('projects').add(meta);
+    allProjects[ref.id] = { meta };
+    tempExcelStages = [];
+    closeModal();
+    openProject(ref.id);
+  } catch(e) { alert('Error al guardar.'); }
+}
+
+// ═══════════════════════════════════════════════════════
+//  DENTRO DE PROYECTO: LÓGICA CORE
 // ═══════════════════════════════════════════════════════
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -454,30 +658,21 @@ function showScreen(name) {
 
 function goHome() {
   if (projListener) { projListener(); projListener = null; }
-  currentProjId = null; state = {}; STAGES = [];
+  currentProjId = null; state = {}; STAGES = []; tempExcelStages = [];
   filterAssignee = 'all'; filterStatus = 'all';
   currentTab = 'tasks'; unseenLogs = 0; isFirstLoad = true; hideCompletedGantt = false;
-  showScreen('home');
-  loadProjectList();
+  showScreen('home'); loadProjectList();
 }
 
-// ═══════════════════════════════════════════════════════
-//  ABRIR PROYECTO
-// ═══════════════════════════════════════════════════════
 function openProject(id) {
   currentProjId = id;
-  const meta = allProjects[id].meta;
-  isFirstLoad  = true;
-  unseenLogs   = 0;
+  const meta = allProjects[id].meta || {};
+  isFirstLoad = true; unseenLogs = 0;
 
-  STAGES = (meta.stages || []).map((s, i) => ({
-    ...s,
-    color: STAGE_PALETTE[i % STAGE_PALETTE.length].color,
-    light: STAGE_PALETTE[i % STAGE_PALETTE.length].light,
-  }));
+  STAGES = (meta.stages || []).map((s, i) => ({ ...s, color: STAGE_PALETTE[i % STAGE_PALETTE.length].color, light: STAGE_PALETTE[i % STAGE_PALETTE.length].light }));
 
-  document.getElementById('proj-title').textContent    = meta.name;
-  document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'} · Inicio: ${fmtDateStr(meta.startDate)} · ${meta.totalWeeks} semanas · ${STAGES.length} etapas`;
+  document.getElementById('proj-title').textContent = meta.name;
+  document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'} · Inicio: ${fmtDateStr(meta.startDate)} · ${meta.totalWeeks||35} semanas`;
   setTab('tasks', document.querySelector('.tab'));
   showScreen('project');
 
@@ -493,297 +688,27 @@ function openProject(id) {
         updateNotifBadge();
       }
     } else {
-      state = buildDefaultState(meta.startDate);
-      saveState();
+      state = buildDefaultState(meta.startDate); saveState();
     }
     isFirstLoad = false;
-    autoUpdateDelays();
-    renderAllViews();
-    renderNotifs();
-    
+    autoUpdateDelays(); renderAllViews(); renderNotifs();
     const s = calcStats();
-    if ((meta.lastPct||0) !== s.pct) {
-      db.collection('projects').doc(id).update({ lastPct: s.pct });
-      allProjects[id].meta.lastPct = s.pct;
-    }
+    if ((meta.lastPct||0) !== s.pct) { db.collection('projects').doc(id).update({ lastPct: s.pct }); allProjects[id].meta.lastPct = s.pct; }
   });
 }
 
-function buildDefaultState(startDate) {
-  return {
-    startDate: startDate || '',
-    statuses: {}, evaluations: {}, evaluationsClient: {},
-    notes: {}, collapsed: {}, ganttCollapsed: {},
-    taskOverrides: {}, customTasks: [], deletedIds: [],
-    subtasks: {}, logs: [], team: []
-  };
-}
-
+function buildDefaultState(startDate) { return { startDate: startDate || '', statuses: {}, evaluations: {}, evaluationsClient: {}, notes: {}, collapsed: {}, ganttCollapsed: {}, taskOverrides: {}, customTasks: [], deletedIds: [], subtasks: {}, logs: [], team: [] }; }
 function ensureStateFallbacks(startDate) {
-  if (!state.statuses)         state.statuses = {};
-  if (!state.evaluations)      state.evaluations = {};
-  if (!state.evaluationsClient)state.evaluationsClient = {};
-  if (!state.notes)            state.notes = {};
-  if (!state.collapsed)        state.collapsed = {};
-  if (!state.ganttCollapsed)   state.ganttCollapsed = {};
-  if (!state.taskOverrides)    state.taskOverrides = {};
-  if (!state.customTasks)      state.customTasks = [];
-  if (!state.deletedIds)       state.deletedIds = [];
-  if (!state.subtasks)         state.subtasks = {};
-  if (!state.logs)             state.logs = [];
-  if (!state.team)             state.team = [];
-  if (!state.startDate)        state.startDate = startDate || '';
+  ['statuses','evaluations','evaluationsClient','notes','collapsed','ganttCollapsed','taskOverrides','subtasks'].forEach(k => { if(!state[k]) state[k]={}; });
+  ['customTasks','deletedIds','logs','team'].forEach(k => { if(!state[k]) state[k]=[]; });
+  if (!state.startDate) state.startDate = startDate || '';
 }
+function saveState() { if(!currentProjId) return; db.collection('projects').doc(currentProjId).collection('runtime').doc('state').set(state).catch(e => console.error(e)); }
+function logAction(text) { if (!state.logs) state.logs = []; state.logs.unshift({ text, time: Date.now() }); if (state.logs.length > 50) state.logs = state.logs.slice(0, 50); saveState(); }
 
-function saveState() {
-  if(!currentProjId) return;
-  const stateRef = db.collection('projects').doc(currentProjId).collection('runtime').doc('state');
-  stateRef.set(state).catch(e => console.error('Error guardando:', e));
-}
-
-function logAction(text) {
-  if (!state.logs) state.logs = [];
-  state.logs.unshift({ text, time: Date.now() });
-  if (state.logs.length > 50) state.logs = state.logs.slice(0, 50);
-  saveState();
-}
-
-async function deleteProject(id) {
-  if (!confirm(`¿Eliminar el proyecto "${allProjects[id].meta.name}" permanentemente? Esta acción no se puede deshacer.`)) return;
-  try {
-    await db.collection('projects').doc(id).collection('runtime').doc('state').delete();
-    await db.collection('projects').doc(id).delete();
-    delete allProjects[id];
-    renderHome();
-  } catch(e) { alert('Error al eliminar el proyecto.'); }
-}
-
-// ═══════════════════════════════════════════════════════
-//  CREAR NUEVO PROYECTO (modal)
-// ═══════════════════════════════════════════════════════
-function openNewProjectModal() {
-  modal(`
-    <h3><i class="ti ti-plus" style="color:var(--green)"></i> Nuevo proyecto o propuesta</h3>
-    <div class="form-row">
-      <label>Tipo</label>
-      <select id="np-type">
-        <option value="proyecto">Proyecto</option>
-        <option value="propuesta">Propuesta técnica</option>
-      </select>
-    </div>
-    <div class="form-row">
-      <label>Nombre del proyecto</label>
-      <input id="np-name" type="text" placeholder="Ej: Evaluación de Programas Sociales"/>
-    </div>
-    <div class="form-row">
-      <label>Cliente / Mandante</label>
-      <input id="np-client" type="text" placeholder="Ej: MINSAL"/>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div class="form-row">
-        <label>Fecha inicio (Semana 1)</label>
-        <input id="np-start" type="date" value="${toYMD(new Date())}"/>
-      </div>
-      <div class="form-row">
-        <label>Total de semanas</label>
-        <input id="np-weeks" type="number" min="1" max="104" value="20"/>
-      </div>
-    </div>
-    <hr style="border:none;border-top:1px solid var(--border);margin:12px 0"/>
-    <p style="font-size:13px;font-weight:500;margin-bottom:10px">¿Cómo quieres definir las etapas y tareas?</p>
-    <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
-      <button class="btn btn-primary btn-sm" id="btn-method-form" onclick="setCreateMethod('form')"><i class="ti ti-forms"></i> Formulario</button>
-      <button class="btn btn-sm" id="btn-method-json" onclick="setCreateMethod('json')"><i class="ti ti-file-code"></i> Importar JSON</button>
-    </div>
-
-    <div id="create-form-section">
-      <div class="tip-box">
-        <i class="ti ti-info-circle" style="flex-shrink:0;margin-top:1px"></i>
-        <div>Define las etapas una a una. Dentro de cada etapa agrega las actividades con su semana de inicio y fin.</div>
-      </div>
-      <div id="stages-container"></div>
-      <button class="btn btn-sm" onclick="addStageRow()" style="margin-bottom:14px"><i class="ti ti-plus"></i> Agregar etapa</button>
-    </div>
-
-    <div id="create-json-section" style="display:none">
-      <div class="tip-box">
-        <i class="ti ti-info-circle" style="flex-shrink:0;margin-top:1px"></i>
-        <div>Sube un archivo <b>.json</b> o pega el JSON directamente. <a href="#" onclick="downloadJsonTemplate();return false" style="color:var(--blue)">Descargar plantilla PAE</a></div>
-      </div>
-      <div class="import-area" onclick="document.getElementById('json-file-input').click()">
-        <i class="ti ti-upload" style="font-size:28px;color:var(--text3)"></i>
-        <p style="font-size:13px;color:var(--text2);margin-top:6px">Arrastra un .json o haz clic para seleccionar</p>
-        <input id="json-file-input" type="file" accept=".json" onchange="handleJsonFile(event)"/>
-      </div>
-      <div class="form-row" style="margin-top:10px">
-        <label>O pega el JSON aquí</label>
-        <textarea id="json-paste" rows="6" placeholder='[{"id":1,"name":"Etapa 1","weeks":[1,10],"tasks":[...]}]'></textarea>
-      </div>
-    </div>
-
-    <div class="modal-actions">
-      <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveNewProject()"><i class="ti ti-check"></i> Crear proyecto</button>
-    </div>
-  `, true);
-
-  addStageRow();
-}
-
-let createMethod = 'form';
-function setCreateMethod(m) {
-  createMethod = m;
-  document.getElementById('create-form-section').style.display = m === 'form' ? 'block' : 'none';
-  document.getElementById('create-json-section').style.display = m === 'json' ? 'block' : 'none';
-  document.getElementById('btn-method-form').className = 'btn btn-sm' + (m==='form'?' btn-primary':'');
-  document.getElementById('btn-method-json').className = 'btn btn-sm' + (m==='json'?' btn-primary':'');
-}
-
-let stageCount = 0;
-function addStageRow() {
-  stageCount++;
-  const c = document.getElementById('stages-container');
-  const pal = STAGE_PALETTE[(stageCount-1) % STAGE_PALETTE.length];
-  const div = document.createElement('div');
-  div.className = 'stage-builder';
-  div.id = 'stage-' + stageCount;
-  div.innerHTML = `
-    <div class="stage-builder-head" style="border-left:4px solid ${pal.color}">
-      <span style="width:10px;height:10px;border-radius:50%;background:${pal.color};display:inline-block;flex-shrink:0"></span>
-      <input type="text" placeholder="Nombre de la etapa" style="flex:1;background:transparent;border:none;font-size:13px;font-weight:500;color:var(--text);outline:none" id="stage-name-${stageCount}"/>
-      <button class="btn btn-sm btn-danger" onclick="removeStage(${stageCount})" style="padding:2px 8px"><i class="ti ti-trash"></i></button>
-    </div>
-    <div class="stage-builder-body">
-      <div id="tasks-of-${stageCount}"></div>
-      <button class="btn btn-sm" onclick="addTaskRow(${stageCount})"><i class="ti ti-plus"></i> Agregar actividad</button>
-    </div>`;
-  c.appendChild(div);
-  addTaskRow(stageCount);
-}
-
-function removeStage(n) {
-  const el = document.getElementById('stage-' + n);
-  if (el) el.remove();
-}
-
-let taskCounters = {};
-function addTaskRow(stageN) {
-  if (!taskCounters[stageN]) taskCounters[stageN] = 0;
-  taskCounters[stageN]++;
-  const tid = `t-${stageN}-${taskCounters[stageN]}`;
-  const c = document.getElementById('tasks-of-' + stageN);
-  const div = document.createElement('div');
-  div.className = 'task-builder-row';
-  div.id = tid;
-  div.innerHTML = `
-    <input type="text" placeholder="Nombre de la actividad" id="${tid}-name"/>
-    <select id="${tid}-type">
-      <option value="tarea">Tarea</option>
-      <option value="hito">Hito</option>
-      <option value="producto">Producto</option>
-      <option value="revision">Revisión contraparte</option>
-    </select>
-    <div class="week-pair">
-      S<input type="number" id="${tid}-ws" min="1" placeholder="ini" value="1"/>
-      –
-      S<input type="number" id="${tid}-we" min="1" placeholder="fin" value="2"/>
-    </div>
-    <button class="btn btn-sm btn-danger" onclick="document.getElementById('${tid}').remove()" style="padding:3px 8px"><i class="ti ti-trash"></i></button>`;
-  c.appendChild(div);
-}
-
-function collectStagesFromForm() {
-  const stageEls = document.querySelectorAll('#stages-container .stage-builder');
-  const stages = [];
-  stageEls.forEach((el, si) => {
-    const sn = el.id.replace('stage-','');
-    const name = document.getElementById('stage-name-'+sn).value.trim() || `Etapa ${si+1}`;
-    const taskEls = document.querySelectorAll(`#tasks-of-${sn} .task-builder-row`);
-    const tasks = [];
-    taskEls.forEach((tel, ti) => {
-      const tid = tel.id;
-      const tname = document.getElementById(tid+'-name').value.trim();
-      if (!tname) return;
-      const type = document.getElementById(tid+'-type').value;
-      const ws   = parseInt(document.getElementById(tid+'-ws').value)||1;
-      const we   = parseInt(document.getElementById(tid+'-we').value)||ws;
-      const id   = `${si+1}-${ti+1}`;
-      const task = { id, name: tname, type };
-      if (type === 'hito') { task.week = ws; }
-      else { task.weeks = [ws, we]; }
-      tasks.push(task);
-    });
-    const allWeeks = tasks.flatMap(t => t.weeks||[t.week]);
-    const minW = allWeeks.length ? Math.min(...allWeeks) : 1;
-    const maxW = allWeeks.length ? Math.max(...allWeeks) : 1;
-    stages.push({ id: si+1, name, weeks: [minW, maxW], tasks });
-  });
-  return stages;
-}
-
-function handleJsonFile(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => { document.getElementById('json-paste').value = ev.target.result; };
-  reader.readAsText(file);
-}
-
-function downloadJsonTemplate() {
-  const blob = new Blob([JSON.stringify(DEFAULT_PAE_STAGES, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-  a.download = 'plantilla_etapas.json'; a.click();
-}
-
-async function saveNewProject() {
-  const name   = document.getElementById('np-name').value.trim();
-  const client = document.getElementById('np-client').value.trim();
-  const start  = document.getElementById('np-start').value;
-  const weeks  = parseInt(document.getElementById('np-weeks').value)||10;
-  const type   = document.getElementById('np-type').value;
-  if (!name) { alert('El nombre del proyecto es obligatorio.'); return; }
-
-  let stages = [];
-  if (createMethod === 'form') {
-    stages = collectStagesFromForm();
-  } else {
-    const raw = document.getElementById('json-paste').value.trim();
-    try { stages = JSON.parse(raw); }
-    catch(e) { alert('El JSON no es válido. Revisa el formato.'); return; }
-  }
-
-  const pal = STAGE_PALETTE[0];
-  const meta = {
-    name, client, startDate: start, totalWeeks: weeks,
-    type, stages, accentColor: pal.color,
-    createdAt: Date.now(), lastPct: 0
-  };
-
-  try {
-    const ref = await db.collection('projects').add(meta);
-    allProjects[ref.id] = { meta };
-    stageCount = 0; taskCounters = {};
-    closeModal();
-    openProject(ref.id);
-  } catch(e) { console.error(e); alert('Error al guardar el proyecto en Firebase.'); }
-}
-
-// ═══════════════════════════════════════════════════════
-//  UTILS FECHAS
-// ═══════════════════════════════════════════════════════
-function parseLocal(ds) {
-  if (!ds) return new Date();
-  const parts = ds.split('T')[0].split('-');
-  if (parts.length < 3) return new Date();
-  return new Date(parts[0], parts[1]-1, parts[2]);
-}
-function toYMD(d) {
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-function fmtDateStr(s) {
-  if (!s) return '—';
-  return parseLocal(s).toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'});
-}
+function parseLocal(ds) { if (!ds) return new Date(); const p = ds.split('T')[0].split('-'); if (p.length < 3) return new Date(); return new Date(p[0], p[1]-1, p[2]); }
+function toYMD(d) { return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function fmtDateStr(s) { if (!s) return '—'; return parseLocal(s).toLocaleDateString('es-CL',{day:'2-digit',month:'short',year:'numeric'}); }
 function getStartDate() { return parseLocal(state.startDate); }
 function weekStart(w) { const d=new Date(getStartDate()); d.setDate(d.getDate()+(w-1)*7); return d; }
 function weekEnd(w)   { const d=weekStart(w); d.setDate(d.getDate()+6); return d; }
@@ -792,41 +717,23 @@ function fmtShort(d)  { return d.toLocaleDateString('es-CL',{day:'2-digit',month
 
 function getRelWeek(dateInput) {
     const d = (typeof dateInput === 'string') ? parseLocal(dateInput) : dateInput;
-    if (isNaN(d)) return '?';
     const start = getStartDate();
-    if (isNaN(start)) return '?';
-    const startNoTime = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-    const dNoTime = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-    const diff = (dNoTime - startNoTime) / (7 * 24 * 3600 * 1000);
-    return Math.max(1, Math.floor(diff) + 1);
+    if (isNaN(d) || isNaN(start)) return 1;
+    return Math.max(1, Math.floor((new Date(d.getFullYear(), d.getMonth(), d.getDate()) - new Date(start.getFullYear(), start.getMonth(), start.getDate())) / 604800000) + 1);
 }
-
 function timeAgo(ms)  {
   const mins = Math.floor((Date.now()-ms)/60000);
-  if (mins < 1) return 'Hace un momento';
-  if (mins < 60) return `Hace ${mins} min`;
-  const hrs = Math.floor(mins/60);
-  if (hrs < 24) return `Hace ${hrs} h`;
-  return `Hace ${Math.floor(hrs/24)} días`;
-}
-function weekLabel(t) {
-  if (t.weeks) return `S${t.weeks[0]}–S${t.weeks[1]} · ${fmtShort(weekStart(t.weeks[0]))} — ${fmtShort(weekEnd(t.weeks[1]))}`;
-  if (t.week)  return `S${t.week} · ${fmtShort(weekStart(t.week))} — ${fmtShort(weekEnd(t.week))}`;
-  return '';
+  if (mins < 1) return 'Hace un momento'; if (mins < 60) return `Hace ${mins} min`;
+  const hrs = Math.floor(mins/60); if (hrs < 24) return `Hace ${hrs} h`; return `Hace ${Math.floor(hrs/24)} días`;
 }
 function currentWeek() {
-  const now=new Date(); const start=getStartDate();
-  if(isNaN(start)) return 1;
-  const diff=Math.floor((now-start)/(7*24*3600*1000));
-  const meta = currentProjId ? allProjects[currentProjId].meta : null;
-  const tw   = meta ? (meta.totalWeeks||35) : 35;
-  return Math.max(1, Math.min(tw+1, diff+1));
+  const now=new Date(); const start=getStartDate(); if(isNaN(start)) return 1;
+  const meta = currentProjId ? allProjects[currentProjId].meta : null; const tw = meta ? (meta.totalWeeks||35) : 35;
+  return Math.max(1, Math.min(tw+1, Math.floor((now-start)/(7*24*3600*1000))+1));
 }
 function todayFraction() {
-  const meta = currentProjId ? allProjects[currentProjId].meta : null;
-  const tw   = meta ? (meta.totalWeeks||35) : 35;
-  const now=new Date(); const start=getStartDate();
-  if(isNaN(start)) return 0;
+  const now=new Date(); const start=getStartDate(); if(isNaN(start)) return 0;
+  const meta = currentProjId ? allProjects[currentProjId].meta : null; const tw = meta ? (meta.totalWeeks||35) : 35;
   return Math.max(0, Math.min(1, (now-start)/(tw*7*24*3600*1000)));
 }
 function getTaskDates(t) {
@@ -837,7 +744,6 @@ function getTaskDates(t) {
   } catch(e) { return { start: new Date(), end: new Date() }; }
 }
 function getTaskStatus(id) { return state.statuses[id] || 'pendiente'; }
-
 function getAllTasks() {
   const all = [];
   STAGES.forEach(s => s.tasks.forEach(t => {
@@ -854,8 +760,7 @@ function getAllTasks() {
 }
 
 function autoUpdateDelays() {
-  let changed = false;
-  const today = new Date(); today.setHours(0,0,0,0);
+  let changed = false; const today = new Date(); today.setHours(0,0,0,0);
   getAllTasks().forEach(t => {
     const st = getTaskStatus(t.id);
     if (st === 'pendiente' || st === 'curso') {
@@ -869,67 +774,36 @@ function autoUpdateDelays() {
   if (changed) saveState();
 }
 
-// ═══════════════════════════════════════════════════════
-//  STATS & NOTIFICATIONS
-// ═══════════════════════════════════════════════════════
 function calcStats() {
   const all = getAllTasks();
   const counts = { pendiente:0, curso:0, retrasado:0, completado:0 };
   all.forEach(t => counts[getTaskStatus(t.id)]++);
   const products    = all.filter(t => t.type==='producto');
   const productsDone= products.filter(t => getTaskStatus(t.id)==='completado').length;
-  return {
-    total: all.length, done: counts.completado, counts,
-    products: products.length, productsDone,
-    pct: all.length ? Math.round(counts.completado/all.length*100) : 0
-  };
+  return { total: all.length, done: counts.completado, counts, products: products.length, productsDone, pct: all.length ? Math.round(counts.completado/all.length*100) : 0 };
 }
-
 function getNextUpcoming(type) {
-   const all = getAllTasks();
-   const items = all.filter(t => t.type === type && getTaskStatus(t.id) !== 'completado');
+   const all = getAllTasks(); const items = all.filter(t => t.type === type && getTaskStatus(t.id) !== 'completado');
    const today = new Date(); today.setHours(0,0,0,0);
    let next = null; let minDiff = Infinity;
    items.forEach(h => {
-       const { start } = getTaskDates(h);
-       const startNoTime = new Date(start); startNoTime.setHours(0,0,0,0);
+       const { start } = getTaskDates(h); const startNoTime = new Date(start); startNoTime.setHours(0,0,0,0);
        const diff = Math.ceil((startNoTime - today) / (1000*3600*24));
        if (diff >= 0 && diff < minDiff) { minDiff = diff; next = h; }
    });
    return { item: next, days: minDiff };
 }
 
-function toggleNotifs(e) {
-  if (e) e.stopPropagation();
-  document.getElementById('notif-dropdown').classList.toggle('show');
-  unseenLogs = 0; updateNotifBadge();
-}
-window.onclick = function(e) {
-  if (!e.target.closest('.dropdown')) {
-    const nd = document.getElementById('notif-dropdown');
-    if (nd) nd.classList.remove('show');
-  }
-};
-function updateNotifBadge() {
-  const b = document.getElementById('notif-badge');
-  if (!b) return;
-  if (unseenLogs > 0) { b.style.display='flex'; b.innerText=unseenLogs; }
-  else { b.style.display='none'; }
-}
+function toggleNotifs(e) { if (e) e.stopPropagation(); document.getElementById('notif-dropdown').classList.toggle('show'); unseenLogs = 0; updateNotifBadge(); }
+function updateNotifBadge() { const b = document.getElementById('notif-badge'); if (!b) return; if (unseenLogs > 0) { b.style.display='flex'; b.innerText=unseenLogs; } else { b.style.display='none'; } }
 function renderNotifs() {
-  const list = document.getElementById('notif-list');
-  if (!list) return;
-  if (!state.logs || state.logs.length===0) {
-    list.innerHTML='<div style="padding:16px;color:var(--text3);font-size:12px;text-align:center">No hay actividad reciente</div>';
-    return;
-  }
-  list.innerHTML = state.logs.slice(0,5).map(l =>
-    `<div class="notif-item"><div>${l.text}</div><div class="notif-time">${timeAgo(l.time)}</div></div>`
-  ).join('');
+  const list = document.getElementById('notif-list'); if (!list) return;
+  if (!state.logs || state.logs.length===0) { list.innerHTML='<div style="padding:16px;color:var(--text3);font-size:12px;text-align:center">No hay actividad reciente</div>'; return; }
+  list.innerHTML = state.logs.slice(0,5).map(l => `<div class="notif-item"><div>${l.text}</div><div class="notif-time">${timeAgo(l.time)}</div></div>`).join('');
 }
 
 // ═══════════════════════════════════════════════════════
-//  RENDER PRINCIPAL
+//  RENDER TABS Y VISTAS
 // ═══════════════════════════════════════════════════════
 function renderAllViews() {
   try {
@@ -968,24 +842,44 @@ function getStatusIconHTML(s) {
   return `<i class="ti ti-circle"></i>`;
 }
 
-// ═══════════════════════════════════════════════════════
-//  RENDER STATS
-// ═══════════════════════════════════════════════════════
+// ── FIX 4: ALINEACIÓN DE TARJETAS STATS ──
 function renderStats() {
   const meta = currentProjId ? allProjects[currentProjId].meta : {};
   const tw   = meta.totalWeeks || 35;
   const s  = calcStats();
   const cw = currentWeek();
   const end = weekEnd(tw);
-
+  
   const np = getNextUpcoming('producto');
-  const prodText = np.item ? `<span style="font-size:14px">${np.item.name}</span><br><span style="font-size:11px;color:var(--text3);font-weight:normal;">(en ${np.days} días)</span>` : "Ninguno pendiente";
+  let prodName = "Ninguno";
+  let prodSub = "Sin productos pendientes";
+  if(np.item) {
+      prodName = np.item.name;
+      prodSub = `en ${np.days} días`;
+  }
 
   document.getElementById('stats-bar').innerHTML = `
-    <div class="stat-card"><div class="stat-label">Progreso general</div><div class="stat-val">${s.pct}%</div><div class="stat-sub">${s.done} de ${s.total} completadas</div></div>
-    <div class="stat-card"><div class="stat-label">Semana actual</div><div class="stat-val">S${cw}</div><div class="stat-sub">${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))}</div></div>
-    <div class="stat-card"><div class="stat-label">Próximo producto</div><div style="line-height:1.2;margin-top:6px;font-weight:600;color:var(--text)">${prodText}</div></div>
-    <div class="stat-card"><div class="stat-label">Fecha de término</div><div class="stat-val" style="font-size:16px">${fmtShort(end)}</div><div class="stat-sub">Fin S${tw} · ${end.getFullYear()}</div></div>`;
+    <div class="stat-card">
+      <div class="stat-label">Progreso general</div>
+      <div class="stat-val">${s.pct}%</div>
+      <div class="stat-sub">${s.done} de ${s.total} completadas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Semana actual</div>
+      <div class="stat-val">S${cw}</div>
+      <div class="stat-sub">${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Próximo producto</div>
+      <div class="stat-val" style="font-size:18px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${np.item ? np.item.name : ''}">${prodName}</div>
+      <div class="stat-sub">${prodSub}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Fecha de término</div>
+      <div class="stat-val">${fmtShort(end)}</div>
+      <div class="stat-sub">Fin S${tw} · ${end.getFullYear()}</div>
+    </div>`;
+    
   const pct = Math.round(todayFraction()*100);
   document.getElementById('week-progress-bar').innerHTML = `
     <div class="week-progress">
@@ -998,57 +892,27 @@ function renderStats() {
     </div>`;
 }
 
-// ═══════════════════════════════════════════════════════
-//  RENDER TASKS
-// ═══════════════════════════════════════════════════════
 function renderTasks() {
   const el = document.getElementById('tab-tasks');
   if (!el) return;
   try {
     const teamOpts = (state.team||[]).map(m => `<option value="${m.name}" ${filterAssignee===m.name?'selected':''}>${m.name}</option>`).join('');
-    let html = `<div class="filter-bar">
-      <select onchange="filterAssignee=this.value;renderTasks()">
-        <option value="all">Todos los responsables</option>${teamOpts}
-        <option value="unassigned" ${filterAssignee==='unassigned'?'selected':''}>Sin asignar</option>
-      </select>
-      <select onchange="filterStatus=this.value;renderTasks()">
-        <option value="all">Todos los estados</option>
-        <option value="active"    ${filterStatus==='active'?'selected':''}>Pendientes y En curso</option>
-        <option value="retrasado" ${filterStatus==='retrasado'?'selected':''}>Retrasados</option>
-        <option value="completado"${filterStatus==='completado'?'selected':''}>Completados</option>
-      </select>
-    </div>`;
+    let html = `<div class="filter-bar"><select onchange="filterAssignee=this.value;renderTasks()"><option value="all">Todos los responsables</option>${teamOpts}<option value="unassigned" ${filterAssignee==='unassigned'?'selected':''}>Sin asignar</option></select><select onchange="filterStatus=this.value;renderTasks()"><option value="all">Todos los estados</option><option value="active" ${filterStatus==='active'?'selected':''}>Pendientes y En curso</option><option value="retrasado" ${filterStatus==='retrasado'?'selected':''}>Retrasados</option><option value="completado" ${filterStatus==='completado'?'selected':''}>Completados</option></select></div>`;
 
     STAGES.forEach(stage => {
       let fTasks = getAllTasks().filter(t => t.stageId===stage.id).filter(t => {
-        let matchA = true;
-        if (filterAssignee==='unassigned') matchA = !t.assignee;
-        else if (filterAssignee!=='all')   matchA = t.assignee===filterAssignee;
+        let matchA = filterAssignee==='all' ? true : (filterAssignee==='unassigned' ? !t.assignee : t.assignee===filterAssignee);
         const st = getTaskStatus(t.id);
-        let matchS = (filterStatus==='all')||
-          (filterStatus==='active'&&(st==='pendiente'||st==='curso'))||
-          (filterStatus===st);
+        let matchS = filterStatus==='all' ? true : (filterStatus==='active' ? (st==='pendiente'||st==='curso') : filterStatus===st);
         return matchA && matchS;
       }).sort((a,b) => getTaskDates(a).start - getTaskDates(b).start);
+      
       if (fTasks.length===0) return;
-
       const done = fTasks.filter(t=>getTaskStatus(t.id)==='completado').length;
-      const pct  = fTasks.length ? Math.round(done/fTasks.length*100) : 0;
-      const col  = state.collapsed && state.collapsed[stage.id];
-      html += `<div class="section">
-        <div class="section-header" onclick="toggleSection(${stage.id})">
-          <div class="section-title">
-            <span style="width:10px;height:10px;border-radius:50%;background:${stage.color};display:inline-block;flex-shrink:0"></span>
-            ${stage.name}
-          </div>
-          <div class="section-meta">
-            <span>${done}/${fTasks.length}</span>
-            <div class="pbar-sm"><div class="pbar-sm-inner" style="width:${pct}%;background:${stage.color}"></div></div>
-            <i class="ti ti-chevron-${col?'right':'down'}" style="font-size:14px"></i>
-          </div>
-        </div>
-        ${col ? '' : renderTaskList(fTasks, stage)}
-      </div>`;
+      const pct = fTasks.length ? Math.round(done/fTasks.length*100) : 0;
+      const col = state.collapsed && state.collapsed[stage.id];
+      
+      html += `<div class="section"><div class="section-header" onclick="toggleSection(${stage.id})"><div class="section-title"><span style="width:10px;height:10px;border-radius:50%;background:${stage.color};display:inline-block"></span>${stage.name}</div><div class="section-meta"><span>${done}/${fTasks.length}</span><div class="pbar-sm"><div class="pbar-sm-inner" style="width:${pct}%;background:${stage.color}"></div></div><i class="ti ti-chevron-${col?'right':'down'}"></i></div></div>${col ? '' : renderTaskList(fTasks, stage)}</div>`;
     });
     el.innerHTML = html;
   } catch(e) { console.error(e); }
@@ -1059,10 +923,9 @@ function renderTaskList(tasks, stage) {
   tasks.forEach(t => {
     const status = getTaskStatus(t.id);
     const { start, end } = getTaskDates(t);
-    const dateLabel = `${fmtShort(start)} — ${fmtShort(end)} · S${getRelWeek(start)}-S${getRelWeek(end)}`;
-    const assigneeBadge = (t.assignee && typeof t.assignee==='string')
-      ? `<span class="badge" style="background:var(--bg3);color:var(--text2)"><i class="ti ti-user"></i> ${t.assignee}</span>` : '';
-
+    const dateLabel = `${fmtShort(start)} — ${fmtShort(end)} · S${getRelWeek(start)}`;
+    const assigneeBadge = (t.assignee && typeof t.assignee==='string') ? `<span class="badge badge-tarea"><i class="ti ti-user"></i> ${t.assignee.split(' ')[0]}</span>` : '';
+    
     const subs = state.subtasks && state.subtasks[t.id] ? state.subtasks[t.id] : [];
     let subProgHtml = '';
     if(subs.length > 0) {
@@ -1073,35 +936,26 @@ function renderTaskList(tasks, stage) {
 
     html += `<div class="task-row${status==='completado'?' done':''}" onclick="openTask('${t.id}',${stage.id})">
       <div class="status-icon si-${status}" onclick="quickToggle(event,'${t.id}')">${getStatusIconHTML(status)}</div>
-      <div class="task-info">
-        <div class="task-name">${t.name}</div>
-        <div class="task-date"><i class="ti ti-calendar-event" style="font-size:11px"></i> ${dateLabel} ${subProgHtml}</div>
-      </div>
+      <div class="task-info"><div class="task-name">${t.name}</div><div class="task-date"><i class="ti ti-calendar-event"></i> ${dateLabel} ${subProgHtml}</div></div>
       <div class="task-right">${assigneeBadge}${badge(t.type)}</div>
     </div>`;
-
+    
     subs.forEach(s => {
-      if (!s) return;
-      const sst   = s.status||'pendiente';
-      const sassg = (s.assignee&&typeof s.assignee==='string') ? ` <i class="ti ti-user"></i> ${s.assignee.split(' ')[0]}` : '';
-      const sdate = s.date ? ` · <i class="ti ti-calendar-event"></i> ${fmtShort(parseLocal(s.date))}` : '';
+      const sst = s.status||'pendiente';
+      const sassg = s.assignee ? ` <i class="ti ti-user"></i> ${s.assignee.split(' ')[0]}` : '';
       
+      // StopPropagation en el icono para que no abra el modal
       html += `<div class="subtask-indented ${sst==='completado'?'done':''}" onclick="openTask('${t.id}',${stage.id})">
-        <i class="ti ti-${sst==='completado'?'check-box':'square'}" onclick="event.stopPropagation(); toggleSubM('${t.id}', '${s.id}')" style="color:${sst==='completado'?'var(--green)':'var(--text3)'}; font-size:16px; cursor:pointer;"></i>
-        <span class="st-name">${s.name}<span style="font-size:11px;color:var(--text3)"> ${sassg}${sdate}</span></span>
+        <i class="ti ti-${sst==='completado'?'circle-check-filled':'circle'}" onclick="event.stopPropagation(); toggleSubM('${t.id}', '${s.id}')" style="color:${sst==='completado'?'var(--green)':'var(--border2)'}; font-size:16px; cursor:pointer;"></i>
+        <span class="st-name">${s.name}<span style="font-size:11px;color:var(--text3)"> ${sassg}</span></span>
       </div>`;
     });
   });
-  html += `<div class="add-task-btn" onclick="openAddTask(${stage.id})"><i class="ti ti-plus"></i> Agregar actividad</div>`;
-  html += '</div>';
+  html += `<div class="add-task-btn" onclick="openAddTask(${stage.id})"><i class="ti ti-plus"></i> Agregar actividad</div></div>`;
   return html;
 }
 
-function toggleSection(id) {
-  if (!state.collapsed) state.collapsed = {};
-  state.collapsed[id] = !state.collapsed[id];
-  saveState();
-}
+function toggleSection(id) { state.collapsed[id] = !state.collapsed[id]; saveState(); }
 function quickToggle(e, id) {
   e.stopPropagation();
   const curr  = getTaskStatus(id);
@@ -1112,56 +966,37 @@ function quickToggle(e, id) {
   saveState();
 }
 
-// ═══════════════════════════════════════════════════════
-//  RENDER KANBAN
-// ═══════════════════════════════════════════════════════
 function renderBoard() {
   const el = document.getElementById('tab-board');
   if (!el) return;
-  try {
-    const cols = { pendiente:[], curso:[], retrasado:[], completado:[] };
-    getAllTasks().forEach(t => cols[getTaskStatus(t.id)].push(t));
-    const colNames = {
-      pendiente:  ['Pendientes','var(--border2)'],
-      curso:      ['En Curso','var(--blue)'],
-      retrasado:  ['Retrasadas','var(--red)'],
-      completado: ['Completadas','var(--green)']
-    };
-    let html = '<div class="board-container">';
-    ['pendiente','curso','retrasado','completado'].forEach(k => {
-      html += `<div class="board-col">
-        <h3 style="border-color:${colNames[k][1]}">${colNames[k][0]} <span style="color:var(--text3);font-size:11px">${cols[k].length}</span></h3>
-        ${cols[k].map(t => {
-          const subs    = state.subtasks&&state.subtasks[t.id] ? state.subtasks[t.id] : [];
-          const subsDone= subs.filter(s=>s.status==='completado').length;
-
-          let subMeta = '';
-          if(subs.length>0) {
-              const pSub = Math.round((subsDone/subs.length)*100);
-              subMeta = `<div style="display:flex;align-items:center;gap:4px;margin-top:6px;"><span style="color:var(--blue);font-size:10px;"><i class="ti ti-list-check"></i> ${subsDone}/${subs.length} (${pSub}%)</span><div class="sub-prog-bar"><div class="sub-prog-inner" style="width:${pSub}%"></div></div></div>`;
-          }
-
-          const assg    = (t.assignee&&typeof t.assignee==='string') ? `<i class="ti ti-user"></i> ${t.assignee.split(' ')[0]}` : '';
-          return `<div class="board-card" style="border-left-color:${t.stageColor}" onclick="openTask('${t.id}',${t.stageId})">
-            <div class="bc-title">${t.name}</div>
-            <div class="bc-meta"><span>${badge(t.type)} ${assg}</span></div>
-            ${subMeta}
-          </div>`;
-        }).join('')}
+  const cols = { pendiente:[], curso:[], retrasado:[], completado:[] };
+  getAllTasks().forEach(t => cols[getTaskStatus(t.id)].push(t));
+  const colNames = { pendiente:['Pendientes','var(--border2)'], curso:['En Curso','var(--blue)'], retrasado:['Retrasadas','var(--red)'], completado:['Completadas','var(--green)'] };
+  
+  let html = '<div class="board-container">';
+  ['pendiente','curso','retrasado','completado'].forEach(k => {
+    html += `<div class="board-col"><h3 style="border-color:${colNames[k][1]}">${colNames[k][0]} <span style="color:var(--text3);font-size:11px">${cols[k].length}</span></h3>`;
+    cols[k].forEach(t => {
+      const subs = state.subtasks&&state.subtasks[t.id] ? state.subtasks[t.id] : [];
+      const subsDone = subs.filter(s=>s.status==='completado').length;
+      let subMeta = '';
+      if(subs.length > 0) {
+          const pSub = Math.round((subsDone/subs.length)*100);
+          subMeta = `<div style="display:flex;align-items:center;gap:4px;margin-top:6px;"><span style="color:var(--blue);font-size:10px;"><i class="ti ti-list-check"></i> ${subsDone}/${subs.length} (${pSub}%)</span><div class="sub-prog-bar"><div class="sub-prog-inner" style="width:${pSub}%"></div></div></div>`;
+      }
+      const assg = t.assignee ? `<i class="ti ti-user"></i> ${t.assignee.split(' ')[0]}` : '';
+      html += `<div class="board-card" style="border-left-color:${t.stageColor}" onclick="openTask('${t.id}',${t.stageId})">
+        <div class="bc-title">${t.name}</div>
+        <div class="bc-meta"><span>${badge(t.type)} ${assg}</span></div>
+        ${subMeta}
       </div>`;
     });
-    html += '</div>';
-    el.innerHTML = html;
-  } catch(e) { console.error(e); }
+    html += `</div>`;
+  });
+  el.innerHTML = html + '</div>';
 }
 
-// ═══════════════════════════════════════════════════════
-//  RENDER GANTT
-// ═══════════════════════════════════════════════════════
-function toggleGanttCompleted() {
-    hideCompletedGantt = !hideCompletedGantt;
-    renderGantt();
-}
+function toggleGanttCompleted() { hideCompletedGantt = !hideCompletedGantt; renderGantt(); }
 
 function renderGantt() {
   const el = document.getElementById('tab-gantt');
@@ -1173,20 +1008,14 @@ function renderGantt() {
     const projStart = getStartDate();
     const tf        = todayFraction();
     
-    let monthsHtml = '';
-    let currentM = '';
-    let wCount = 0;
-    
+    let monthsHtml = ''; let currentM = ''; let wCount = 0;
     for (let w = 1; w <= TOTAL_W; w++) {
         const date = weekStart(w);
         const mStr = date.toLocaleDateString('es-CL', { month: 'short', year: '2-digit' }).replace(' de ', ' '); 
         if (mStr !== currentM) {
             if (wCount > 0) monthsHtml += `<div class="month-col" style="flex:${wCount};">${currentM}</div>`;
-            currentM = mStr;
-            wCount = 1;
-        } else {
-            wCount++;
-        }
+            currentM = mStr; wCount = 1;
+        } else wCount++;
     }
     if (wCount > 0) monthsHtml += `<div class="month-col" style="flex:${wCount};">${currentM}</div>`;
 
@@ -1262,16 +1091,8 @@ function renderGantt() {
     el.innerHTML = html;
   } catch(e) { console.error(e); }
 }
+function toggleGanttSection(id) { state.ganttCollapsed[id] = !state.ganttCollapsed[id]; saveState(); }
 
-function toggleGanttSection(id) {
-  if (!state.ganttCollapsed) state.ganttCollapsed = {};
-  state.ganttCollapsed[id] = !state.ganttCollapsed[id];
-  saveState();
-}
-
-// ═══════════════════════════════════════════════════════
-//  RENDER EVALUACIONES
-// ═══════════════════════════════════════════════════════
 function renderEval() {
   const el = document.getElementById('tab-eval');
   if (!el) return;
@@ -1280,7 +1101,6 @@ function renderEval() {
     const evals = getAllTasks().filter(t=>t.stageId===stage.id&&(t.type==='producto'||t.type==='revision'));
     if (!evals.length) return;
     html += `<div class="section"><div class="section-header" style="cursor:default"><div class="section-title"><span style="width:10px;height:10px;border-radius:50%;background:${stage.color};display:inline-block"></span>${stage.name}</div></div><div style="padding:10px 14px 0">`;
-    
     evals.forEach(t => {
       const isProd = t.type==='producto';
       const ev     = isProd ? (state.evaluations&&state.evaluations[t.id]||0) : (state.evaluationsClient&&state.evaluationsClient[t.id]||0);
@@ -1307,9 +1127,6 @@ function renderEval() {
   el.innerHTML = html || '<p style="font-size:13px;color:var(--text2)">No hay productos o revisiones en este proyecto.</p>';
 }
 
-// ═══════════════════════════════════════════════════════
-//  RENDER EQUIPO
-// ═══════════════════════════════════════════════════════
 function renderTeam() {
   const el = document.getElementById('tab-team');
   if (!el) return;
@@ -1325,19 +1142,11 @@ function renderTeam() {
   el.innerHTML = html;
 }
 function removeMember(i) { state.team.splice(i,1); saveState(); renderTeam(); }
-function openAddMember() {
-  modal(`<h3>Agregar miembro al equipo</h3>
-    <div class="form-row"><label>Nombre completo</label><input id="m-name" type="text" placeholder="Ej: Pedro Jiménez"/></div>
-    <div class="form-row"><label>Rol en el proyecto</label><input id="m-role" type="text" placeholder="Ej: Investigador de campo"/></div>
-    <div class="modal-actions"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveMember()">Agregar</button></div>`);
-}
+function openAddMember() { modal(`<h3>Agregar miembro al equipo</h3><div class="form-row"><label>Nombre completo</label><input id="m-name" type="text" placeholder="Ej: Pedro Jiménez"/></div><div class="form-row"><label>Rol en el proyecto</label><input id="m-role" type="text" placeholder="Ej: Investigador de campo"/></div><div class="modal-actions"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveMember()">Agregar</button></div>`); }
 function saveMember() {
-  const name=document.getElementById('m-name').value.trim();
-  const role=document.getElementById('m-role').value.trim();
-  if (!name) return;
+  const name=document.getElementById('m-name').value.trim(); const role=document.getElementById('m-role').value.trim(); if (!name) return;
   const colors=['#1D9E75','#378ADD','#D85A30','#7F77DD','#EF9F27','#D4537E'];
-  if (!state.team) state.team=[];
-  state.team.push({ name, role, color: colors[state.team.length%colors.length] });
+  if (!state.team) state.team=[]; state.team.push({ name, role, color: colors[state.team.length%colors.length] });
   saveState(); closeModal(); renderTeam();
 }
 
@@ -1348,20 +1157,18 @@ function getShareText() {
     let prodText = np.item ? `${np.item.name} (en ${np.days} días)` : "Ninguno pendiente";
     const meta = currentProjId ? allProjects[currentProjId].meta : {};
 
+    // Formato exacto solicitado con saltos de linea
     return `📊 [${(meta.name||'PROYECTO').toUpperCase()}]\r\nSemana actual: S${cw} (${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))})\r\nProgreso: ${s.pct}% (${s.done}/${s.total} actividades completadas)\r\n- Completadas: ${s.counts.completado}\r\n- En curso: ${s.counts.curso}\r\n- Pendientes: ${s.counts.pendiente}\r\n- Retrasadas: ${s.counts.retrasado}\r\n\r\nPróximo producto: ${prodText}\r\nPróximo hito: ${hitoText}\r\n\r\nGenerado: ${fmtDate(new Date())} a las ${new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}`;
 }
 
-// ═══════════════════════════════════════════════════════
-//  RENDER PUBLICAR (SHARE)
-// ═══════════════════════════════════════════════════════
 function renderShare(){
   const el = document.getElementById('tab-share');
   if(!el) return;
   const text = getShareText();
-  el.innerHTML=`<div style="margin-bottom:14px">
-    <p style="font-size:13px;color:var(--text2);margin-bottom:12px">A continuación, visualiza el resumen del estado actual del proyecto. Haz clic en el botón para copiarlo y enviarlo a tu equipo o contraparte.</p>
-    <div class="share-preview-box">${text}</div>
-    <div class="export-row"><button class="btn btn-blue" onclick="copyShareMsg()"><i class="ti ti-copy"></i> Copiar resumen al portapapeles</button></div>
+  el.innerHTML=`<div style="margin-bottom:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 40px 0; border:1px dashed var(--border); border-radius:var(--radius-lg); background:var(--bg2);">
+    <i class="ti ti-share" style="font-size:48px; color:var(--blue); margin-bottom:16px;"></i>
+    <p style="font-size:14px;color:var(--text);margin-bottom:20px; font-weight:500;">Comparte el estado del proyecto con tu equipo</p>
+    <button class="btn btn-blue" onclick="copyShareMsg()" style="font-size:14px; padding:10px 20px;"><i class="ti ti-copy"></i> Copiar resumen al portapapeles</button>
   </div>`;
 }
 
@@ -1370,9 +1177,6 @@ function copyShareMsg(){
   navigator.clipboard.writeText(text).then(()=>alert('Resumen copiado al portapapeles ✓'));
 }
 
-// ═══════════════════════════════════════════════════════
-//  RENDER CONFIG
-// ═══════════════════════════════════════════════════════
 function renderConfig() {
   const el = document.getElementById('tab-config');
   if (!el) return;
@@ -1380,36 +1184,17 @@ function renderConfig() {
   el.innerHTML = `
     <div class="section"><div style="padding:16px">
       <p style="font-size:14px;font-weight:600;margin-bottom:12px"><i class="ti ti-edit"></i> Editar información del proyecto</p>
-      
-      <div class="form-row">
-        <label>Nombre del proyecto</label>
-        <input type="text" id="cfg-name" value="${meta.name||''}"/>
-      </div>
-      <div class="form-row">
-        <label>Cliente / Mandante</label>
-        <input type="text" id="cfg-client" value="${meta.client||''}"/>
-      </div>
-      
+      <div class="form-row"><label>Nombre del proyecto</label><input type="text" id="cfg-name" value="${meta.name||''}"/></div>
+      <div class="form-row"><label>Cliente / Mandante</label><input type="text" id="cfg-client" value="${meta.client||''}"/></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        <div class="form-row">
-          <label>Total de semanas</label>
-          <input type="number" id="cfg-weeks" min="1" value="${meta.totalWeeks||35}"/>
-        </div>
-        <div class="form-row">
-          <label>Tipo</label>
-          <select id="cfg-type">
-            <option value="proyecto" ${meta.type==='proyecto'?'selected':''}>Proyecto</option>
-            <option value="propuesta" ${meta.type==='propuesta'?'selected':''}>Propuesta técnica</option>
-          </select>
-        </div>
+        <div class="form-row"><label>Total de semanas</label><input type="number" id="cfg-weeks" min="1" value="${meta.totalWeeks||35}"/></div>
+        <div class="form-row"><label>Tipo</label><select id="cfg-type"><option value="proyecto" ${meta.type==='proyecto'?'selected':''}>Proyecto</option><option value="propuesta" ${meta.type==='propuesta'?'selected':''}>Propuesta técnica</option></select></div>
       </div>
-      
       <div class="form-row" style="margin-top:6px;">
         <label>Fecha de inicio oficial (Semana 1)</label>
         <input type="date" value="${state.startDate||''}" onchange="state.startDate=this.value;saveState();"/>
         <p style="font-size:11px;color:var(--text3);margin-top:4px">Al guardar abajo, el Gantt se ajustará a la nueva fecha y semanas.</p>
       </div>
-      
       <button class="btn btn-primary" style="margin-top:8px" onclick="updateProjectMeta()"><i class="ti ti-check"></i> Guardar configuración</button>
     </div></div>`;
 }
@@ -1420,12 +1205,10 @@ function updateProjectMeta() {
   meta.client = document.getElementById('cfg-client').value.trim();
   meta.totalWeeks = parseInt(document.getElementById('cfg-weeks').value) || 35;
   meta.type = document.getElementById('cfg-type').value;
-  
   db.collection('projects').doc(currentProjId).update(meta).then(() => {
      document.getElementById('proj-title').textContent = meta.name;
      document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'} · Inicio: ${fmtDateStr(state.startDate)} · ${meta.totalWeeks} semanas`;
-     renderAllViews();
-     alert('Configuración actualizada ✓');
+     renderAllViews(); alert('Configuración actualizada ✓');
   }).catch(e => { console.error(e); alert('Error al actualizar.'); });
 }
 
@@ -1451,150 +1234,56 @@ function openTask(taskId, stageId) {
   
   let evalSection = '';
   if (isProd) {
-    evalSection = `
-    <div style="background:var(--green-light);border:1px solid var(--green);border-radius:var(--radius);padding:12px;margin-bottom:12px">
-      <div class="eval-section">
-        <h4 style="color:var(--green);"><i class="ti ti-star-filled"></i> Autoevaluación del equipo</h4>
-        <div class="stars-input" id="modal-stars" style="display:flex;align-items:center;">
-          <div>${[1,2,3,4,5].map(i=>`<button class="star-btn ${ev>=i?'on-green':''}" onclick="setEvM('${taskId}',${i},false)">★</button>`).join('')}</div>
-          <span style="font-size:11px;color:var(--green);margin-left:12px;cursor:pointer;text-decoration:underline" onclick="setEvM('${taskId}',0,false)">Desmarcar</span>
-        </div>
-      </div>
-    </div>`;
+    evalSection = `<div style="background:var(--green-light);border:1px solid var(--green);border-radius:var(--radius);padding:12px;margin-bottom:12px"><div class="eval-section"><h4 style="color:var(--green);"><i class="ti ti-star-filled"></i> Autoevaluación del equipo</h4><div class="stars-input" id="modal-stars" style="display:flex;align-items:center;"><div>${[1,2,3,4,5].map(i=>`<button class="star-btn ${ev>=i?'on-green':''}" onclick="setEvM('${taskId}',${i},false)">★</button>`).join('')}</div><span style="font-size:11px;color:var(--green);margin-left:12px;cursor:pointer;text-decoration:underline" onclick="setEvM('${taskId}',0,false)">Desmarcar</span></div></div></div>`;
   } else if (isRev) {
-    evalSection = `
-    <div style="background:var(--amber-light);border:1px solid var(--amber);border-radius:var(--radius);padding:12px;margin-bottom:12px">
-      <div class="eval-section">
-        <h4 style="color:#a87000;"><i class="ti ti-building-bank"></i> Feedback de la Contraparte</h4>
-        <div class="stars-input" id="modal-stars-client" style="display:flex;align-items:center;">
-          <div>${[1,2,3,4,5].map(i=>`<button class="star-btn ${evC>=i?'on':''}" onclick="setEvM('${taskId}',${i},true)">★</button>`).join('')}</div>
-          <span style="font-size:11px;color:#a87000;margin-left:12px;cursor:pointer;text-decoration:underline" onclick="setEvM('${taskId}',0,true)">Desmarcar</span>
-        </div>
-      </div>
-    </div>`;
+    evalSection = `<div style="background:var(--amber-light);border:1px solid var(--amber);border-radius:var(--radius);padding:12px;margin-bottom:12px"><div class="eval-section"><h4 style="color:#a87000;"><i class="ti ti-building-bank"></i> Feedback de la Contraparte</h4><div class="stars-input" id="modal-stars-client" style="display:flex;align-items:center;"><div>${[1,2,3,4,5].map(i=>`<button class="star-btn ${evC>=i?'on':''}" onclick="setEvM('${taskId}',${i},true)">★</button>`).join('')}</div><span style="font-size:11px;color:#a87000;margin-left:12px;cursor:pointer;text-decoration:underline" onclick="setEvM('${taskId}',0,true)">Desmarcar</span></div></div></div>`;
   }
 
   const subs = state.subtasks&&state.subtasks[taskId] ? state.subtasks[taskId] : [];
-  let subsHTML = `
-    <div style="margin-bottom:12px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:12px;">
-      <p style="font-size:12px;font-weight:500;margin-bottom:8px;color:var(--text2)"><i class="ti ti-list-check"></i> Subtareas y Desglose</p>
-      ${subs.length === 0 ? '<p style="font-size:11px;color:var(--text3);margin-bottom:8px">No hay subtareas. Puedes agregar micro-actividades aquí.</p>' : ''}
-      
-      <div style="margin-bottom:8px">
-        ${subs.map((s,si)=>{
-          const sTeam = (state.team||[]).map(m=>`<option value="${m.name}" ${s.assignee===m.name?'selected':''}>${m.name}</option>`).join('');
-          return `
-        <div class="sub-row">
-          <i class="ti ti-${s.status==='completado'?'check-box':'square'}" style="color:${s.status==='completado'?'var(--green)':'var(--text3)'}; font-size:18px; cursor:pointer;" onclick="toggleSubM('${taskId}','${s.id}')"></i>
-          <input type="text" value="${(s.name||'').replace(/"/g, '&quot;')}" onchange="updateSubM('${taskId}','${s.id}','name',this.value)" placeholder="Descripción de subtarea" style="flex:1;min-width:0"/>
-          <select onchange="updateSubM('${taskId}','${s.id}','assignee',this.value)">
-             <option value="" disabled hidden ${!s.assignee?'selected':''}>Responsable...</option>
-             <option value="">Sin asignar</option>
-             ${sTeam}
-          </select>
-          <input type="date" value="${s.date||''}" onchange="updateSubM('${taskId}','${s.id}','date',this.value)"/>
-          <i class="ti ti-trash" onclick="deleteSubM('${taskId}','${s.id}')" style="cursor:pointer; color:var(--red); font-size:16px; margin-left:4px;"></i>
-        </div>`
-        }).join('')}
-      </div>
-      <div style="display:flex;gap:6px">
-        <input id="new-sub-name" type="text" placeholder="Escribe una nueva subtarea..." style="flex:1;padding:6px 8px;border:1px solid var(--border2);border-radius:4px;font-size:12px;background:var(--bg);color:var(--text);outline:none"/>
-        <button class="btn btn-sm btn-primary" onclick="addSubM('${taskId}')"><i class="ti ti-plus"></i></button>
-      </div>
-    </div>`;
+  let subsHTML = `<div style="margin-bottom:12px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:12px;"><p style="font-size:12px;font-weight:500;margin-bottom:8px;color:var(--text2)"><i class="ti ti-list-check"></i> Subtareas y Desglose</p>${subs.length === 0 ? '<p style="font-size:11px;color:var(--text3);margin-bottom:8px">No hay subtareas. Puedes agregar micro-actividades aquí.</p>' : ''}<div style="margin-bottom:8px">`;
+  
+  subs.forEach((s,si)=>{
+      const sTeam = (state.team||[]).map(m=>`<option value="${m.name}" ${s.assignee===m.name?'selected':''}>${m.name}</option>`).join('');
+      subsHTML += `
+    <div class="sub-row">
+      <i class="ti ti-${s.status==='completado'?'circle-check-filled':'circle'}" style="color:${s.status==='completado'?'var(--green)':'var(--border2)'}; font-size:20px; cursor:pointer;" onclick="event.stopPropagation(); toggleSubM('${taskId}','${s.id}')"></i>
+      <input type="text" value="${(s.name||'').replace(/"/g, '&quot;')}" onchange="updateSubM('${taskId}','${s.id}','name',this.value)" placeholder="Descripción de subtarea" style="flex:1;min-width:0"/>
+      <select onchange="updateSubM('${taskId}','${s.id}','assignee',this.value)">
+         <option value="" disabled hidden ${!s.assignee?'selected':''}>Responsable...</option>
+         <option value="">Sin asignar</option>
+         ${sTeam}
+      </select>
+      <input type="date" value="${s.date||''}" onchange="updateSubM('${taskId}','${s.id}','date',this.value)"/>
+      <i class="ti ti-trash" onclick="deleteSubM('${taskId}','${s.id}')" style="cursor:pointer; color:var(--red); font-size:16px; margin-left:4px;"></i>
+    </div>`
+  });
+  
+  subsHTML += `</div><div style="display:flex;gap:6px"><input id="new-sub-name" type="text" placeholder="Escribe una nueva subtarea..." style="flex:1;padding:6px 8px;border:1px solid var(--border2);border-radius:4px;font-size:12px;background:var(--bg);color:var(--text);outline:none"/><button class="btn btn-sm btn-primary" onclick="addSubM('${taskId}')"><i class="ti ti-plus"></i></button></div></div>`;
 
   modal(`
     <h3 style="margin-bottom:4px">${t.name}</h3>
     <p style="font-size:12px;color:var(--text2);margin-bottom:14px"><span style="width:8px;height:8px;border-radius:50%;background:${stage.color};display:inline-block;margin-right:4px"></span>${stage.name} · ${badge(t.type)}</p>
-    <div class="form-row">
-      <label>Responsable General</label>
-      <select id="modal-assignee">
-        <option value="" disabled hidden ${!t.assignee?'selected':''}>Responsable...</option>
-        <option value="">Sin asignar</option>
-        ${teamOpts}
-      </select>
-    </div>
-    <div class="form-row">
-      <label>Fechas exactas (inicio – fin)</label>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <input id="modal-start" type="date" value="${sdInput}"/>
-        <input id="modal-end"   type="date" value="${edInput}"/>
-      </div>
-    </div>
-    <div class="form-row">
-      <a href="${gcalLink}" target="_blank" class="btn" style="width:100%;justify-content:center;border-color:var(--blue);color:var(--blue)">
-        <i class="ti ti-calendar-plus"></i> Agregar a Google Calendar
-      </a>
-    </div>
-    <div class="form-row" style="margin-top:16px">
-      <label>Estado Principal</label>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn${status==='pendiente'?' btn-primary':''}" id="btn-st-pendiente" onclick="setStM('${taskId}','pendiente')"><i class="ti ti-circle"></i> Pendiente</button>
-        <button class="btn${status==='curso'?' btn-blue':''}" id="btn-st-curso" onclick="setStM('${taskId}','curso')"><i class="ti ti-player-play"></i> En curso</button>
-        <button class="btn${status==='retrasado'?' btn-red':''}" id="btn-st-retrasado" onclick="setStM('${taskId}','retrasado')"><i class="ti ti-alert-circle"></i> Retrasado</button>
-        <button class="btn${status==='completado'?' btn-primary':''}" id="btn-st-completado" onclick="setStM('${taskId}','completado')"><i class="ti ti-circle-check"></i> Completado</button>
-      </div>
-    </div>
+    <div class="form-row"><label>Responsable General</label><select id="modal-assignee"><option value="" disabled hidden ${!t.assignee?'selected':''}>Responsable...</option><option value="">Sin asignar</option>${teamOpts}</select></div>
+    <div class="form-row"><label>Fechas exactas (inicio – fin)</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input id="modal-start" type="date" value="${sdInput}"/><input id="modal-end"   type="date" value="${edInput}"/></div></div>
+    <div class="form-row"><a href="${gcalLink}" target="_blank" class="btn" style="width:100%;justify-content:center;border-color:var(--blue);color:var(--blue)"><i class="ti ti-calendar-plus"></i> Agregar a Google Calendar</a></div>
+    <div class="form-row" style="margin-top:16px"><label>Estado Principal</label><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn${status==='pendiente'?' btn-primary':''}" id="btn-st-pendiente" onclick="setStM('${taskId}','pendiente')"><i class="ti ti-circle"></i> Pendiente</button><button class="btn${status==='curso'?' btn-blue':''}" id="btn-st-curso" onclick="setStM('${taskId}','curso')"><i class="ti ti-player-play"></i> En curso</button><button class="btn${status==='retrasado'?' btn-red':''}" id="btn-st-retrasado" onclick="setStM('${taskId}','retrasado')"><i class="ti ti-alert-circle"></i> Retrasado</button><button class="btn${status==='completado'?' btn-primary':''}" id="btn-st-completado" onclick="setStM('${taskId}','completado')"><i class="ti ti-circle-check"></i> Completado</button></div></div>
     ${subsHTML}${evalSection}
-    <div class="form-row">
-      <label>Notas y observaciones</label>
-      <textarea id="modal-note" placeholder="Escribe aquí los comentarios...">${note}</textarea>
-    </div>
-    <div class="modal-actions" style="justify-content:space-between">
-      <button class="btn btn-danger" style="background:transparent;border:1px solid #fcc;color:#c00" onclick="deleteTaskModal('${taskId}')"><i class="ti ti-trash"></i> Eliminar</button>
-      <div style="display:flex;gap:8px">
-        <button class="btn" onclick="closeModal()">Cancelar</button>
-        <button class="btn btn-primary" onclick="saveTaskModal('${taskId}')"><i class="ti ti-check"></i> Guardar cambios</button>
-      </div>
-    </div>`);
+    <div class="form-row"><label>Notas y observaciones</label><textarea id="modal-note" placeholder="Escribe aquí los comentarios...">${note}</textarea></div>
+    <div class="modal-actions" style="justify-content:space-between"><button class="btn btn-danger" style="background:transparent;border:1px solid #fcc;color:#c00" onclick="deleteTaskModal('${taskId}')"><i class="ti ti-trash"></i> Eliminar</button><div style="display:flex;gap:8px"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveTaskModal('${taskId}')"><i class="ti ti-check"></i> Guardar cambios</button></div></div>`);
 }
 
-function setStM(id, val) {
-  state.statuses[id] = val;
-  ['pendiente','curso','retrasado','completado'].forEach(st => {
-    const b = document.getElementById('btn-st-'+st);
-    if (b) b.className = 'btn';
-  });
-  const b = document.getElementById('btn-st-'+val);
-  if (b) b.className = val==='curso'?'btn btn-blue':(val==='retrasado'?'btn btn-red':'btn btn-primary');
-}
+function setStM(id, val) { state.statuses[id] = val; ['pendiente','curso','retrasado','completado'].forEach(st => { const b = document.getElementById('btn-st-'+st); if (b) b.className = 'btn'; }); const b = document.getElementById('btn-st-'+val); if (b) b.className = val==='curso'?'btn btn-blue':(val==='retrasado'?'btn btn-red':'btn btn-primary'); }
+function setEvM(id, val, isClient) { if (isClient) { if (!state.evaluationsClient) state.evaluationsClient = {}; if (state.evaluationsClient[id]===val) val=0; state.evaluationsClient[id] = val; document.querySelectorAll('#modal-stars-client .star-btn').forEach((b,i)=>b.className='star-btn'+(val>=i+1?' on':'')); } else { if (!state.evaluations) state.evaluations = {}; if (state.evaluations[id]===val) val=0; state.evaluations[id] = val; document.querySelectorAll('#modal-stars .star-btn').forEach((b,i)=>b.className='star-btn'+(val>=i+1?' on-green':'')); } }
 
-function setEvM(id, val, isClient) {
-  if (isClient) {
-    if (!state.evaluationsClient) state.evaluationsClient = {};
-    if (state.evaluationsClient[id]===val) val=0;
-    state.evaluationsClient[id] = val;
-    document.querySelectorAll('#modal-stars-client .star-btn').forEach((b,i)=>b.className='star-btn'+(val>=i+1?' on':''));
-  } else {
-    if (!state.evaluations) state.evaluations = {};
-    if (state.evaluations[id]===val) val=0;
-    state.evaluations[id] = val;
-    document.querySelectorAll('#modal-stars .star-btn').forEach((b,i)=>b.className='star-btn'+(val>=i+1?' on-green':''));
-  }
-}
-
-function addSubM(parentId) {
-  const name = document.getElementById('new-sub-name').value.trim();
-  if (!name) return;
-  if (!state.subtasks) state.subtasks = {};
-  if (!state.subtasks[parentId]) state.subtasks[parentId] = [];
-  state.subtasks[parentId].push({ id:'sub'+Date.now(), name, status:'pendiente', assignee:'', date:'' });
-  logAction(`Se agregó una subtarea en una actividad.`);
-  saveState();
-  openTask(parentId, getAllTasks().find(t=>t.id===parentId).stageId);
-}
-
-function updateSubM(pId, sId, field, val) {
-  const sub = state.subtasks[pId].find(s=>s.id===sId);
-  if (sub) { sub[field]=val; saveState(); }
-}
+function addSubM(parentId) { const name = document.getElementById('new-sub-name').value.trim(); if (!name) return; if (!state.subtasks) state.subtasks = {}; if (!state.subtasks[parentId]) state.subtasks[parentId] = []; state.subtasks[parentId].push({ id:'sub'+Date.now(), name, status:'pendiente', assignee:'', date:'' }); saveState(); openTask(parentId, getAllTasks().find(t=>t.id===parentId).stageId); }
+function updateSubM(pId, sId, field, val) { const sub = state.subtasks[pId].find(s=>s.id===sId); if (sub) { sub[field]=val; saveState(); } }
 
 function toggleSubM(pId, sId) {
   const sub = state.subtasks[pId].find(s=>s.id===sId);
   if (sub) {
     const wasDone = sub.status === 'completado';
     sub.status = wasDone ? 'pendiente' : 'completado';
-
+    
     const allSubs = state.subtasks[pId];
     if (allSubs && allSubs.length > 0) {
         const allDone = allSubs.every(s => s.status === 'completado');
@@ -1603,6 +1292,7 @@ function toggleSubM(pId, sId) {
             logAction(`Actividad completada automáticamente (Subtareas listas).`);
         } else if (!allDone && state.statuses[pId] === 'completado') {
             state.statuses[pId] = 'curso'; 
+            logAction(`Actividad reabierta (Subtarea desmarcada).`);
         }
     }
     saveState();
@@ -1612,43 +1302,10 @@ function toggleSubM(pId, sId) {
   }
 }
 
-function deleteSubM(pId, sId) {
-  state.subtasks[pId] = state.subtasks[pId].filter(s=>s.id!==sId);
-  saveState();
-  openTask(pId, getAllTasks().find(t=>t.id===pId).stageId);
-}
+function deleteSubM(pId, sId) { state.subtasks[pId] = state.subtasks[pId].filter(s=>s.id!==sId); saveState(); openTask(pId, getAllTasks().find(t=>t.id===pId).stageId); }
+function saveTaskModal(id) { const t = getAllTasks().find(x=>x.id===id); const oldA = t.assignee; const oldSt= getTaskStatus(id); if (!state.notes) state.notes = {}; state.notes[id] = document.getElementById('modal-note').value; const start = document.getElementById('modal-start').value; const end = document.getElementById('modal-end').value; const assignee= document.getElementById('modal-assignee').value; if (oldA!==assignee && assignee!=='') logAction(`Se asignó una tarea a ${assignee}.`); if (oldSt!==state.statuses[id]) logAction(`Cambio de estado a ${state.statuses[id]} en una actividad.`); if (!state.taskOverrides) state.taskOverrides = {}; state.taskOverrides[id] = { startDate: start, endDate: end, assignee }; if (state.customTasks) { const ct = state.customTasks.find(x=>x.id===id); if (ct) { ct.startDate=start; ct.endDate=end; ct.assignee=assignee; } } saveState(); closeModal(); }
+function deleteTaskModal(id) { if (!confirm('¿Eliminar esta actividad permanentemente?')) return; if (!state.deletedIds) state.deletedIds = []; state.deletedIds.push(id); logAction(`Se eliminó una actividad.`); saveState(); closeModal(); }
 
-function saveTaskModal(id) {
-  const t    = getAllTasks().find(x=>x.id===id);
-  const oldA = t.assignee;
-  const oldSt= getTaskStatus(id);
-  if (!state.notes) state.notes = {};
-  state.notes[id] = document.getElementById('modal-note').value;
-  const start   = document.getElementById('modal-start').value;
-  const end     = document.getElementById('modal-end').value;
-  const assignee= document.getElementById('modal-assignee').value;
-  if (oldA!==assignee && assignee!=='') logAction(`Se asignó una tarea a ${assignee}.`);
-  if (oldSt!==state.statuses[id]) logAction(`Cambio de estado a ${state.statuses[id]} en una actividad.`);
-  if (!state.taskOverrides) state.taskOverrides = {};
-  state.taskOverrides[id] = { startDate: start, endDate: end, assignee };
-  if (state.customTasks) {
-    const ct = state.customTasks.find(x=>x.id===id);
-    if (ct) { ct.startDate=start; ct.endDate=end; ct.assignee=assignee; }
-  }
-  saveState(); closeModal();
-}
-
-function deleteTaskModal(id) {
-  if (!confirm('¿Eliminar esta actividad permanentemente?')) return;
-  if (!state.deletedIds) state.deletedIds = [];
-  state.deletedIds.push(id);
-  logAction(`Se eliminó una actividad.`);
-  saveState(); closeModal();
-}
-
-// ═══════════════════════════════════════════════════════
-//  AGREGAR TAREA NUEVA
-// ═══════════════════════════════════════════════════════
 function openAddTask(stageId) {
   if (!stageId) stageId = STAGES[0]&&STAGES[0].id||1;
   const teamOpts= (state.team||[]).map(m=>`<option value="${m.name}">${m.name}</option>`).join('');
@@ -1656,88 +1313,19 @@ function openAddTask(stageId) {
   modal(`<h3>Nueva actividad</h3>
     <div class="form-row"><label>Nombre de la actividad</label><input id="nt-name" type="text" placeholder="Ej: Reunión de seguimiento"/></div>
     <div class="form-row"><label>Etapa</label><select id="nt-stage">${STAGES.map(s=>`<option value="${s.id}"${s.id==stageId?' selected':''}>${s.name}</option>`).join('')}</select></div>
-    
-    <div class="form-row">
-      <label>Tipo</label>
-      <select id="nt-type">
-        <option value="tarea">Tarea</option>
-        <option value="hito">Hito</option>
-        <option value="producto">Producto</option>
-        <option value="revision">Revisión contraparte</option>
-      </select>
-    </div>
-    
+    <div class="form-row"><label>Tipo</label><select id="nt-type"><option value="tarea">Tarea</option><option value="hito">Hito</option><option value="producto">Producto</option><option value="revision">Revisión contraparte</option></select></div>
     <div class="form-row"><label>Responsable</label><select id="nt-assignee"><option value="" disabled hidden selected>Responsable...</option><option value="">Sin asignar</option>${teamOpts}</select></div>
-    <div class="form-row"><label>Fechas (inicio – fin)</label>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <input id="nt-start" type="date" value="${sd}"/>
-        <input id="nt-end"   type="date" value="${sd}"/>
-      </div>
-    </div>
+    <div class="form-row"><label>Fechas (inicio – fin)</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input id="nt-start" type="date" value="${sd}"/><input id="nt-end" type="date" value="${sd}"/></div></div>
     <div class="form-row"><label>Notas (opcional)</label><textarea id="nt-note" placeholder="Descripción..."></textarea></div>
-    
-    <div style="font-size:11px; color:var(--text2); background:var(--bg2); padding:10px; border-radius:var(--radius); margin-bottom:14px; border:1px solid var(--border);">
-      <i class="ti ti-info-circle"></i> <b>Nota:</b> Podrás agregar Subtareas y sincronizar con Google Calendar una vez que guardes esta actividad.
-    </div>
-
+    <div style="font-size:11px; color:var(--text2); background:var(--bg2); padding:10px; border-radius:var(--radius); margin-bottom:14px; border:1px solid var(--border);"><i class="ti ti-info-circle"></i> <b>Nota:</b> Podrás agregar Subtareas y sincronizar con Google Calendar una vez que guardes esta actividad.</div>
     <div class="modal-actions"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveNewTask()"><i class="ti ti-plus"></i> Guardar actividad</button></div>`);
 }
+function saveNewTask() { const name = document.getElementById('nt-name').value.trim(); if (!name) return; const stageId = parseInt(document.getElementById('nt-stage').value); const stage = STAGES.find(s=>s.id===stageId)||{color:'#ccc',light:'var(--bg2)'}; const id = 'c'+Date.now(); if (!state.customTasks) state.customTasks = []; state.customTasks.push({ id, name, stageId, type: document.getElementById('nt-type').value, startDate: document.getElementById('nt-start').value, endDate: document.getElementById('nt-end').value, assignee: document.getElementById('nt-assignee').value, stageColor: stage.color, stageLight: stage.light }); logAction(`Agregó la nueva actividad: '${name}'.`); saveState(); closeModal(); }
 
-function saveNewTask() {
-  const name = document.getElementById('nt-name').value.trim();
-  if (!name) return;
-  const stageId = parseInt(document.getElementById('nt-stage').value);
-  const stage   = STAGES.find(s=>s.id===stageId)||{color:'#ccc',light:'var(--bg2)'};
-  const id = 'c'+Date.now();
-  if (!state.customTasks) state.customTasks = [];
-  state.customTasks.push({
-    id, name, stageId,
-    type:       document.getElementById('nt-type').value,
-    startDate:  document.getElementById('nt-start').value,
-    endDate:    document.getElementById('nt-end').value,
-    assignee:   document.getElementById('nt-assignee').value,
-    stageColor: stage.color,
-    stageLight: stage.light
-  });
-  logAction(`Agregó la nueva actividad: '${name}'.`);
-  saveState(); closeModal();
-}
-
-// ═══════════════════════════════════════════════════════
-//  GOOGLE CALENDAR LINK
-// ═══════════════════════════════════════════════════════
-function generateGCalLink(task) {
-  try {
-    const { start, end } = getTaskDates(task);
-    if (!start || !end || isNaN(start) || isNaN(end)) return '#';
-    const s = start.toISOString().replace(/-|:|\.\d+/g, '').slice(0,8);
-    const endPlusOne = new Date(end);
-    endPlusOne.setDate(endPlusOne.getDate() + 1);
-    const endStr = endPlusOne.toISOString().replace(/-|:|\.\d+/g, '').slice(0,8);
-    const meta = currentProjId ? allProjects[currentProjId].meta : {};
-    const safeName = encodeURIComponent(task.name || '');
-    const safeDetails = encodeURIComponent(`Responsable: ${task.assignee || 'Sin asignar'}\n\nProyecto: ${meta.name||''}`);
-    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${safeName}&dates=${s}/${endStr}&details=${safeDetails}`;
-  } catch(e) {
-    return '#';
-  }
-}
-
-// ═══════════════════════════════════════════════════════
-//  MODAL GENERAL
-// ═══════════════════════════════════════════════════════
-function modal(html, large=false) {
-  document.getElementById('modal-root').innerHTML =
-    `<div class="modal-bg" onclick="closeModalBg(event)">
-      <div class="modal${large?' modal-lg':''}" onclick="event.stopPropagation()">${html}</div>
-    </div>`;
-}
+function modal(html, large=false) { document.getElementById('modal-root').innerHTML = `<div class="modal-bg" onclick="closeModalBg(event)"><div class="modal${large?' modal-lg':''}" onclick="event.stopPropagation()">${html}</div></div>`; }
 function closeModal() { document.getElementById('modal-root').innerHTML=''; }
 function closeModalBg(e) { if(e.target===e.currentTarget) closeModal(); }
 
-// ═══════════════════════════════════════════════════════
-//  INIT
-// ═══════════════════════════════════════════════════════
 window.onload = () => loadProjectList();
 </script>
 </body>
