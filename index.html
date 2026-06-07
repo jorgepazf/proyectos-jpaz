@@ -69,41 +69,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 /* ── PROJECT CARDS (home) ── */
 .section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:10px}
 .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:24px}
-.project-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:box-shadow .15s,border-color .15s;position:relative;overflow:visible}
+.project-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:box-shadow .15s,border-color .15s;position:relative;overflow:hidden}
 .project-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08);border-color:var(--border2)}
-
-/* Estilos de Archivado */
-.project-card.archived { opacity: 0.65; filter: grayscale(30%); }
-.project-card.archived:hover { opacity: 1; filter: grayscale(0%); }
-
 .pc-accent{position:absolute;top:0;left:0;right:0;height:3px}
-.pc-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;margin-top:6px;line-height:1.3;padding-right:24px;}
+/* Ajuste de título para que no choque con la etiqueta (Req 8) */
+.pc-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;margin-top:10px;line-height:1.3;padding-right:110px;}
 .pc-client{font-size:12px;color:var(--text2);margin-bottom:12px}
 .pc-meta{display:flex;gap:12px;font-size:11px;color:var(--text3)}
 .pc-meta span{display:flex;align-items:center;gap:4px}
 .pc-pbar{height:4px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden}
 .pc-pbar-inner{height:100%;border-radius:2px}
-
-/* Badges de estado de tarjeta */
-.pc-type-badge{position:absolute;top:14px;right:40px;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500}
+.pc-type-badge{position:absolute;top:14px;right:14px;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500}
 .badge-propuesta{background:var(--amber-light);color:#8a5c00}
 .badge-proyecto{background:var(--green-light);color:var(--green)}
-.badge-finalizado{background:var(--bg3);color:var(--text2)}
-.badge-perdida{background:var(--red-light);color:var(--red)}
-
 .new-card{border:2px dashed var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:border-color .15s,background .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:130px;color:var(--text3)}
 .new-card:hover{border-color:var(--green);background:var(--green-light);color:var(--green)}
 .new-card i{font-size:24px}
 .new-card span{font-size:13px;font-weight:500}
-
-/* Menu Kebab */
-.pc-menu-btn{position:absolute;top:10px;right:8px;width:28px;height:28px;border:none;background:transparent;color:var(--text3);cursor:pointer;border-radius:4px;font-size:18px;display:flex;align-items:center;justify-content:center;transition:background 0.1s}
-.pc-menu-btn:hover{background:var(--bg2);color:var(--text)}
-.pc-dropdown{display:none;position:absolute;top:38px;right:8px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 6px 16px rgba(0,0,0,.15);z-index:20;min-width:180px;overflow:hidden}
-.pc-dropdown.show{display:block}
-.pc-dd-item{padding:10px 14px;font-size:13px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:8px;}
-.pc-dd-item:hover{background:var(--bg2)}
-.pc-dd-danger{color:var(--red); border-top:1px solid var(--border);}
+.delete-proj-btn{position:absolute;bottom:12px;right:12px;padding:5px;font-size:14px;border:none;background:transparent;color:var(--text3);cursor:pointer;transition:color .15s}
+.delete-proj-btn:hover{color:var(--red)}
 
 /* ── BACK BUTTON / PROJECT TOPBAR ── */
 .proj-topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:16px;flex-wrap:wrap}
@@ -156,15 +140,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .subtask-indented:hover{background:var(--bg2)}
 .subtask-indented .st-name{flex:1;color:var(--text2)}
 .subtask-indented.done .st-name{text-decoration:line-through;color:var(--text3)}
-.modal-subtasks{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:12px}
-.sub-row{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--border)}
-.sub-row:last-child{border-bottom:none}
-.sub-row input[type="text"]{flex:1;background:var(--bg);border:1px solid var(--border2);padding:6px 8px;font-size:12px;border-radius:4px;color:var(--text);outline:none}
-.sub-row input[type="date"]{width:110px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;color:var(--text);outline:none}
-.sub-row select{width:120px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;color:var(--text);outline:none}
-.sub-row input:focus, .sub-row select:focus{border-color:var(--green)}
-.sub-prog-bar{height:4px;background:var(--border);border-radius:2px;width:60px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:6px}
-.sub-prog-inner{height:100%;background:var(--blue);transition:width .3s}
 
 /* ── KANBAN ── */
 .board-container{display:flex;gap:14px;overflow-x:auto;padding-bottom:10px;align-items:flex-start}
@@ -179,10 +154,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .gantt-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-lg)}
 .gantt-inner{min-width:820px}
 .gantt-head-row{display:grid;grid-template-columns:300px 1fr;font-size:11px;color:var(--text2);padding:8px 14px;background:var(--bg2);border-bottom:1px solid var(--border);font-weight:500;align-items:center;}
-.gantt-row{display:grid;grid-template-columns:300px 1fr;align-items:center;padding:5px 14px;border-top:1px solid var(--border);font-size:12px;position:relative}
+/* Cursores forzados a Manito / Pointer (Req 1) */
+.gantt-row{display:grid;grid-template-columns:300px 1fr;align-items:center;padding:5px 14px;border-top:1px solid var(--border);font-size:12px;position:relative;cursor:pointer !important;user-select:none !important;}
+.gantt-row * {cursor:pointer !important;user-select:none !important;}
 .gantt-row:hover{background:var(--bg2)!important}
-.gantt-bar-cell{position:relative;height:14px;width:100%}
-.gantt-bar{position:absolute;height:100%;border-radius:3px;z-index:1}
+.gantt-bar-cell{position:relative;height:14px;width:100%;cursor:default !important;} /* Excepción a la barra de fondo */
+.gantt-bar{position:absolute;height:100%;border-radius:3px;z-index:1;pointer-events:none;}
 .gantt-today-line{position:absolute;top:0;width:2px;height:100%;background:rgba(216,90,48,.8);z-index:10;pointer-events:none}
 .month-labels{display:flex;font-size:10px;color:var(--text3);height:100%;align-items:center;}
 .month-col{flex:1;text-align:center;border-left:1px solid var(--border2);height:100%;display:flex;align-items:center;justify-content:center;font-weight:600;}
@@ -212,6 +189,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .tag-active{background:var(--green-light);color:var(--green);font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500}
 .team-member{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--border)}
 .avatar{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.sub-row{display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid var(--border)}
+.sub-row:last-child{border-bottom:none}
+.sub-row i.ti-circle, .sub-row i.ti-check {font-size:18px; cursor:pointer;}
+.sub-row input[type="text"]{flex:1;background:var(--bg);border:1px solid var(--border2);padding:6px 8px;font-size:12px;border-radius:4px;color:var(--text);outline:none}
+.sub-row input[type="date"]{width:115px;background:var(--bg);border:1px solid var(--border2);padding:6px;font-size:11px;border-radius:4px;color:var(--text);outline:none}
 .dropdown{position:relative;display:inline-block}
 .notif-badge{position:absolute;top:-5px;right:-5px;background:var(--red);color:white;font-size:10px;font-weight:bold;width:18px;height:18px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:2px solid var(--bg);z-index:10}
 .dropdown-content{display:none;position:absolute;right:0;top:100%;margin-top:8px;width:280px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:0 8px 24px rgba(0,0,0,.12);z-index:9999;overflow:hidden}
@@ -219,20 +201,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .notif-item{padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text);line-height:1.4}
 .notif-item:last-child{border-bottom:none}
 .notif-time{font-size:10px;color:var(--text3);margin-top:4px}
-
-/* ── STAGE BUILDER ── */
-.stage-builder{border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:10px}
-.stage-builder-head{background:var(--bg2);padding:10px 12px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500}
-.stage-builder-body{padding:10px 12px}
-.task-builder-row{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap}
-.task-builder-row input{flex:1;min-width:140px;padding:5px 8px;border:1px solid var(--border2);border-radius:var(--radius);font-size:12px;background:var(--bg);color:var(--text);outline:none}
-.task-builder-row select{padding:5px 6px;border:1px solid var(--border2);border-radius:var(--radius);font-size:12px;background:var(--bg);color:var(--text);outline:none}
-.week-pair{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)}
-.week-pair input[type=number]{width:52px;padding:5px 6px;border:1px solid var(--border2);border-radius:var(--radius);font-size:12px;background:var(--bg);color:var(--text);outline:none;text-align:center}
-.tip-box{background:var(--amber-light);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;font-size:12px;margin-bottom:14px;display:flex;gap:8px}
-.import-area{border:2px dashed var(--border2);border-radius:var(--radius);padding:16px;text-align:center;cursor:pointer;transition:border-color .15s}
-.import-area:hover{border-color:var(--green)}
-.import-area input{display:none}
 
 @media(max-width:600px){
   .topbar{flex-direction:column}
@@ -258,7 +226,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
       <div class="brand-icon"><i class="ti ti-layout-dashboard"></i></div>
       <div>
         <h1>Mis Proyectos</h1>
-        <p>Sistema de gestión de consultoría · Firebase en tiempo real</p>
+        <p>Sistema de gestión de consultoría · Proyectos Jorge Paz</p>
       </div>
     </div>
     <div class="top-actions">
@@ -267,12 +235,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   </div>
 
   <div id="home-projects-list"></div>
-  
-  <div style="text-align:center; margin-top:30px; border-top:1px solid var(--border); padding-top:20px;">
-    <button class="btn" onclick="toggleArchivedView()"><i class="ti ti-archive"></i> <span id="btn-archived-text">Ver proyectos archivados (0)</span></button>
-  </div>
-  <div id="home-archived-list" style="display:none; margin-top:20px;"></div>
-  
 </div>
 
 <div id="screen-project" class="screen">
@@ -375,15 +337,7 @@ let filterAssignee = 'all';
 let filterStatus   = 'all';
 let unseenLogs     = 0;
 let isFirstLoad    = true;
-let hideCompletedGantt = false;
-let showArchived   = false;
-
-// Cierra los menús desplegables al hacer clic afuera
-window.addEventListener('click', (e) => {
-    if (!e.target.closest('.pc-menu-btn')) {
-        document.querySelectorAll('.pc-dropdown').forEach(d => d.classList.remove('show'));
-    }
-});
+let hideCompletedGantt = false; // VARIABLE GLOBAL PARA OCULTAR COMPLETADAS EN GANTT
 
 // ═══════════════════════════════════════════════════════
 //  BOOTSTRAP: cargar lista de proyectos
@@ -392,8 +346,6 @@ async function loadProjectList() {
   try {
     const snap = await db.collection('projects').get();
     allProjects = {};
-    
-    // MIGRACIÓN AUTOMÁTICA
     if (snap.empty) {
         try {
             const oldDoc = await db.collection('gantt').doc('pae_state_v1').get();
@@ -403,7 +355,6 @@ async function loadProjectList() {
             }
         } catch(e) {}
     }
-
     snap.forEach(doc => { allProjects[doc.id] = { meta: doc.data() }; });
     renderHome();
   } catch(e) {
@@ -438,8 +389,6 @@ async function migrateOldData(oldState) {
 function renderHome() {
   const ids = Object.keys(allProjects);
   const el  = document.getElementById('home-projects-list');
-  const arcEl = document.getElementById('home-archived-list');
-  const btnArc = document.getElementById('btn-archived-text');
 
   if (ids.length === 0) {
     el.innerHTML = `
@@ -449,15 +398,11 @@ function renderHome() {
           <i class="ti ti-plus"></i><span>Nuevo proyecto o propuesta</span>
         </div>
       </div>`;
-    arcEl.style.display = 'none';
-    btnArc.parentElement.style.display = 'none';
     return;
   }
 
-  const proyectos  = ids.filter(id => allProjects[id].meta.type === 'proyecto' && allProjects[id].meta.status !== 'archived');
-  const propuestas = ids.filter(id => allProjects[id].meta.type === 'propuesta' && allProjects[id].meta.status !== 'archived');
-  const archivados = ids.filter(id => allProjects[id].meta.status === 'archived');
-
+  const proyectos  = ids.filter(id => allProjects[id].meta.type === 'proyecto');
+  const propuestas = ids.filter(id => allProjects[id].meta.type === 'propuesta');
   let html = '';
 
   if (proyectos.length > 0) {
@@ -467,118 +412,36 @@ function renderHome() {
   }
 
   if (propuestas.length > 0) {
-    html += `<div class="section-label" style="margin-top:8px"><i class="ti ti-file-description"></i> Propuestas técnicas / Pipeline</div><div class="projects-grid">`;
+    html += `<div class="section-label" style="margin-top:8px"><i class="ti ti-file-description"></i> Propuestas técnicas</div><div class="projects-grid">`;
     propuestas.forEach(id => { html += buildProjectCard(id); });
     html += `</div>`;
   }
 
   html += `<div class="projects-grid"><div class="new-card" onclick="openNewProjectModal()"><i class="ti ti-plus"></i><span>Nuevo proyecto o propuesta</span></div></div>`;
   el.innerHTML = html;
-
-  // Renderizados archivados
-  btnArc.parentElement.style.display = 'inline-block';
-  btnArc.textContent = `Ver proyectos archivados (${archivados.length})`;
-  
-  if (showArchived && archivados.length > 0) {
-      arcEl.style.display = 'block';
-      let arcHtml = `<div class="projects-grid">`;
-      archivados.forEach(id => { arcHtml += buildProjectCard(id); });
-      arcHtml += `</div>`;
-      arcEl.innerHTML = arcHtml;
-  } else {
-      arcEl.style.display = 'none';
-  }
-}
-
-function toggleArchivedView() {
-    showArchived = !showArchived;
-    renderHome();
 }
 
 function buildProjectCard(id) {
   const m  = allProjects[id].meta;
   const pal = STAGE_PALETTE[0];
   const pct = m.lastPct || 0;
-  const isArchived = m.status === 'archived';
-  
-  let badgeHtml = '';
-  if (isArchived) {
-      if (m.archiveReason === 'perdida') badgeHtml = '<span class="pc-type-badge badge-perdida">Propuesta Perdida</span>';
-      else badgeHtml = '<span class="pc-type-badge badge-finalizado">Proyecto Finalizado</span>';
-  } else {
-      if (m.type === 'propuesta') badgeHtml = '<span class="pc-type-badge badge-propuesta">Postulada</span>';
-      else badgeHtml = '<span class="pc-type-badge badge-proyecto">Proyecto Activo</span>';
-  }
-
-  let menuHtml = '';
-  if (!isArchived) {
-      menuHtml += `<div class="pc-dd-item" onclick="openProjectConfig(event, '${id}')"><i class="ti ti-edit"></i> Editar proyecto</div>`;
-      if (m.type === 'propuesta') {
-          menuHtml += `<div class="pc-dd-item" onclick="changeProjState(event, '${id}', 'adjudicada')"><i class="ti ti-trophy" style="color:var(--green)"></i> Adjudicada</div>`;
-          menuHtml += `<div class="pc-dd-item" onclick="changeProjState(event, '${id}', 'perdida')"><i class="ti ti-x" style="color:var(--red)"></i> Perdida</div>`;
-      } else {
-          menuHtml += `<div class="pc-dd-item" onclick="changeProjState(event, '${id}', 'finalizado')"><i class="ti ti-archive"></i> Proyecto finalizado</div>`;
-      }
-  } else {
-      menuHtml += `<div class="pc-dd-item" onclick="changeProjState(event, '${id}', 'restaurar')"><i class="ti ti-arrow-back-up"></i> Desarchivar</div>`;
-  }
-  menuHtml += `<div class="pc-dd-item pc-dd-danger" onclick="deleteProject(event, '${id}')"><i class="ti ti-trash"></i> Eliminar proyecto</div>`;
-
+  const typeBadge = m.type === 'propuesta'
+    ? '<span class="pc-type-badge badge-propuesta">Propuesta</span>'
+    : '<span class="pc-type-badge badge-proyecto">Proyecto Activo</span>';
   return `
-    <div class="project-card ${isArchived ? 'archived' : ''}" onclick="openProject('${id}')">
+    <div class="project-card" onclick="openProject('${id}')">
       <div class="pc-accent" style="background:${m.accentColor||pal.color}"></div>
-      ${badgeHtml}
-      
-      <button class="pc-menu-btn" onclick="toggleMenu(event, 'menu-${id}')"><i class="ti ti-dots-vertical"></i></button>
-      <div id="menu-${id}" class="pc-dropdown" onclick="event.stopPropagation()">${menuHtml}</div>
-
+      ${typeBadge}
       <div class="pc-title">${m.name}</div>
       <div class="pc-client">${m.client||'Sin cliente'}</div>
       <div class="pc-meta">
         <span><i class="ti ti-calendar"></i> ${m.startDate||'—'}</span>
         <span><i class="ti ti-clock"></i> ${m.totalWeeks||0} semanas</span>
-        ${m.type==='proyecto' ? `<span><i class="ti ti-chart-pie"></i> ${pct}%</span>` : ''}
+        <span><i class="ti ti-chart-pie"></i> ${pct}%</span>
       </div>
-      ${m.type==='proyecto' && !isArchived ? `<div class="pc-pbar"><div class="pc-pbar-inner" style="width:${pct}%;background:${m.accentColor||pal.color}"></div></div>` : ''}
+      <div class="pc-pbar"><div class="pc-pbar-inner" style="width:${pct}%;background:${m.accentColor||pal.color}"></div></div>
+      <button class="delete-proj-btn" title="Eliminar proyecto" onclick="event.stopPropagation(); deleteProject('${id}')"><i class="ti ti-trash"></i></button>
     </div>`;
-}
-
-function toggleMenu(event, menuId) {
-    event.stopPropagation();
-    document.querySelectorAll('.pc-dropdown').forEach(d => { if(d.id !== menuId) d.classList.remove('show'); });
-    document.getElementById(menuId).classList.toggle('show');
-}
-
-function openProjectConfig(event, id) {
-    event.stopPropagation();
-    openProject(id);
-    setTimeout(() => { setTab('config', document.querySelectorAll('.tab')[6]); }, 100);
-}
-
-async function changeProjState(event, id, action) {
-    event.stopPropagation();
-    try {
-        const update = {};
-        if (action === 'adjudicada') { update.type = 'proyecto'; update.proposalStatus = 'adjudicada'; update.status = 'active'; }
-        else if (action === 'perdida') { update.status = 'archived'; update.archiveReason = 'perdida'; }
-        else if (action === 'finalizado') { update.status = 'archived'; update.archiveReason = 'finalizado'; }
-        else if (action === 'restaurar') { update.status = 'active'; update.archiveReason = null; update.proposalStatus = 'postulada'; } 
-
-        await db.collection('projects').doc(id).update(update);
-        allProjects[id].meta = { ...allProjects[id].meta, ...update };
-        renderHome();
-    } catch(e) { alert("Error actualizando estado."); }
-}
-
-async function deleteProject(event, id) {
-  event.stopPropagation();
-  if (!confirm(`¿Eliminar el proyecto "${allProjects[id].meta.name}" permanentemente? Esta acción no se puede deshacer.`)) return;
-  try {
-    await db.collection('projects').doc(id).collection('runtime').doc('state').delete();
-    await db.collection('projects').doc(id).delete();
-    delete allProjects[id];
-    renderHome();
-  } catch(e) { alert('Error al eliminar el proyecto.'); }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -685,6 +548,16 @@ function logAction(text) {
   saveState();
 }
 
+async function deleteProject(id) {
+  if (!confirm(`¿Eliminar el proyecto "${allProjects[id].meta.name}" permanentemente? Esta acción no se puede deshacer.`)) return;
+  try {
+    await db.collection('projects').doc(id).collection('runtime').doc('state').delete();
+    await db.collection('projects').doc(id).delete();
+    delete allProjects[id];
+    renderHome();
+  } catch(e) { alert('Error al eliminar el proyecto.'); }
+}
+
 // ═══════════════════════════════════════════════════════
 //  CREAR NUEVO PROYECTO (modal)
 // ═══════════════════════════════════════════════════════
@@ -693,7 +566,7 @@ function openNewProjectModal() {
     <h3><i class="ti ti-plus" style="color:var(--green)"></i> Nuevo proyecto o propuesta</h3>
     <div class="form-row">
       <label>Tipo</label>
-      <select id="np-type" onchange="document.getElementById('prop-fields').style.display = this.value === 'propuesta' ? 'block' : 'none';">
+      <select id="np-type">
         <option value="proyecto">Proyecto</option>
         <option value="propuesta">Propuesta técnica</option>
       </select>
@@ -706,15 +579,6 @@ function openNewProjectModal() {
       <label>Cliente / Mandante</label>
       <input id="np-client" type="text" placeholder="Ej: MINSAL"/>
     </div>
-
-    <div id="prop-fields" style="display:none; background:var(--bg2); padding:10px; border-radius:var(--radius); margin-bottom:12px; border:1px solid var(--border)">
-        <div class="form-row"><label>ID Licitación *</label><input id="np-licitacion" type="text" placeholder="Ej: 1234-56-LQ24"/></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div class="form-row"><label>Fecha Cierre *</label><input id="np-cierre" type="date"/></div>
-            <div class="form-row"><label>Fecha Adjudicación *</label><input id="np-adjudica" type="date"/></div>
-        </div>
-    </div>
-
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div class="form-row">
         <label>Fecha inicio (Semana 1)</label>
@@ -892,19 +756,8 @@ async function saveNewProject() {
   const meta = {
     name, client, startDate: start, totalWeeks: weeks,
     type, stages, accentColor: pal.color,
-    createdAt: Date.now(), lastPct: 0, status: 'active'
+    createdAt: Date.now(), lastPct: 0
   };
-
-  if (type === 'propuesta') {
-      const lici = document.getElementById('np-licitacion').value.trim();
-      const cie = document.getElementById('np-cierre').value;
-      const adj = document.getElementById('np-adjudica').value;
-      if(!lici || !cie || !adj) { alert('Debes completar los campos de Licitación y Fechas para la propuesta.'); return; }
-      meta.idLicitacion = lici;
-      meta.fechaCierre = cie;
-      meta.fechaAdjudicacion = adj;
-      meta.proposalStatus = 'postulada';
-  }
 
   try {
     const ref = await db.collection('projects').add(meta);
@@ -1032,11 +885,31 @@ function calcStats() {
   };
 }
 
+function getNextUpcoming(type) {
+   const all = getAllTasks();
+   const items = all.filter(t => t.type === type && getTaskStatus(t.id) !== 'completado');
+   const today = new Date(); today.setHours(0,0,0,0);
+   let next = null; let minDiff = Infinity;
+   items.forEach(h => {
+       const { start } = getTaskDates(h);
+       const startNoTime = new Date(start); startNoTime.setHours(0,0,0,0);
+       const diff = Math.ceil((startNoTime - today) / (1000*3600*24));
+       if (diff >= 0 && diff < minDiff) { minDiff = diff; next = h; }
+   });
+   return { item: next, days: minDiff };
+}
+
 function toggleNotifs(e) {
   if (e) e.stopPropagation();
   document.getElementById('notif-dropdown').classList.toggle('show');
   unseenLogs = 0; updateNotifBadge();
 }
+window.onclick = function(e) {
+  if (!e.target.closest('.dropdown')) {
+    const nd = document.getElementById('notif-dropdown');
+    if (nd) nd.classList.remove('show');
+  }
+};
 function updateNotifBadge() {
   const b = document.getElementById('notif-badge');
   if (!b) return;
@@ -1104,10 +977,14 @@ function renderStats() {
   const s  = calcStats();
   const cw = currentWeek();
   const end = weekEnd(tw);
+
+  const np = getNextUpcoming('producto');
+  const prodText = np.item ? `<span style="font-size:14px">${np.item.name}</span><br><span style="font-size:11px;color:var(--text3);font-weight:normal;">(en ${np.days} días)</span>` : "Ninguno pendiente";
+
   document.getElementById('stats-bar').innerHTML = `
     <div class="stat-card"><div class="stat-label">Progreso general</div><div class="stat-val">${s.pct}%</div><div class="stat-sub">${s.done} de ${s.total} completadas</div></div>
     <div class="stat-card"><div class="stat-label">Semana actual</div><div class="stat-val">S${cw}</div><div class="stat-sub">${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))}</div></div>
-    <div class="stat-card"><div class="stat-label">Productos entregados</div><div class="stat-val">${s.productsDone}/${s.products}</div><div class="stat-sub">productos del proyecto</div></div>
+    <div class="stat-card"><div class="stat-label">Próximo producto</div><div style="line-height:1.2;margin-top:6px;font-weight:600;color:var(--text)">${prodText}</div></div>
     <div class="stat-card"><div class="stat-label">Fecha de término</div><div class="stat-val" style="font-size:16px">${fmtShort(end)}</div><div class="stat-sub">Fin S${tw} · ${end.getFullYear()}</div></div>`;
   const pct = Math.round(todayFraction()*100);
   document.getElementById('week-progress-bar').innerHTML = `
@@ -1185,8 +1062,7 @@ function renderTaskList(tasks, stage) {
     const dateLabel = `${fmtShort(start)} — ${fmtShort(end)} · S${getRelWeek(start)}-S${getRelWeek(end)}`;
     const assigneeBadge = (t.assignee && typeof t.assignee==='string')
       ? `<span class="badge" style="background:var(--bg3);color:var(--text2)"><i class="ti ti-user"></i> ${t.assignee}</span>` : '';
-    
-    // Subtareas y Progreso
+
     const subs = state.subtasks && state.subtasks[t.id] ? state.subtasks[t.id] : [];
     let subProgHtml = '';
     if(subs.length > 0) {
@@ -1203,14 +1079,15 @@ function renderTaskList(tasks, stage) {
       </div>
       <div class="task-right">${assigneeBadge}${badge(t.type)}</div>
     </div>`;
-    
+
     subs.forEach(s => {
       if (!s) return;
       const sst   = s.status||'pendiente';
       const sassg = (s.assignee&&typeof s.assignee==='string') ? ` <i class="ti ti-user"></i> ${s.assignee.split(' ')[0]}` : '';
       const sdate = s.date ? ` · <i class="ti ti-calendar-event"></i> ${fmtShort(parseLocal(s.date))}` : '';
+      
       html += `<div class="subtask-indented ${sst==='completado'?'done':''}" onclick="openTask('${t.id}',${stage.id})">
-        <i class="ti ti-${sst==='completado'?'check':'circle'}" style="color:${sst==='completado'?'var(--green)':'var(--border2)'}; font-size:16px;" onclick="event.stopPropagation(); toggleSubM('${t.id}', '${s.id}')"></i>
+        <i class="ti ti-${sst==='completado'?'check-box':'square'}" onclick="event.stopPropagation(); toggleSubM('${t.id}', '${s.id}')" style="color:${sst==='completado'?'var(--green)':'var(--text3)'}; font-size:16px; cursor:pointer;"></i>
         <span class="st-name">${s.name}<span style="font-size:11px;color:var(--text3)"> ${sassg}${sdate}</span></span>
       </div>`;
     });
@@ -1257,7 +1134,7 @@ function renderBoard() {
         ${cols[k].map(t => {
           const subs    = state.subtasks&&state.subtasks[t.id] ? state.subtasks[t.id] : [];
           const subsDone= subs.filter(s=>s.status==='completado').length;
-          
+
           let subMeta = '';
           if(subs.length>0) {
               const pSub = Math.round((subsDone/subs.length)*100);
@@ -1281,6 +1158,11 @@ function renderBoard() {
 // ═══════════════════════════════════════════════════════
 //  RENDER GANTT
 // ═══════════════════════════════════════════════════════
+function toggleGanttCompleted() {
+    hideCompletedGantt = !hideCompletedGantt;
+    renderGantt();
+}
+
 function renderGantt() {
   const el = document.getElementById('tab-gantt');
   if (!el) return;
@@ -1310,12 +1192,19 @@ function renderGantt() {
 
     let html = `<div class="gantt-wrap"><div class="gantt-inner">
       <div class="gantt-head-row">
-        <div>Actividad</div>
+        <div style="display:flex; align-items:center; justify-content:space-between; padding-right:14px;">
+          Actividad 
+          <label style="font-weight:normal; cursor:pointer; font-size:10px; display:flex; align-items:center; gap:4px; color:var(--text2);">
+            <input type="checkbox" onchange="toggleGanttCompleted()" ${hideCompletedGantt?'checked':''}> Ocultar completadas
+          </label>
+        </div>
         <div class="month-labels">${monthsHtml}</div>
       </div>`;
 
     STAGES.forEach(stage => {
-      let stageTasks = getAllTasks().filter(t=>t.stageId===stage.id).sort((a,b)=>getTaskDates(a).start-getTaskDates(b).start);
+      let stageTasks = getAllTasks().filter(t=>t.stageId===stage.id);
+      if(hideCompletedGantt) stageTasks = stageTasks.filter(t => getTaskStatus(t.id) !== 'completado');
+      stageTasks = stageTasks.sort((a,b)=>getTaskDates(a).start-getTaskDates(b).start);
       
       if (!stageTasks.length) return;
       const scol = state.ganttCollapsed && state.ganttCollapsed[stage.id];
@@ -1333,11 +1222,11 @@ function renderGantt() {
               const eD = Math.floor((maxE - projStart.getTime())/(24*3600*1000));
               const sLeft = Math.max(0, (sD/TOTAL_D)*100);
               const sWidth = Math.max(0.5, ((eD - sD + 1)/TOTAL_D)*100);
-              stageBarHtml = `<div class="gantt-bar-cell"><div class="gantt-bar" style="left:${sLeft}%;width:${sWidth}%;background:${stage.color};opacity:0.25;border-radius:4px"></div></div>`;
+              stageBarHtml = `<div class="gantt-bar-cell" style="cursor:default !important;"><div class="gantt-bar" style="left:${sLeft}%;width:${sWidth}%;background:${stage.color};opacity:0.25;border-radius:4px"></div></div>`;
           }
       }
 
-      html += `<div class="gantt-row" style="background:${stage.light}; cursor:pointer" onclick="toggleGanttSection(${stage.id})">
+      html += `<div class="gantt-row" style="background:${stage.light};" onclick="toggleGanttSection(${stage.id})">
         <div style="font-weight:600; font-size:12px; display:flex; align-items:center; gap:6px; z-index:3; color:${stage.color}">
           <i class="ti ti-chevron-${scol?'right':'down'}" style="font-size:14px;color:${stage.color}"></i>
           <span style="width:8px;height:8px;border-radius:50%;background:${stage.color};display:inline-block;flex-shrink:0"></span>
@@ -1356,13 +1245,14 @@ function renderGantt() {
           const widthPct= Math.max(.5,((endD-startD+1)/TOTAL_D)*100);
           
           let barColor = status==='completado'?'var(--green)': status==='retrasado'?'var(--red)': status==='curso'?'var(--blue)':stage.color;
+          let barStyle = t.type === 'revision' ? `background: repeating-linear-gradient(45deg, ${barColor}, ${barColor} 6px, rgba(255,255,255,0.4) 6px, rgba(255,255,255,0.4) 12px);` : `background: ${barColor};`;
 
           const safeName = (t.name||'').replace(/"/g, '&quot;');
           html += `<div class="gantt-row" onclick="openTask('${t.id}',${stage.id})">
-            <div style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding-right:8px;color:${status==='completado'?'var(--text3)':'var(--text)'}${status==='completado'?';text-decoration:line-through':''}">${t.name}</div>
+            <div style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding-right:8px;color:${status==='completado'?'var(--text3)':'var(--text)'}${status==='completado'?';text-decoration:line-through':''}" title="${safeName}">${t.name}</div>
             <div class="gantt-bar-cell">
               <div class="gantt-today-line" style="left:${tf*100}%"></div>
-              <div class="gantt-bar" style="left:${leftPct}%; width:${widthPct}%; background:${barColor}; ${status==='completado'?';opacity:.5':''}" title="${safeName}"></div>
+              <div class="gantt-bar" style="left:${leftPct}%; width:${widthPct}%; ${barStyle} ${status==='completado'?';opacity:.5':''}" title="${safeName}"></div>
             </div>
           </div>`;
         });
@@ -1451,18 +1341,14 @@ function saveMember() {
   saveState(); closeModal(); renderTeam();
 }
 
-function getNextUpcoming(type) {
-   const all = getAllTasks();
-   const items = all.filter(t => t.type === type && getTaskStatus(t.id) !== 'completado');
-   const today = new Date(); today.setHours(0,0,0,0);
-   let next = null; let minDiff = Infinity;
-   items.forEach(h => {
-       const { start } = getTaskDates(h);
-       const startNoTime = new Date(start); startNoTime.setHours(0,0,0,0);
-       const diff = Math.ceil((startNoTime - today) / (1000*3600*24));
-       if (diff >= 0 && diff < minDiff) { minDiff = diff; next = h; }
-   });
-   return { item: next, days: minDiff };
+function getShareText() {
+    const s = calcStats(); const cw = currentWeek(); 
+    const nm = getNextUpcoming('hito'); const np = getNextUpcoming('producto');
+    let hitoText = nm.item ? `${nm.item.name} (en ${nm.days} días)` : "Ninguno pendiente";
+    let prodText = np.item ? `${np.item.name} (en ${np.days} días)` : "Ninguno pendiente";
+    const meta = currentProjId ? allProjects[currentProjId].meta : {};
+
+    return `📊 [${(meta.name||'PROYECTO').toUpperCase()}]\r\nSemana actual: S${cw} (${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))})\r\nProgreso: ${s.pct}% (${s.done}/${s.total} actividades completadas)\r\n- Completadas: ${s.counts.completado}\r\n- En curso: ${s.counts.curso}\r\n- Pendientes: ${s.counts.pendiente}\r\n- Retrasadas: ${s.counts.retrasado}\r\n\r\nPróximo producto: ${prodText}\r\nPróximo hito: ${hitoText}\r\n\r\nGenerado: ${fmtDate(new Date())} a las ${new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}`;
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1471,20 +1357,16 @@ function getNextUpcoming(type) {
 function renderShare(){
   const el = document.getElementById('tab-share');
   if(!el) return;
+  const text = getShareText();
   el.innerHTML=`<div style="margin-bottom:14px">
-    <p style="font-size:13px;color:var(--text2);margin-bottom:12px">¡La base de datos en tiempo real de Firebase está activada! No necesitas exportar archivos para colaborar.</p>
-    <div class="export-row"><button class="btn btn-blue" onclick="copyShareMsg()"><i class="ti ti-copy"></i> Copiar resumen para equipo</button></div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:12px">A continuación, visualiza el resumen del estado actual del proyecto. Haz clic en el botón para copiarlo y enviarlo a tu equipo o contraparte.</p>
+    <div class="share-preview-box">${text}</div>
+    <div class="export-row"><button class="btn btn-blue" onclick="copyShareMsg()"><i class="ti ti-copy"></i> Copiar resumen al portapapeles</button></div>
   </div>`;
 }
 
 function copyShareMsg(){
-  const s = calcStats(); const cw = currentWeek(); const nm = getNextUpcoming('hito'); 
-  let hitoText = nm.item ? `${nm.item.name} (en ${nm.days} días)` : "Ninguno pendiente";
-  const meta = currentProjId ? allProjects[currentProjId].meta : {};
-  
-  // Exactamente el formato que pediste
-  const text = `📊 [${(meta.name||'PROYECTO').toUpperCase()}] Semana actual: S${cw} (${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))}) Progreso: ${s.pct}% (${s.done}/${s.total} actividades completadas) - Completadas: ${s.counts.completado} - En curso: ${s.counts.curso} - Pendientes: ${s.counts.pendiente} - Retrasadas: ${s.counts.retrasado} Productos: ${s.productsDone}/${s.products} entregados Próximo hito: ${hitoText} Generado: ${fmtDate(new Date())} a las ${new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}`;
-  
+  const text = getShareText();
   navigator.clipboard.writeText(text).then(()=>alert('Resumen copiado al portapapeles ✓'));
 }
 
@@ -1603,7 +1485,7 @@ function openTask(taskId, stageId) {
           const sTeam = (state.team||[]).map(m=>`<option value="${m.name}" ${s.assignee===m.name?'selected':''}>${m.name}</option>`).join('');
           return `
         <div class="sub-row">
-          <i class="ti ti-${s.status==='completado'?'check':'circle'}" style="color:${s.status==='completado'?'var(--green)':'var(--border2)'}; font-size:18px; cursor:pointer;" onclick="toggleSubM('${taskId}','${s.id}')"></i>
+          <i class="ti ti-${s.status==='completado'?'check-box':'square'}" style="color:${s.status==='completado'?'var(--green)':'var(--text3)'}; font-size:18px; cursor:pointer;" onclick="toggleSubM('${taskId}','${s.id}')"></i>
           <input type="text" value="${(s.name||'').replace(/"/g, '&quot;')}" onchange="updateSubM('${taskId}','${s.id}','name',this.value)" placeholder="Descripción de subtarea" style="flex:1;min-width:0"/>
           <select onchange="updateSubM('${taskId}','${s.id}','assignee',this.value)">
              <option value="" disabled hidden ${!s.assignee?'selected':''}>Responsable...</option>
@@ -1625,7 +1507,7 @@ function openTask(taskId, stageId) {
     <h3 style="margin-bottom:4px">${t.name}</h3>
     <p style="font-size:12px;color:var(--text2);margin-bottom:14px"><span style="width:8px;height:8px;border-radius:50%;background:${stage.color};display:inline-block;margin-right:4px"></span>${stage.name} · ${badge(t.type)}</p>
     <div class="form-row">
-      <label>Responsable de Actividad</label>
+      <label>Responsable General</label>
       <select id="modal-assignee">
         <option value="" disabled hidden ${!t.assignee?'selected':''}>Responsable...</option>
         <option value="">Sin asignar</option>
@@ -1712,8 +1594,7 @@ function toggleSubM(pId, sId) {
   if (sub) {
     const wasDone = sub.status === 'completado';
     sub.status = wasDone ? 'pendiente' : 'completado';
-    
-    // Autocompletado inteligente (IDA Y VUELTA)
+
     const allSubs = state.subtasks[pId];
     if (allSubs && allSubs.length > 0) {
         const allDone = allSubs.every(s => s.status === 'completado');
@@ -1721,11 +1602,9 @@ function toggleSubM(pId, sId) {
             state.statuses[pId] = 'completado';
             logAction(`Actividad completada automáticamente (Subtareas listas).`);
         } else if (!allDone && state.statuses[pId] === 'completado') {
-            state.statuses[pId] = 'curso'; // Si desmarca, vuelve a "en curso"
-            logAction(`Actividad reabierta (Subtarea desmarcada).`);
+            state.statuses[pId] = 'curso'; 
         }
     }
-
     saveState();
     if(document.getElementById('modal-root').innerHTML.trim() !== '') {
         openTask(pId, getAllTasks().find(t=>t.id===pId).stageId);
