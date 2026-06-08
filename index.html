@@ -409,7 +409,6 @@ async function migrateOldData(oldState) {
 // ═══════════════════════════════════════════════════════
 function renderHome() {
   const ids = Object.keys(allProjects);
-  const el  = document.getElementById('home-projects-list');
 
   const activeIds = ids.filter(id => {
       const s = allProjects[id].meta.status || 'activo';
@@ -421,7 +420,7 @@ function renderHome() {
   });
 
   if (ids.length === 0) {
-    el.innerHTML = `
+    document.getElementById('home-projects-list').innerHTML = `
       <p style="font-size:13px;color:var(--text2);margin-bottom:20px">Aún no tienes proyectos. Crea el primero.</p>
       <div class="projects-grid">
         <div class="new-card" onclick="openNewProjectModal()">
@@ -431,7 +430,8 @@ function renderHome() {
     return;
   }
 
-  const proyectos  = activeIds.filter(id => allProjects[id].meta.type === 'proyecto');
+  // FALLBACK: Si un proyecto antiguo no tiene "type", se asume 'proyecto'.
+  const proyectos  = activeIds.filter(id => (allProjects[id].meta.type || 'proyecto') === 'proyecto');
   const propuestas = activeIds.filter(id => allProjects[id].meta.type === 'propuesta');
   let html = '';
 
@@ -465,7 +465,7 @@ function renderHome() {
       `;
   }
 
-  el.innerHTML = html;
+  document.getElementById('home-projects-list').innerHTML = html;
 }
 
 function buildProjectCard(id) {
@@ -474,19 +474,20 @@ function buildProjectCard(id) {
   const pct = m.lastPct || 0;
   
   const status = m.status || 'activo';
+  const type   = m.type || 'proyecto'; // Fallback
   const isArchived = status === 'finalizado' || status === 'perdida';
 
   let typeBadge = '';
   if (status === 'finalizado') typeBadge = '<span class="pc-type-badge badge-finalizado">Proyecto Finalizado</span>';
   else if (status === 'perdida') typeBadge = '<span class="pc-type-badge badge-perdida">Propuesta Perdida</span>';
   else if (status === 'postulada') typeBadge = '<span class="pc-type-badge badge-postulada">Postulada</span>';
-  else if (m.type === 'propuesta') typeBadge = '<span class="pc-type-badge badge-propuesta">En Construcción</span>';
+  else if (type === 'propuesta') typeBadge = '<span class="pc-type-badge badge-propuesta">En Construcción</span>';
   else typeBadge = '<span class="pc-type-badge badge-proyecto">Proyecto Activo</span>';
 
   let extraInfo = '';
   let actionButtons = '';
   
-  if (m.type === 'propuesta' && status === 'postulada') {
+  if (type === 'propuesta' && status === 'postulada') {
       const todayStr = toYMD(new Date());
       const isToday = m.awardDate === todayStr;
       const dateStyle = isToday ? 'background:var(--amber-light);color:#8a5c00;padding:2px 6px;border-radius:4px;font-weight:bold;' : '';
@@ -508,9 +509,9 @@ function buildProjectCard(id) {
   }
 
   let kebabOptions = `<div class="kebab-item" onclick="editProjectHome('${id}', event)"><i class="ti ti-edit"></i> Editar</div>`;
-  if (m.type === 'propuesta' && status === 'activo') {
+  if (type === 'propuesta' && status === 'activo') {
       kebabOptions += `<div class="kebab-item" onclick="markAsPostulada('${id}', event)"><i class="ti ti-send"></i> Marcar como postulada</div>`;
-  } else if (m.type === 'proyecto' && status === 'activo') {
+  } else if (type === 'proyecto' && status === 'activo') {
       kebabOptions += `<div class="kebab-item" onclick="markAsFinalizado('${id}', event)"><i class="ti ti-archive"></i> Proyecto finalizado</div>`;
   }
   kebabOptions += `<div class="kebab-item danger" onclick="deleteProjectHome('${id}', event)"><i class="ti ti-trash"></i> Eliminar</div>`;
@@ -618,6 +619,7 @@ function goHome() {
 function openProject(id) {
   currentProjId = id;
   const meta = allProjects[id].meta;
+  const tipoReal = meta.type || 'proyecto'; // Fallback
   isFirstLoad  = true;
   unseenLogs   = 0;
 
@@ -629,7 +631,7 @@ function openProject(id) {
 
   document.getElementById('proj-title').textContent = meta.name;
   
-  if (meta.type === 'propuesta') {
+  if (tipoReal === 'propuesta') {
       const lici = meta.licitationId ? ` · ID: ${meta.licitationId}` : '';
       const cierre = meta.closingDate ? ` · Cierre: ${fmtDateStr(meta.closingDate)}` : '';
       document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'}${lici}${cierre} · ${meta.totalWeeks} semanas`;
