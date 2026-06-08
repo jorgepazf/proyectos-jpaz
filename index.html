@@ -74,7 +74,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .project-card.archived{opacity:0.65;filter:grayscale(40%);}
 .project-card.archived:hover{opacity:0.95;filter:grayscale(0%);}
 .pc-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius-lg) var(--radius-lg) 0 0}
-.pc-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;margin-top:10px;line-height:1.3;padding-right:110px;}
+.pc-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;margin-top:10px;line-height:1.3;padding-right:30px;}
 .pc-client{font-size:12px;color:var(--text2);margin-bottom:12px}
 .pc-meta{display:flex;gap:12px;font-size:11px;color:var(--text3)}
 .pc-meta span{display:flex;align-items:center;gap:4px}
@@ -94,7 +94,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 /* Kebab Menu */
 .kebab-btn{position:absolute;bottom:12px;right:12px;padding:4px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:18px;border-radius:4px;z-index:5}
 .kebab-btn:hover{background:var(--bg2);color:var(--text)}
-.kebab-menu{display:none;position:absolute;bottom:35px;right:12px;background:var(--bg);border:1px solid var(--border);box-shadow:0 4px 12px rgba(0,0,0,0.15);border-radius:var(--radius);z-index:10;min-width:160px;overflow:hidden}
+.kebab-menu{display:none;position:absolute;bottom:35px;right:12px;background:var(--bg);border:1px solid var(--border);box-shadow:0 4px 12px rgba(0,0,0,0.15);border-radius:var(--radius);z-index:10;min-width:180px;overflow:hidden}
 .kebab-menu.show{display:block}
 .kebab-item{padding:8px 12px;font-size:12px;color:var(--text);cursor:pointer;transition:background 0.1s;display:flex;align-items:center;gap:6px}
 .kebab-item:hover{background:var(--bg2)}
@@ -353,7 +353,7 @@ let unseenLogs     = 0;
 let isFirstLoad    = true;
 let hideCompletedGantt = false; 
 
-// Control para cerrar dropdowns de forma global
+// Control global para el Kebab menú
 let activeKebab = null;
 window.addEventListener('click', () => {
     if (activeKebab) { activeKebab.classList.remove('show'); activeKebab = null; }
@@ -430,7 +430,6 @@ function renderHome() {
     return;
   }
 
-  // FALLBACK: Si un proyecto antiguo no tiene "type", se asume 'proyecto'.
   const proyectos  = activeIds.filter(id => (allProjects[id].meta.type || 'proyecto') === 'proyecto');
   const propuestas = activeIds.filter(id => allProjects[id].meta.type === 'propuesta');
   let html = '';
@@ -474,7 +473,7 @@ function buildProjectCard(id) {
   const pct = m.lastPct || 0;
   
   const status = m.status || 'activo';
-  const type   = m.type || 'proyecto'; // Fallback
+  const type   = m.type || 'proyecto';
   const isArchived = status === 'finalizado' || status === 'perdida';
 
   let typeBadge = '';
@@ -485,7 +484,6 @@ function buildProjectCard(id) {
   else typeBadge = '<span class="pc-type-badge badge-proyecto">Proyecto Activo</span>';
 
   let extraInfo = '';
-  let actionButtons = '';
   
   if (type === 'propuesta' && status === 'postulada') {
       const todayStr = toYMD(new Date());
@@ -500,20 +498,25 @@ function buildProjectCard(id) {
           <div><b>Adjudicación:</b> <span style="${dateStyle}">${awardStr}</span></div>
         </div>
       `;
-      actionButtons = `
-        <div style="display:flex;gap:8px;margin-top:12px;">
-          <button class="btn btn-sm btn-primary" style="flex:1;justify-content:center" onclick="markAsAdjudicada('${id}', event)">🟢 Adjudicada</button>
-          <button class="btn btn-sm btn-danger" style="background:var(--red-light);flex:1;justify-content:center" onclick="markAsPerdida('${id}', event)">🔴 Perdida</button>
-        </div>
-      `;
   }
 
-  let kebabOptions = `<div class="kebab-item" onclick="editProjectHome('${id}', event)"><i class="ti ti-edit"></i> Editar</div>`;
-  if (type === 'propuesta' && status === 'activo') {
-      kebabOptions += `<div class="kebab-item" onclick="markAsPostulada('${id}', event)"><i class="ti ti-send"></i> Marcar como postulada</div>`;
-  } else if (type === 'proyecto' && status === 'activo') {
-      kebabOptions += `<div class="kebab-item" onclick="markAsFinalizado('${id}', event)"><i class="ti ti-archive"></i> Proyecto finalizado</div>`;
+  let kebabOptions = '';
+  if (!isArchived) {
+      kebabOptions += `<div class="kebab-item" onclick="editProjectHome('${id}', event)"><i class="ti ti-edit"></i> Editar información</div>`;
+      if (type === 'propuesta') {
+          if (status === 'activo') {
+              kebabOptions += `<div class="kebab-item" onclick="markAsPostulada('${id}', event)"><i class="ti ti-send"></i> Marcar como postulada</div>`;
+          } else if (status === 'postulada') {
+              kebabOptions += `<div class="kebab-item" onclick="openAdjudicarModal('${id}', event)" style="color:var(--green)"><i class="ti ti-trophy"></i> Adjudicada (Crear Proyecto)</div>`;
+              kebabOptions += `<div class="kebab-item" onclick="markAsPerdida('${id}', event)" style="color:var(--red)"><i class="ti ti-x"></i> Perdida (Archivar)</div>`;
+          }
+      } else if (type === 'proyecto' && status === 'activo') {
+          kebabOptions += `<div class="kebab-item" onclick="markAsFinalizado('${id}', event)"><i class="ti ti-archive"></i> Proyecto finalizado</div>`;
+      }
+  } else {
+      kebabOptions += `<div class="kebab-item" onclick="unarchiveProject('${id}', event)"><i class="ti ti-archive-off"></i> Desarchivar</div>`;
   }
+  
   kebabOptions += `<div class="kebab-item danger" onclick="deleteProjectHome('${id}', event)"><i class="ti ti-trash"></i> Eliminar</div>`;
 
   return `
@@ -535,7 +538,6 @@ function buildProjectCard(id) {
       </div>
       <div class="pc-pbar"><div class="pc-pbar-inner" style="width:${pct}%;background:${m.accentColor||pal.color}"></div></div>
       ${extraInfo}
-      ${actionButtons}
     </div>`;
 }
 
@@ -557,11 +559,25 @@ function editProjectHome(id, e) {
     e.stopPropagation();
     openProject(id);
     const tabs = document.querySelectorAll('.tab-row button');
-    setTab('config', tabs[tabs.length - 1]); // Va a Config
+    setTab('config', tabs[tabs.length - 1]); 
 }
 function deleteProjectHome(id, e) {
     e.stopPropagation();
     deleteProject(id);
+}
+function unarchiveProject(id, e) {
+    e.stopPropagation();
+    if(activeKebab) activeKebab.classList.remove('show');
+    
+    const m = allProjects[id].meta;
+    let newStatus = 'activo';
+    if (m.type === 'propuesta') newStatus = 'postulada'; // La devolvemos a postulada
+    
+    allProjects[id].meta.status = newStatus;
+    db.collection('projects').doc(id).update({status: newStatus}).then(() => {
+        renderHome();
+        alert('Elemento desarchivado y restaurado ✓');
+    });
 }
 function copyLicitation(text, e) {
     e.stopPropagation();
@@ -571,29 +587,154 @@ function markAsPostulada(id, e) {
     e.stopPropagation();
     if(activeKebab) activeKebab.classList.remove('show');
     allProjects[id].meta.status = 'postulada';
-    db.collection('projects').doc(id).update({status: 'postulada'});
-    renderHome();
+    db.collection('projects').doc(id).update({status: 'postulada'}).then(() => renderHome());
 }
 function markAsPerdida(id, e) {
     e.stopPropagation();
+    if(activeKebab) activeKebab.classList.remove('show');
     allProjects[id].meta.status = 'perdida';
-    db.collection('projects').doc(id).update({status: 'perdida'});
-    renderHome();
-}
-function markAsAdjudicada(id, e) {
-    e.stopPropagation();
-    allProjects[id].meta.status = 'activo';
-    allProjects[id].meta.type = 'proyecto';
-    db.collection('projects').doc(id).update({status: 'activo', type: 'proyecto'});
-    renderHome();
-    alert("¡Felicidades! La propuesta ha sido adjudicada y ahora es un proyecto activo. Recuerda configurar sus etapas.");
+    db.collection('projects').doc(id).update({status: 'perdida'}).then(() => renderHome());
 }
 function markAsFinalizado(id, e) {
     e.stopPropagation();
     if(activeKebab) activeKebab.classList.remove('show');
     allProjects[id].meta.status = 'finalizado';
-    db.collection('projects').doc(id).update({status: 'finalizado'});
-    renderHome();
+    db.collection('projects').doc(id).update({status: 'finalizado'}).then(() => renderHome());
+}
+
+// ═══════════════════════════════════════════════════════
+//  TRANSICIÓN PROPUESTA -> PROYECTO (ADJUDICAR)
+// ═══════════════════════════════════════════════════════
+function openAdjudicarModal(id, e) {
+    e.stopPropagation();
+    if(activeKebab) activeKebab.classList.remove('show');
+    
+    const m = allProjects[id].meta;
+    
+    modal(`
+        <h3><i class="ti ti-trophy" style="color:var(--green)"></i> Adjudicar Propuesta</h3>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:14px">La propuesta se transformará internamente en un proyecto activo y se resetearán sus actividades. Por favor, define el esqueleto de tu nuevo proyecto.</p>
+        
+        <div class="form-row">
+          <label>Nombre del proyecto</label>
+          <input id="adj-name" type="text" value="${m.name}"/>
+        </div>
+        <div class="form-row">
+          <label>Cliente / Mandante</label>
+          <input id="adj-client" type="text" value="${m.client||''}"/>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="form-row">
+            <label>Fecha inicio oficial</label>
+            <input id="adj-start" type="date" value="${toYMD(new Date())}"/>
+          </div>
+          <div class="form-row">
+            <label>Total de semanas</label>
+            <input id="adj-weeks" type="number" min="1" max="104" value="${m.totalWeeks||20}"/>
+          </div>
+        </div>
+
+        <hr style="border:none;border-top:1px solid var(--border);margin:12px 0"/>
+        <p style="font-size:13px;font-weight:500;margin-bottom:10px">Definición de Etapas</p>
+        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+          <button class="btn btn-primary btn-sm" id="btn-method-form-adj" onclick="setAdjMethod('form')"><i class="ti ti-forms"></i> Formulario</button>
+          <button class="btn btn-sm" id="btn-method-json-adj" onclick="setAdjMethod('json')"><i class="ti ti-file-code"></i> Importar JSON</button>
+        </div>
+
+        <div id="adj-form-section">
+          <div class="tip-box" style="font-size:11px; color:var(--text2); background:var(--bg2); padding:10px; border-radius:var(--radius); margin-bottom:14px; border:1px solid var(--border);">
+            <i class="ti ti-info-circle"></i> Agrega los nombres de las etapas. Podrás añadir las actividades una vez guardado.
+          </div>
+          <div id="adj-stages-container"></div>
+          <button class="btn btn-sm" onclick="addAdjStageRow()" style="margin-bottom:14px"><i class="ti ti-plus"></i> Agregar etapa</button>
+        </div>
+
+        <div id="adj-json-section" style="display:none">
+          <div class="tip-box" style="font-size:11px; color:var(--text2); background:var(--bg2); padding:10px; border-radius:var(--radius); margin-bottom:14px; border:1px solid var(--border);">
+            <i class="ti ti-info-circle"></i> Pega el JSON directamente con tu estructura pre-definida.
+          </div>
+          <div class="form-row" style="margin-top:10px">
+            <textarea id="adj-json-paste" rows="6" placeholder='[{"id":1,"name":"Etapa 1","weeks":[1,10],"tasks":[...]}]'></textarea>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn" onclick="closeModal()">Cancelar</button>
+          <button class="btn btn-primary" onclick="saveAdjudicacion('${id}')"><i class="ti ti-check"></i> Transformar a Proyecto</button>
+        </div>
+    `, true);
+    
+    adjStageCount = 0;
+    addAdjStageRow();
+}
+
+let adjCreateMethod = 'form';
+function setAdjMethod(m) {
+    adjCreateMethod = m;
+    document.getElementById('adj-form-section').style.display = m === 'form' ? 'block' : 'none';
+    document.getElementById('adj-json-section').style.display = m === 'json' ? 'block' : 'none';
+    document.getElementById('btn-method-form-adj').className = 'btn btn-sm' + (m==='form'?' btn-primary':'');
+    document.getElementById('btn-method-json-adj').className = 'btn btn-sm' + (m==='json'?' btn-primary':'');
+}
+
+let adjStageCount = 0;
+function addAdjStageRow() {
+    adjStageCount++;
+    const c = document.getElementById('adj-stages-container');
+    const pal = STAGE_PALETTE[(adjStageCount-1) % STAGE_PALETTE.length];
+    const div = document.createElement('div');
+    div.className = 'stage-builder';
+    div.id = 'adj-stage-' + adjStageCount;
+    div.style.marginBottom = '10px';
+    div.innerHTML = `
+        <div class="stage-builder-head" style="border-left:4px solid ${pal.color}; padding-left:10px; display:flex; align-items:center; gap:8px;">
+          <span style="width:10px;height:10px;border-radius:50%;background:${pal.color};display:inline-block;flex-shrink:0"></span>
+          <input type="text" placeholder="Nombre de la etapa" style="flex:1;background:transparent;border:1px solid var(--border2);border-radius:4px;padding:6px 10px;font-size:13px;font-weight:500;color:var(--text);outline:none" id="adj-stage-name-${adjStageCount}"/>
+          <button class="btn btn-sm btn-danger" onclick="document.getElementById('adj-stage-${adjStageCount}').remove()" style="padding:6px 10px"><i class="ti ti-trash"></i></button>
+        </div>`;
+    c.appendChild(div);
+}
+
+async function saveAdjudicacion(id) {
+    const name   = document.getElementById('adj-name').value.trim();
+    const client = document.getElementById('adj-client').value.trim();
+    const start  = document.getElementById('adj-start').value;
+    const weeks  = parseInt(document.getElementById('adj-weeks').value)||10;
+    
+    if (!name) { alert('El nombre es obligatorio.'); return; }
+
+    let stages = [];
+    if (adjCreateMethod === 'form') {
+        const stageEls = document.querySelectorAll('#adj-stages-container .stage-builder');
+        stageEls.forEach((el, si) => {
+            const sn = el.id.replace('adj-stage-','');
+            const sname = document.getElementById('adj-stage-name-'+sn).value.trim() || `Etapa ${si+1}`;
+            stages.push({ id: si+1, name: sname, weeks: [1, 2], tasks: [] });
+        });
+    } else {
+        const raw = document.getElementById('adj-json-paste').value.trim();
+        try { stages = JSON.parse(raw); }
+        catch(e) { alert('El JSON no es válido.'); return; }
+    }
+
+    try {
+        // Borramos el estado "runtime" antiguo (elimina tareas de "Armado de propuesta", evaluaciones, notas)
+        await db.collection('projects').doc(id).collection('runtime').doc('state').delete();
+        
+        // Actualizamos meta para que sea un proyecto oficial y activo
+        const updates = {
+            name, client, startDate: start, totalWeeks: weeks,
+            type: 'proyecto', status: 'activo', stages,
+            lastPct: 0
+        };
+        await db.collection('projects').doc(id).update(updates);
+        
+        allProjects[id].meta = { ...allProjects[id].meta, ...updates };
+        
+        closeModal();
+        alert('¡Propuesta adjudicada y transformada a Proyecto con éxito!');
+        openProject(id);
+    } catch(e) { console.error(e); alert('Error al adjudicar.'); }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -617,9 +758,10 @@ function goHome() {
 //  ABRIR PROYECTO
 // ═══════════════════════════════════════════════════════
 function openProject(id) {
+  if(activeKebab) activeKebab.classList.remove('show');
   currentProjId = id;
   const meta = allProjects[id].meta;
-  const tipoReal = meta.type || 'proyecto'; // Fallback
+  const tipoReal = meta.type || 'proyecto';
   isFirstLoad  = true;
   unseenLogs   = 0;
 
