@@ -66,27 +66,42 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-red{background:var(--red);border-color:var(--red);color:#fff}
 .btn-sm{padding:4px 10px;font-size:12px}
 
-/* ── PROJECT CARDS (home) ── */
+/* ── PROJECT CARDS (home) & ARCHIVE ── */
 .section-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:10px}
 .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:24px}
-.project-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:box-shadow .15s,border-color .15s;position:relative;overflow:hidden}
+.project-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:box-shadow .15s,border-color .15s,opacity .2s;position:relative;}
 .project-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08);border-color:var(--border2)}
-.pc-accent{position:absolute;top:0;left:0;right:0;height:3px}
+.project-card.archived{opacity:0.65;filter:grayscale(40%);}
+.project-card.archived:hover{opacity:0.95;filter:grayscale(0%);}
+.pc-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius-lg) var(--radius-lg) 0 0}
 .pc-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;margin-top:10px;line-height:1.3;padding-right:110px;}
 .pc-client{font-size:12px;color:var(--text2);margin-bottom:12px}
 .pc-meta{display:flex;gap:12px;font-size:11px;color:var(--text3)}
 .pc-meta span{display:flex;align-items:center;gap:4px}
 .pc-pbar{height:4px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden}
 .pc-pbar-inner{height:100%;border-radius:2px}
-.pc-type-badge{position:absolute;top:14px;right:14px;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500}
+.pc-type-badge{position:absolute;top:14px;right:14px;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500;z-index:2}
 .badge-propuesta{background:var(--amber-light);color:#8a5c00}
 .badge-proyecto{background:var(--green-light);color:var(--green)}
+.badge-postulada{background:var(--blue-light);color:var(--blue)}
+.badge-finalizado{background:#e0e0e0;color:#555}
+.badge-perdida{background:var(--red-light);color:var(--red)}
 .new-card{border:2px dashed var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:border-color .15s,background .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:130px;color:var(--text3)}
 .new-card:hover{border-color:var(--green);background:var(--green-light);color:var(--green)}
 .new-card i{font-size:24px}
 .new-card span{font-size:13px;font-weight:500}
-.delete-proj-btn{position:absolute;bottom:12px;right:12px;padding:5px;font-size:14px;border:none;background:transparent;color:var(--text3);cursor:pointer;transition:color .15s}
-.delete-proj-btn:hover{color:var(--red)}
+
+/* Kebab Menu */
+.kebab-btn{position:absolute;bottom:12px;right:12px;padding:4px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:18px;border-radius:4px;z-index:5}
+.kebab-btn:hover{background:var(--bg2);color:var(--text)}
+.kebab-menu{display:none;position:absolute;bottom:35px;right:12px;background:var(--bg);border:1px solid var(--border);box-shadow:0 4px 12px rgba(0,0,0,0.15);border-radius:var(--radius);z-index:10;min-width:160px;overflow:hidden}
+.kebab-menu.show{display:block}
+.kebab-item{padding:8px 12px;font-size:12px;color:var(--text);cursor:pointer;transition:background 0.1s;display:flex;align-items:center;gap:6px}
+.kebab-item:hover{background:var(--bg2)}
+.kebab-item.danger{color:var(--red)}
+
+.archived-section{display:none;margin-top:30px;padding-top:20px;border-top:1px dashed var(--border)}
+.archived-section.show{display:block}
 
 /* ── BACK BUTTON / PROJECT TOPBAR ── */
 .proj-topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:16px;flex-wrap:wrap}
@@ -199,6 +214,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .notif-item{padding:10px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--text);line-height:1.4}
 .notif-item:last-child{border-bottom:none}
 .notif-time{font-size:10px;color:var(--text3);margin-top:4px}
+.copy-icon{cursor:pointer; color:var(--blue); font-size:14px; margin-left:4px; padding:2px;}
 
 @media(max-width:600px){
   .topbar{flex-direction:column}
@@ -337,6 +353,12 @@ let unseenLogs     = 0;
 let isFirstLoad    = true;
 let hideCompletedGantt = false; 
 
+// Control para cerrar dropdowns de forma global
+let activeKebab = null;
+window.addEventListener('click', () => {
+    if (activeKebab) { activeKebab.classList.remove('show'); activeKebab = null; }
+});
+
 // ═══════════════════════════════════════════════════════
 //  BOOTSTRAP: cargar lista de proyectos
 // ═══════════════════════════════════════════════════════
@@ -369,6 +391,7 @@ async function migrateOldData(oldState) {
         startDate: oldState.startDate || "2026-06-01",
         totalWeeks: 35,
         type: "proyecto",
+        status: "activo",
         stages: DEFAULT_PAE_STAGES, 
         accentColor: "#1D9E75",
         createdAt: Date.now(),
@@ -388,6 +411,15 @@ function renderHome() {
   const ids = Object.keys(allProjects);
   const el  = document.getElementById('home-projects-list');
 
+  const activeIds = ids.filter(id => {
+      const s = allProjects[id].meta.status || 'activo';
+      return s === 'activo' || s === 'postulada';
+  });
+  const archivedIds = ids.filter(id => {
+      const s = allProjects[id].meta.status;
+      return s === 'finalizado' || s === 'perdida';
+  });
+
   if (ids.length === 0) {
     el.innerHTML = `
       <p style="font-size:13px;color:var(--text2);margin-bottom:20px">Aún no tienes proyectos. Crea el primero.</p>
@@ -399,8 +431,8 @@ function renderHome() {
     return;
   }
 
-  const proyectos  = ids.filter(id => allProjects[id].meta.type === 'proyecto');
-  const propuestas = ids.filter(id => allProjects[id].meta.type === 'propuesta');
+  const proyectos  = activeIds.filter(id => allProjects[id].meta.type === 'proyecto');
+  const propuestas = activeIds.filter(id => allProjects[id].meta.type === 'propuesta');
   let html = '';
 
   if (proyectos.length > 0) {
@@ -410,12 +442,29 @@ function renderHome() {
   }
 
   if (propuestas.length > 0) {
-    html += `<div class="section-label" style="margin-top:8px"><i class="ti ti-file-description"></i> Propuestas técnicas</div><div class="projects-grid">`;
+    html += `<div class="section-label" style="margin-top:8px"><i class="ti ti-file-description"></i> Pipeline: Propuestas Técnicas</div><div class="projects-grid">`;
     propuestas.forEach(id => { html += buildProjectCard(id); });
     html += `</div>`;
   }
 
   html += `<div class="projects-grid"><div class="new-card" onclick="openNewProjectModal()"><i class="ti ti-plus"></i><span>Nuevo proyecto o propuesta</span></div></div>`;
+
+  if (archivedIds.length > 0) {
+      html += `
+        <div style="margin-top:30px; text-align:center;">
+          <button class="btn" style="background:var(--bg2)" onclick="toggleArchiveSection()">
+            <i class="ti ti-archive"></i> Ver proyectos archivados (${archivedIds.length})
+          </button>
+        </div>
+        <div id="archived-section" class="archived-section">
+          <div class="section-label"><i class="ti ti-archive"></i> Historial Archivados</div>
+          <div class="projects-grid">
+            ${archivedIds.map(id => buildProjectCard(id)).join('')}
+          </div>
+        </div>
+      `;
+  }
+
   el.innerHTML = html;
 }
 
@@ -423,13 +472,59 @@ function buildProjectCard(id) {
   const m  = allProjects[id].meta;
   const pal = STAGE_PALETTE[0];
   const pct = m.lastPct || 0;
-  const typeBadge = m.type === 'propuesta'
-    ? '<span class="pc-type-badge badge-propuesta">Propuesta</span>'
-    : '<span class="pc-type-badge badge-proyecto">Proyecto Activo</span>';
+  
+  const status = m.status || 'activo';
+  const isArchived = status === 'finalizado' || status === 'perdida';
+
+  let typeBadge = '';
+  if (status === 'finalizado') typeBadge = '<span class="pc-type-badge badge-finalizado">Proyecto Finalizado</span>';
+  else if (status === 'perdida') typeBadge = '<span class="pc-type-badge badge-perdida">Propuesta Perdida</span>';
+  else if (status === 'postulada') typeBadge = '<span class="pc-type-badge badge-postulada">Postulada</span>';
+  else if (m.type === 'propuesta') typeBadge = '<span class="pc-type-badge badge-propuesta">En Construcción</span>';
+  else typeBadge = '<span class="pc-type-badge badge-proyecto">Proyecto Activo</span>';
+
+  let extraInfo = '';
+  let actionButtons = '';
+  
+  if (m.type === 'propuesta' && status === 'postulada') {
+      const todayStr = toYMD(new Date());
+      const isToday = m.awardDate === todayStr;
+      const dateStyle = isToday ? 'background:var(--amber-light);color:#8a5c00;padding:2px 6px;border-radius:4px;font-weight:bold;' : '';
+      const awardStr = m.awardDate ? fmtDateStr(m.awardDate) : 'No definida';
+      const liciId = m.licitationId || 'Sin ID';
+      
+      extraInfo = `
+        <div style="margin-top:14px;font-size:11px;color:var(--text2);background:var(--bg2);padding:10px;border-radius:var(--radius);border:1px solid var(--border)">
+          <div style="margin-bottom:6px;"><b>ID Licitación:</b> ${liciId} <i class="ti ti-copy copy-icon" title="Copiar ID" onclick="copyLicitation('${liciId}', event)"></i></div>
+          <div><b>Adjudicación:</b> <span style="${dateStyle}">${awardStr}</span></div>
+        </div>
+      `;
+      actionButtons = `
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <button class="btn btn-sm btn-primary" style="flex:1;justify-content:center" onclick="markAsAdjudicada('${id}', event)">🟢 Adjudicada</button>
+          <button class="btn btn-sm btn-danger" style="background:var(--red-light);flex:1;justify-content:center" onclick="markAsPerdida('${id}', event)">🔴 Perdida</button>
+        </div>
+      `;
+  }
+
+  let kebabOptions = `<div class="kebab-item" onclick="editProjectHome('${id}', event)"><i class="ti ti-edit"></i> Editar</div>`;
+  if (m.type === 'propuesta' && status === 'activo') {
+      kebabOptions += `<div class="kebab-item" onclick="markAsPostulada('${id}', event)"><i class="ti ti-send"></i> Marcar como postulada</div>`;
+  } else if (m.type === 'proyecto' && status === 'activo') {
+      kebabOptions += `<div class="kebab-item" onclick="markAsFinalizado('${id}', event)"><i class="ti ti-archive"></i> Proyecto finalizado</div>`;
+  }
+  kebabOptions += `<div class="kebab-item danger" onclick="deleteProjectHome('${id}', event)"><i class="ti ti-trash"></i> Eliminar</div>`;
+
   return `
-    <div class="project-card" onclick="openProject('${id}')">
+    <div class="project-card ${isArchived ? 'archived' : ''}" onclick="openProject('${id}')">
       <div class="pc-accent" style="background:${m.accentColor||pal.color}"></div>
       ${typeBadge}
+      
+      <button class="kebab-btn" onclick="toggleKebab('${id}', event)"><i class="ti ti-dots-vertical"></i></button>
+      <div class="kebab-menu" id="kebab-menu-${id}">
+        ${kebabOptions}
+      </div>
+
       <div class="pc-title">${m.name}</div>
       <div class="pc-client">${m.client||'Sin cliente'}</div>
       <div class="pc-meta">
@@ -438,8 +533,66 @@ function buildProjectCard(id) {
         <span><i class="ti ti-chart-pie"></i> ${pct}%</span>
       </div>
       <div class="pc-pbar"><div class="pc-pbar-inner" style="width:${pct}%;background:${m.accentColor||pal.color}"></div></div>
-      <button class="delete-proj-btn" title="Eliminar proyecto" onclick="event.stopPropagation(); deleteProject('${id}')"><i class="ti ti-trash"></i></button>
+      ${extraInfo}
+      ${actionButtons}
     </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  ACCIONES KEBAB & PIPELINE HOME
+// ═══════════════════════════════════════════════════════
+function toggleKebab(id, e) {
+    e.stopPropagation();
+    const menu = document.getElementById(`kebab-menu-${id}`);
+    if (activeKebab && activeKebab !== menu) activeKebab.classList.remove('show');
+    menu.classList.toggle('show');
+    activeKebab = menu.classList.contains('show') ? menu : null;
+}
+function toggleArchiveSection() {
+    const el = document.getElementById('archived-section');
+    if(el) el.classList.toggle('show');
+}
+function editProjectHome(id, e) {
+    e.stopPropagation();
+    openProject(id);
+    const tabs = document.querySelectorAll('.tab-row button');
+    setTab('config', tabs[tabs.length - 1]); // Va a Config
+}
+function deleteProjectHome(id, e) {
+    e.stopPropagation();
+    deleteProject(id);
+}
+function copyLicitation(text, e) {
+    e.stopPropagation();
+    navigator.clipboard.writeText(text).then(()=>alert('ID copiado al portapapeles ✓'));
+}
+function markAsPostulada(id, e) {
+    e.stopPropagation();
+    if(activeKebab) activeKebab.classList.remove('show');
+    allProjects[id].meta.status = 'postulada';
+    db.collection('projects').doc(id).update({status: 'postulada'});
+    renderHome();
+}
+function markAsPerdida(id, e) {
+    e.stopPropagation();
+    allProjects[id].meta.status = 'perdida';
+    db.collection('projects').doc(id).update({status: 'perdida'});
+    renderHome();
+}
+function markAsAdjudicada(id, e) {
+    e.stopPropagation();
+    allProjects[id].meta.status = 'activo';
+    allProjects[id].meta.type = 'proyecto';
+    db.collection('projects').doc(id).update({status: 'activo', type: 'proyecto'});
+    renderHome();
+    alert("¡Felicidades! La propuesta ha sido adjudicada y ahora es un proyecto activo. Recuerda configurar sus etapas.");
+}
+function markAsFinalizado(id, e) {
+    e.stopPropagation();
+    if(activeKebab) activeKebab.classList.remove('show');
+    allProjects[id].meta.status = 'finalizado';
+    db.collection('projects').doc(id).update({status: 'finalizado'});
+    renderHome();
 }
 
 // ═══════════════════════════════════════════════════════
@@ -555,8 +708,9 @@ function logAction(text) {
 }
 
 async function deleteProject(id) {
-  if (!confirm(`¿Eliminar el proyecto "${allProjects[id].meta.name}" permanentemente? Esta acción no se puede deshacer.`)) return;
+  if (!confirm(`¿Eliminar el proyecto permanentemente? Esta acción no se puede deshacer.`)) return;
   try {
+    if(activeKebab) activeKebab.classList.remove('show');
     await db.collection('projects').doc(id).collection('runtime').doc('state').delete();
     await db.collection('projects').doc(id).delete();
     delete allProjects[id];
@@ -751,7 +905,7 @@ async function saveNewProject() {
   const pal = STAGE_PALETTE[0];
   const meta = {
     name, client, startDate: start, totalWeeks: weeks,
-    type, stages, accentColor: pal.color,
+    type, stages, accentColor: pal.color, status: 'activo',
     createdAt: Date.now(), lastPct: 0
   };
 
@@ -906,12 +1060,6 @@ function toggleNotifs(e) {
   document.getElementById('notif-dropdown').classList.toggle('show');
   unseenLogs = 0; updateNotifBadge();
 }
-window.onclick = function(e) {
-  if (!e.target.closest('.dropdown')) {
-    const nd = document.getElementById('notif-dropdown');
-    if (nd) nd.classList.remove('show');
-  }
-};
 function updateNotifBadge() {
   const b = document.getElementById('notif-badge');
   if (!b) return;
