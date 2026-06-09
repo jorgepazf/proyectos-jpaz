@@ -74,7 +74,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .project-card.archived{opacity:0.65;filter:grayscale(40%);}
 .project-card.archived:hover{opacity:0.95;filter:grayscale(0%);}
 .pc-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius-lg) var(--radius-lg) 0 0}
-.pc-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;margin-top:10px;line-height:1.3;padding-right:30px;}
+/* Ajuste crítico: Se añadió margin-top de 36px para evitar choque con las etiquetas badge */
+.pc-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;margin-top:36px;line-height:1.3;}
 .pc-client{font-size:12px;color:var(--text2);margin-bottom:12px}
 .pc-meta{display:flex;gap:12px;font-size:11px;color:var(--text3)}
 .pc-meta span{display:flex;align-items:center;gap:4px}
@@ -430,6 +431,7 @@ function renderHome() {
     return;
   }
 
+  // FALLBACK: Si un proyecto antiguo no tiene "type", se asume 'proyecto'.
   const proyectos  = activeIds.filter(id => (allProjects[id].meta.type || 'proyecto') === 'proyecto');
   const propuestas = activeIds.filter(id => allProjects[id].meta.type === 'propuesta');
   let html = '';
@@ -484,6 +486,13 @@ function buildProjectCard(id) {
   else typeBadge = '<span class="pc-type-badge badge-proyecto">Proyecto Activo</span>';
 
   let extraInfo = '';
+  let timeMeta = '';
+
+  if (type === 'propuesta') {
+      timeMeta = `<span><i class="ti ti-calendar-time"></i> Cierre: ${m.closingDate ? fmtDateStr(m.closingDate) : 'No definida'}</span>`;
+  } else {
+      timeMeta = `<span><i class="ti ti-clock"></i> ${m.totalWeeks||0} semanas</span>`;
+  }
   
   if (type === 'propuesta' && status === 'postulada') {
       const todayStr = toYMD(new Date());
@@ -533,7 +542,7 @@ function buildProjectCard(id) {
       <div class="pc-client">${m.client||'Sin cliente'}</div>
       <div class="pc-meta">
         <span><i class="ti ti-calendar"></i> ${m.startDate||'—'}</span>
-        <span><i class="ti ti-clock"></i> ${m.totalWeeks||0} semanas</span>
+        ${timeMeta}
         <span><i class="ti ti-chart-pie"></i> ${pct}%</span>
       </div>
       <div class="pc-pbar"><div class="pc-pbar-inner" style="width:${pct}%;background:${m.accentColor||pal.color}"></div></div>
@@ -571,7 +580,7 @@ function unarchiveProject(id, e) {
     
     const m = allProjects[id].meta;
     let newStatus = 'activo';
-    if (m.type === 'propuesta') newStatus = 'postulada'; // La devolvemos a postulada
+    if (m.type === 'propuesta') newStatus = 'postulada'; 
     
     allProjects[id].meta.status = newStatus;
     db.collection('projects').doc(id).update({status: newStatus}).then(() => {
@@ -718,10 +727,8 @@ async function saveAdjudicacion(id) {
     }
 
     try {
-        // Borramos el estado "runtime" antiguo (elimina tareas de "Armado de propuesta", evaluaciones, notas)
         await db.collection('projects').doc(id).collection('runtime').doc('state').delete();
         
-        // Actualizamos meta para que sea un proyecto oficial y activo
         const updates = {
             name, client, startDate: start, totalWeeks: weeks,
             type: 'proyecto', status: 'activo', stages,
@@ -776,7 +783,7 @@ function openProject(id) {
   if (tipoReal === 'propuesta') {
       const lici = meta.licitationId ? ` · ID: ${meta.licitationId}` : '';
       const cierre = meta.closingDate ? ` · Cierre: ${fmtDateStr(meta.closingDate)}` : '';
-      document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'}${lici}${cierre} · ${meta.totalWeeks} semanas`;
+      document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'}${lici}${cierre}`;
   } else {
       document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'} · Inicio: ${fmtDateStr(meta.startDate)} · ${meta.totalWeeks} semanas · ${STAGES.length} etapas`;
   }
@@ -885,10 +892,10 @@ function openNewProjectModal() {
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div class="form-row">
-        <label>Fecha inicio (Semana 1)</label>
+        <label>Fecha inicio</label>
         <input id="np-start" type="date" value="${toYMD(new Date())}"/>
       </div>
-      <div class="form-row">
+      <div class="form-row" id="np-weeks-container">
         <label>Total de semanas</label>
         <input id="np-weeks" type="number" min="1" max="104" value="20"/>
       </div>
@@ -957,9 +964,11 @@ function toggleProjectType(type) {
   if (type === 'propuesta') {
     document.getElementById('np-etapas-section').style.display = 'none';
     document.getElementById('propuesta-fields').style.display = 'block';
+    document.getElementById('np-weeks-container').style.display = 'none';
   } else {
     document.getElementById('np-etapas-section').style.display = 'block';
     document.getElementById('propuesta-fields').style.display = 'none';
+    document.getElementById('np-weeks-container').style.display = 'block';
   }
 }
 
@@ -1024,19 +1033,28 @@ async function saveNewProject() {
   const name   = document.getElementById('np-name').value.trim();
   const client = document.getElementById('np-client').value.trim();
   const start  = document.getElementById('np-start').value;
-  const weeks  = parseInt(document.getElementById('np-weeks').value)||10;
   const type   = document.getElementById('np-type').value;
   if (!name) { alert('El nombre del proyecto es obligatorio.'); return; }
 
   let stages = [];
+  let weeks = 10;
   let licitationId = '', closingDate = '', awardDate = '';
 
   if (type === 'propuesta') {
-      stages = [{ id: 1, name: 'Armado de la propuesta', weeks: [1, weeks], tasks: [] }];
       licitationId = document.getElementById('np-licitation').value.trim();
       closingDate = document.getElementById('np-closing').value;
       awardDate = document.getElementById('np-award').value;
+      
+      if (!closingDate) { alert('La fecha de cierre es obligatoria para la propuesta.'); return; }
+      
+      const sD = new Date(start);
+      const cD = new Date(closingDate);
+      const diffTime = cD - sD;
+      weeks = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 7)));
+
+      stages = [{ id: 1, name: 'Armado de la propuesta', weeks: [1, weeks], tasks: [] }];
   } else {
+      weeks = parseInt(document.getElementById('np-weeks').value) || 10;
       if (createMethod === 'form') {
         stages = collectStagesFromForm();
       } else {
@@ -1709,10 +1727,11 @@ function renderConfig() {
       </div>
       
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        ${meta.type !== 'propuesta' ? `
         <div class="form-row">
           <label>Total de semanas</label>
           <input type="number" id="cfg-weeks" min="1" value="${meta.totalWeeks||35}"/>
-        </div>
+        </div>` : `<div></div>`}
         <div class="form-row">
           <label>Tipo</label>
           <select id="cfg-type" disabled>
@@ -1738,12 +1757,18 @@ function updateProjectMeta() {
   const meta = allProjects[currentProjId].meta;
   meta.name = document.getElementById('cfg-name').value.trim() || 'Proyecto sin nombre';
   meta.client = document.getElementById('cfg-client').value.trim();
-  meta.totalWeeks = parseInt(document.getElementById('cfg-weeks').value) || 35;
   
-  if (meta.type === 'propuesta') {
+  if (meta.type !== 'propuesta') {
+      meta.totalWeeks = parseInt(document.getElementById('cfg-weeks').value) || 35;
+  } else {
       meta.licitationId = document.getElementById('cfg-licitation').value.trim();
       meta.closingDate = document.getElementById('cfg-closing').value;
       meta.awardDate = document.getElementById('cfg-award').value;
+      
+      const startD = parseLocal(state.startDate || meta.startDate);
+      const closeD = parseLocal(meta.closingDate);
+      const diffTime = closeD - startD;
+      meta.totalWeeks = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 7)));
   }
   
   db.collection('projects').doc(currentProjId).update(meta).then(() => {
@@ -1751,7 +1776,7 @@ function updateProjectMeta() {
      if (meta.type === 'propuesta') {
          const lici = meta.licitationId ? ` · ID: ${meta.licitationId}` : '';
          const cierre = meta.closingDate ? ` · Cierre: ${fmtDateStr(meta.closingDate)}` : '';
-         document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'}${lici}${cierre} · ${meta.totalWeeks} semanas`;
+         document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'}${lici}${cierre}`;
      } else {
          document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'} · Inicio: ${fmtDateStr(state.startDate)} · ${meta.totalWeeks} semanas · ${STAGES.length} etapas`;
      }
