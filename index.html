@@ -74,17 +74,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .project-card.archived{opacity:0.65;filter:grayscale(40%);}
 .project-card.archived:hover{opacity:0.95;filter:grayscale(0%);}
 .pc-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--radius-lg) var(--radius-lg) 0 0}
-
-/* Título: padding derecho amplio para que NUNCA choque con el badge y kebab, y margin top para despejar la zona */
 .pc-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;margin-top:12px;line-height:1.3;padding-right:125px;}
 .pc-client{font-size:12px;color:var(--text2);margin-bottom:12px}
-
 .pc-meta{display:flex;gap:12px;font-size:11px;color:var(--text3)}
 .pc-meta span{display:flex;align-items:center;gap:4px}
 .pc-pbar{height:4px;background:var(--border);border-radius:2px;margin-top:10px;overflow:hidden}
 .pc-pbar-inner{height:100%;border-radius:2px}
-
-/* Badge desplazado a la izquierda del Kebab para la armonía visual */
 .pc-type-badge{position:absolute;top:14px;right:34px;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500;z-index:2}
 .badge-propuesta{background:var(--amber-light);color:#8a5c00}
 .badge-proyecto{background:var(--green-light);color:var(--green)}
@@ -97,7 +92,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .new-card i{font-size:24px}
 .new-card span{font-size:13px;font-weight:500}
 
-/* Kebab Menu - Esquina superior derecha */
+/* Kebab Menu */
 .kebab-btn{position:absolute;top:10px;right:8px;padding:4px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:18px;border-radius:4px;z-index:5}
 .kebab-btn:hover{background:var(--bg2);color:var(--text)}
 .kebab-menu{display:none;position:absolute;top:40px;right:12px;background:var(--bg);border:1px solid var(--border);box-shadow:0 4px 12px rgba(0,0,0,0.15);border-radius:var(--radius);z-index:10;min-width:180px;overflow:hidden}
@@ -105,6 +100,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .kebab-item{padding:8px 12px;font-size:12px;color:var(--text);cursor:pointer;transition:background 0.1s;display:flex;align-items:center;gap:6px}
 .kebab-item:hover{background:var(--bg2)}
 .kebab-item.danger{color:var(--red)}
+
+/* Vista de Lista (List View) para Propuestas Postuladas */
+.view-toggle { display:flex; gap:4px; align-items:center; }
+.view-toggle i { cursor:pointer; font-size:16px; color:var(--text3); padding:4px; border-radius:4px; transition:all 0.15s; }
+.view-toggle i:hover { background:var(--bg3); color:var(--text); }
+.view-toggle i.active { background:var(--bg2); color:var(--blue); }
+
+.projects-list-view { display:flex; flex-direction:column; gap:8px; margin-bottom:24px; }
+.list-card { display:flex; align-items:center; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); padding:10px 16px; cursor:pointer; transition:border-color .15s, box-shadow .15s; position:relative; overflow:visible; }
+.list-card:hover { border-color:var(--border2); box-shadow:0 2px 8px rgba(0,0,0,.05); }
+.list-card .lc-accent { position:absolute; left:0; top:0; bottom:0; width:4px; border-radius:var(--radius) 0 0 var(--radius); }
+
+.lc-left { flex:0 0 40%; padding-left:8px; padding-right:12px; }
+.lc-title { font-size:13px; font-weight:600; color:var(--text); line-height:1.2; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.lc-client { font-size:11px; color:var(--text2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+.lc-center { flex:0 0 30%; display:flex; flex-direction:column; gap:2px; padding-right:12px; }
+.lc-text { font-size:11px; color:var(--text2); display:flex; align-items:center; gap:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+.lc-right { flex:1; display:flex; align-items:center; justify-content:flex-end; gap:16px; padding-right:24px; }
+.list-card .kebab-btn { top:50%; transform:translateY(-50%); right:8px; }
+.list-card .kebab-menu { top:100%; right:12px; }
 
 .archived-section{display:none;margin-top:30px;padding-top:20px;border-top:1px dashed var(--border)}
 .archived-section.show{display:block}
@@ -230,6 +247,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   .filter-bar select{flex:1;min-width:100%}
   .gantt-row {grid-template-columns: 240px 1fr;}
   .gantt-head-row {grid-template-columns: 240px 1fr;}
+  
+  /* Ajuste responsivo de la Lista */
+  .list-card { flex-direction:column; align-items:flex-start; padding:12px 16px; gap:8px; }
+  .lc-left, .lc-center, .lc-right { flex:unset; width:100%; padding:0; justify-content:flex-start; }
+  .list-card .kebab-btn { top:12px; transform:none; right:8px; }
+  .lc-right { margin-top:4px; padding-right:0; justify-content:space-between; width:100%;}
 }
 </style>
 </head>
@@ -359,6 +382,9 @@ let unseenLogs     = 0;
 let isFirstLoad    = true;
 let hideCompletedGantt = false; 
 
+// Preferencia de vista para propuestas postuladas ('list' o 'grid')
+let viewModePostuladas = 'list';
+
 // Control global para el Kebab menú
 let activeKebab = null;
 window.addEventListener('click', () => {
@@ -436,7 +462,6 @@ function renderHome() {
     return;
   }
 
-  // FALLBACK: Si un proyecto antiguo no tiene "type", se asume 'proyecto'.
   const proyectos  = activeIds.filter(id => (allProjects[id].meta.type || 'proyecto') === 'proyecto');
   const propuestas = activeIds.filter(id => allProjects[id].meta.type === 'propuesta');
   let html = '';
@@ -448,9 +473,40 @@ function renderHome() {
   }
 
   if (propuestas.length > 0) {
-    html += `<div class="section-label" style="margin-top:8px"><i class="ti ti-file-description"></i> Pipeline: Propuestas Técnicas</div><div class="projects-grid">`;
-    propuestas.forEach(id => { html += buildProjectCard(id); });
-    html += `</div>`;
+    const enConstruccion = propuestas.filter(id => (allProjects[id].meta.status || 'activo') !== 'postulada');
+    const postuladas = propuestas.filter(id => allProjects[id].meta.status === 'postulada');
+
+    html += `
+      <div class="section-label" style="display:flex; justify-content:space-between; align-items:center; margin-top:8px">
+        <span><i class="ti ti-file-description"></i> Pipeline: Propuestas Técnicas</span>
+        ${postuladas.length > 0 ? `
+        <div class="view-toggle">
+          <i class="ti ti-layout-grid ${viewModePostuladas==='grid'?'active':''}" onclick="setViewMode('grid')" title="Vista Cuadrícula"></i>
+          <i class="ti ti-list ${viewModePostuladas==='list'?'active':''}" onclick="setViewMode('list')" title="Vista Lista"></i>
+        </div>
+        ` : ''}
+      </div>
+    `;
+
+    // Renderizar "En Construcción" siempre en cuadrícula
+    if (enConstruccion.length > 0) {
+        html += `<div class="projects-grid">`;
+        enConstruccion.forEach(id => { html += buildProjectCard(id); });
+        html += `</div>`;
+    }
+
+    // Renderizar "Postuladas" según el toggle
+    if (postuladas.length > 0) {
+        if (viewModePostuladas === 'grid') {
+            html += `<div class="projects-grid">`;
+            postuladas.forEach(id => { html += buildProjectCard(id); }); 
+            html += `</div>`;
+        } else {
+            html += `<div class="projects-list-view">`;
+            postuladas.forEach(id => { html += buildProjectListCard(id); });
+            html += `</div>`;
+        }
+    }
   }
 
   html += `<div class="projects-grid"><div class="new-card" onclick="openNewProjectModal()"><i class="ti ti-plus"></i><span>Nuevo proyecto o propuesta</span></div></div>`;
@@ -472,6 +528,58 @@ function renderHome() {
   }
 
   document.getElementById('home-projects-list').innerHTML = html;
+}
+
+function setViewMode(mode) {
+    viewModePostuladas = mode;
+    renderHome();
+}
+
+function buildProjectListCard(id) {
+    const m  = allProjects[id].meta;
+    const pal = STAGE_PALETTE[0];
+    
+    const typeBadge = '<span class="pc-type-badge badge-postulada" style="position:static; margin-right:8px;">Postulada</span>';
+    
+    const todayStr = toYMD(new Date());
+    const isToday = m.awardDate === todayStr;
+    const dateStyle = isToday ? 'color:#8a5c00; font-weight:bold; background:var(--amber-light); padding:2px 6px; border-radius:4px;' : '';
+    const awardStr = m.awardDate ? fmtDateStr(m.awardDate) : 'No definida';
+    const cierreStr = m.closingDate ? fmtDateStr(m.closingDate) : 'No definida';
+    const liciId = m.licitationId || 'Sin ID';
+
+    let kebabOptions = `
+      <div class="kebab-item" onclick="editProjectHome('${id}', event)"><i class="ti ti-edit"></i> Editar información</div>
+      <div class="kebab-item" onclick="openAdjudicarModal('${id}', event)" style="color:var(--green)"><i class="ti ti-trophy"></i> Adjudicada (Crear Proyecto)</div>
+      <div class="kebab-item" onclick="markAsPerdida('${id}', event)" style="color:var(--red)"><i class="ti ti-x"></i> Perdida (Archivar)</div>
+      <div class="kebab-item danger" onclick="deleteProjectHome('${id}', event)"><i class="ti ti-trash"></i> Eliminar</div>
+    `;
+
+    return `
+      <div class="list-card" onclick="openProject('${id}')">
+        <div class="lc-accent" style="background:${m.accentColor||pal.color}"></div>
+        
+        <div class="lc-left">
+            <div class="lc-title" title="${m.name.replace(/"/g, '&quot;')}">${m.name}</div>
+            <div class="lc-client" title="${(m.client||'Sin cliente').replace(/"/g, '&quot;')}">${m.client||'Sin cliente'}</div>
+        </div>
+
+        <div class="lc-center">
+            <div class="lc-text"><i class="ti ti-barcode"></i> ID: ${liciId} <i class="ti ti-copy copy-icon" title="Copiar ID" onclick="copyLicitation('${liciId}', event)"></i></div>
+            <div class="lc-text"><i class="ti ti-calendar-time"></i> Cierre: ${cierreStr}</div>
+        </div>
+
+        <div class="lc-right">
+            <div class="lc-text" style="${dateStyle}"><i class="ti ti-trophy"></i> Adj: ${awardStr}</div>
+            ${typeBadge}
+        </div>
+        
+        <button class="kebab-btn" onclick="toggleKebab('${id}', event)"><i class="ti ti-dots-vertical"></i></button>
+        <div class="kebab-menu" id="kebab-menu-${id}">
+          ${kebabOptions}
+        </div>
+      </div>
+    `;
 }
 
 function buildProjectCard(id) {
@@ -507,10 +615,9 @@ function buildProjectCard(id) {
   } else {
       kebabOptions += `<div class="kebab-item" onclick="unarchiveProject('${id}', event)"><i class="ti ti-archive-off"></i> Desarchivar</div>`;
   }
-  
   kebabOptions += `<div class="kebab-item danger" onclick="deleteProjectHome('${id}', event)"><i class="ti ti-trash"></i> Eliminar</div>`;
 
-  // ── TARJETA COMPACTA (Solo para Propuestas Postuladas) ──
+  // ── TARJETA COMPACTA (Para Postuladas en modo Grid) ──
   if (isPostulada) {
       const todayStr = toYMD(new Date());
       const isToday = m.awardDate === todayStr;
@@ -543,7 +650,7 @@ function buildProjectCard(id) {
         </div>`;
   }
 
-  // ── TARJETA NORMAL (Proyectos y Propuestas en Construcción) ──
+  // ── TARJETA NORMAL (Proyectos y Propuestas en Construcción/Archivo) ──
   let timeMeta = '';
   if (type === 'propuesta') {
       timeMeta = `<span><i class="ti ti-calendar-time"></i> Cierre: ${m.closingDate ? fmtDateStr(m.closingDate) : 'No definida'}</span>`;
