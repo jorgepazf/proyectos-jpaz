@@ -91,7 +91,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .new-card i{font-size:24px}
 .new-card span{font-size:13px;font-weight:500}
 
-/* Kebab Menu - Ahora en esquina superior derecha */
+/* Kebab Menu */
 .kebab-btn{position:absolute;top:10px;right:8px;padding:4px;border:none;background:transparent;color:var(--text3);cursor:pointer;font-size:18px;border-radius:4px;z-index:5}
 .kebab-btn:hover{background:var(--bg2);color:var(--text)}
 .kebab-menu{display:none;position:absolute;top:40px;right:12px;background:var(--bg);border:1px solid var(--border);box-shadow:0 4px 12px rgba(0,0,0,0.15);border-radius:var(--radius);z-index:10;min-width:180px;overflow:hidden}
@@ -100,7 +100,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .kebab-item:hover{background:var(--bg2)}
 .kebab-item.danger{color:var(--red)}
 
-/* Vista de Lista (List View) para Propuestas Postuladas */
+/* Vista de Lista */
 .view-toggle { display:flex; gap:4px; align-items:center; }
 .view-toggle i { cursor:pointer; font-size:16px; color:var(--text3); padding:4px; border-radius:4px; transition:all 0.15s; }
 .view-toggle i:hover { background:var(--bg3); color:var(--text); }
@@ -201,6 +201,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .month-col{flex:1;text-align:center;border-left:1px solid var(--border2);height:100%;display:flex;align-items:center;justify-content:center;font-weight:600;}
 .month-col:first-child{border-left:none;}
 
+/* ── CALENDAR 3 WEEKS ── */
+.cal-container { overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius-lg); background:var(--bg); margin-bottom:10px; }
+.cal-header { display:grid; grid-template-columns: 240px repeat(21, 1fr); background:var(--bg2); border-bottom:1px solid var(--border); }
+.cal-day-col { padding:6px 2px; text-align:center; font-size:10px; color:var(--text2); border-left:1px solid var(--border); line-height:1.2; }
+.cal-day-col.today { background:var(--amber-light); color:#8a5c00; font-weight:bold; }
+.cal-body { display:flex; flex-direction:column; }
+.cal-row { display:grid; grid-template-columns: 240px 1fr; border-bottom:1px solid var(--border); }
+.cal-row:last-child { border-bottom:none; }
+.cal-task-name { font-size:12px; font-weight:500; padding:10px 14px; border-right:1px solid var(--border); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:var(--text); }
+.cal-grid { display:grid; grid-template-columns: repeat(21, 1fr); position:relative; align-items:center; }
+.cal-grid-lines { position:absolute; inset:0; display:grid; grid-template-columns: repeat(21, 1fr); pointer-events:none; }
+.cal-grid-line { border-left:1px solid var(--border); height:100%; }
+.cal-bar-wrapper { position:absolute; inset:0; display:grid; grid-template-columns: repeat(21, 1fr); padding:4px 0; align-items:center; pointer-events:none; }
+.cal-bar { height:22px; border-radius:4px; font-size:10px; color:#fff; display:flex; align-items:center; padding:0 8px; white-space:nowrap; overflow:hidden; cursor:pointer; pointer-events:auto; z-index:2; transition:transform 0.1s, filter 0.1s;}
+.cal-bar:hover { filter:brightness(0.9); transform:translateY(-1px); }
+.cal-bar-assignee { font-size:9px; opacity:0.9; margin-left:6px; font-weight:500; background:rgba(0,0,0,0.15); padding:2px 6px; border-radius:10px; }
+
 /* ── MODALS ── */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:99999;padding:16px}
 .modal{background:var(--bg);border-radius:var(--radius-lg);border:1px solid var(--border2);padding:20px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.15)}
@@ -249,11 +266,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   .gantt-row {grid-template-columns: 240px 1fr;}
   .gantt-head-row {grid-template-columns: 240px 1fr;}
   
-  /* Ajuste responsivo de la Lista */
   .list-card { flex-direction:column; align-items:flex-start; padding:12px 16px; gap:8px; }
   .lc-left, .lc-center, .lc-right { flex:unset; width:100%; padding:0; justify-content:flex-start; }
   .list-card .kebab-btn { top:12px; transform:none; right:8px; }
   .lc-right { margin-top:4px; padding-right:0; justify-content:space-between; width:100%;}
+  .cal-header { grid-template-columns: 120px repeat(21, 1fr); }
+  .cal-row { grid-template-columns: 120px 1fr; }
 }
 </style>
 </head>
@@ -297,6 +315,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div id="notif-list"></div>
         </div>
       </div>
+      <button class="btn" onclick="openShareModal()"><i class="ti ti-share"></i> Compartir</button>
+      <button class="btn" onclick="openSettingsModal()"><i class="ti ti-settings"></i> Ajustes</button>
       <button class="btn btn-primary" onclick="openAddTask()"><i class="ti ti-plus"></i> Nueva tarea</button>
     </div>
   </div>
@@ -311,21 +331,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
   <div class="tab-row">
     <button class="tab active" onclick="setTab('tasks',this)"><i class="ti ti-list-check"></i> Actividades</button>
+    <button class="tab" onclick="setTab('calendar',this)"><i class="ti ti-calendar-event"></i> Calendario</button>
     <button class="tab" onclick="setTab('gantt',this)"><i class="ti ti-chart-gantt"></i> Gantt</button>
     <button class="tab" onclick="setTab('board',this)"><i class="ti ti-layout-kanban"></i> Tablero</button>
     <button class="tab" onclick="setTab('eval',this)"><i class="ti ti-star"></i> Evaluaciones</button>
-    <button class="tab" onclick="setTab('team',this)"><i class="ti ti-users"></i> Equipo</button>
-    <button class="tab" onclick="setTab('share',this)"><i class="ti ti-share"></i> Publicar</button>
-    <button class="tab" onclick="setTab('config',this)"><i class="ti ti-settings"></i> Config</button>
   </div>
 
   <div id="tab-tasks"></div>
+  <div id="tab-calendar" style="display:none"></div>
   <div id="tab-gantt"  style="display:none"></div>
   <div id="tab-board" style="display:none"></div>
   <div id="tab-eval"  style="display:none"></div>
-  <div id="tab-team"  style="display:none"></div>
-  <div id="tab-share" style="display:none"></div>
-  <div id="tab-config" style="display:none"></div>
 </div>
 
 <div id="modal-root"></div>
@@ -382,11 +398,8 @@ let filterStatus   = 'all';
 let unseenLogs     = 0;
 let isFirstLoad    = true;
 let hideCompletedGantt = false; 
-
-// Preferencia de vista para propuestas postuladas ('list' o 'grid')
 let viewModePostuladas = 'list';
 
-// Control global para el Kebab menú
 let activeKebab = null;
 window.addEventListener('click', () => {
     if (activeKebab) { activeKebab.classList.remove('show'); activeKebab = null; }
@@ -489,14 +502,12 @@ function renderHome() {
       </div>
     `;
 
-    // Renderizar "En Construcción" siempre en cuadrícula
     if (enConstruccion.length > 0) {
         html += `<div class="projects-grid">`;
         enConstruccion.forEach(id => { html += buildProjectCard(id); });
         html += `</div>`;
     }
 
-    // Renderizar "Postuladas" según el toggle
     if (postuladas.length > 0) {
         if (viewModePostuladas === 'grid') {
             html += `<div class="projects-grid">`;
@@ -539,9 +550,7 @@ function setViewMode(mode) {
 function buildProjectListCard(id) {
     const m  = allProjects[id].meta;
     const pal = STAGE_PALETTE[0];
-    
     const typeBadge = '<span class="pc-type-badge badge-postulada" style="position:static; margin-right:8px;">Postulada</span>';
-    
     const todayStr = toYMD(new Date());
     const isToday = m.awardDate === todayStr;
     const dateStyle = isToday ? 'color:#8a5c00; font-weight:bold; background:var(--amber-light); padding:2px 6px; border-radius:4px;' : '';
@@ -559,22 +568,18 @@ function buildProjectListCard(id) {
     return `
       <div class="list-card" onclick="openProject('${id}')">
         <div class="lc-accent" style="background:${m.accentColor||pal.color}"></div>
-        
         <div class="lc-left">
             <div class="lc-title" title="${m.name.replace(/"/g, '&quot;')}">${m.name}</div>
             <div class="lc-client" title="${(m.client||'Sin cliente').replace(/"/g, '&quot;')}">${m.client||'Sin cliente'}</div>
         </div>
-
         <div class="lc-center">
             <div class="lc-text"><i class="ti ti-barcode"></i> ID: ${liciId} <i class="ti ti-copy copy-icon" title="Copiar ID" onclick="copyLicitation('${liciId}', event)"></i></div>
             <div class="lc-text"><i class="ti ti-calendar-time"></i> Cierre: ${cierreStr}</div>
         </div>
-
         <div class="lc-right">
             <div class="lc-text" style="${dateStyle}"><i class="ti ti-trophy"></i> Adj: ${awardStr}</div>
             ${typeBadge}
         </div>
-        
         <button class="kebab-btn" onclick="toggleKebab('${id}', event)"><i class="ti ti-dots-vertical"></i></button>
         <div class="kebab-menu" id="kebab-menu-${id}">
           ${kebabOptions}
@@ -618,7 +623,6 @@ function buildProjectCard(id) {
   }
   kebabOptions += `<div class="kebab-item danger" onclick="deleteProjectHome('${id}', event)"><i class="ti ti-trash"></i> Eliminar</div>`;
 
-  // ── TARJETA COMPACTA (Para Postuladas en modo Grid) ──
   if (isPostulada) {
       const todayStr = toYMD(new Date());
       const isToday = m.awardDate === todayStr;
@@ -631,15 +635,12 @@ function buildProjectCard(id) {
         <div class="project-card ${isArchived ? 'archived' : ''}" onclick="openProject('${id}')" style="padding-bottom:14px; min-height:80px;">
           <div class="pc-accent" style="background:${m.accentColor||pal.color}"></div>
           ${typeBadge}
-          
           <button class="kebab-btn" onclick="toggleKebab('${id}', event)"><i class="ti ti-dots-vertical"></i></button>
           <div class="kebab-menu" id="kebab-menu-${id}">
             ${kebabOptions}
           </div>
-
           <div class="pc-title" style="margin-top:12px;">${m.name}</div>
           <div class="pc-client" style="margin-bottom:10px;">${m.client||'Sin cliente'}</div>
-          
           <div style="display:flex; gap:12px; font-size:11px; color:var(--text3); align-items:center; flex-wrap:wrap;">
             <span title="Cierre"><i class="ti ti-calendar-time"></i> Cierre: ${cierreStr}</span>
             <span title="Adjudicación" style="${dateStyle}"><i class="ti ti-trophy"></i> Adj: ${awardStr}</span>
@@ -651,7 +652,6 @@ function buildProjectCard(id) {
         </div>`;
   }
 
-  // ── TARJETA NORMAL (Proyectos y Propuestas en Construcción/Archivo) ──
   let timeMeta = '';
   if (type === 'propuesta') {
       timeMeta = `<span><i class="ti ti-calendar-time"></i> Cierre: ${m.closingDate ? fmtDateStr(m.closingDate) : 'No definida'}</span>`;
@@ -663,12 +663,10 @@ function buildProjectCard(id) {
     <div class="project-card ${isArchived ? 'archived' : ''}" onclick="openProject('${id}')">
       <div class="pc-accent" style="background:${m.accentColor||pal.color}"></div>
       ${typeBadge}
-      
       <button class="kebab-btn" onclick="toggleKebab('${id}', event)"><i class="ti ti-dots-vertical"></i></button>
       <div class="kebab-menu" id="kebab-menu-${id}">
         ${kebabOptions}
       </div>
-
       <div class="pc-title">${m.name}</div>
       <div class="pc-client">${m.client||'Sin cliente'}</div>
       <div class="pc-meta">
@@ -697,8 +695,7 @@ function toggleArchiveSection() {
 function editProjectHome(id, e) {
     e.stopPropagation();
     openProject(id);
-    const tabs = document.querySelectorAll('.tab-row button');
-    setTab('config', tabs[tabs.length - 1]); 
+    openSettingsModal('general'); 
 }
 function deleteProjectHome(id, e) {
     e.stopPropagation();
@@ -1377,12 +1374,10 @@ function renderAllViews() {
   try {
     renderStats();
     if (currentTab==='tasks') renderTasks();
+    if (currentTab==='calendar') renderCalendar();
     if (currentTab==='board') renderBoard();
     if (currentTab==='gantt') renderGantt();
     if (currentTab==='eval')  renderEval();
-    if (currentTab==='team')  renderTeam();
-    if (currentTab==='share') renderShare();
-    if (currentTab==='config')renderConfig();
   } catch(e) { console.error('renderAllViews:', e); }
 }
 
@@ -1390,7 +1385,7 @@ function setTab(tab, btn) {
   currentTab = tab;
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   if (btn) btn.classList.add('active');
-  ['tasks','gantt','board','eval','team','share','config'].forEach(t => {
+  ['tasks','calendar','gantt','board','eval'].forEach(t => {
     const el = document.getElementById('tab-'+t);
     if (el) el.style.display = t===tab ? 'block' : 'none';
   });
@@ -1555,6 +1550,91 @@ function quickToggle(e, id) {
   logAction(`Marcó '${tName.length>25?tName.slice(0,25)+'...':tName}' como ${isDone?'Pendiente':'Completado'}.`);
   saveState();
 }
+
+// ═══════════════════════════════════════════════════════
+//  RENDER CALENDAR (NUEVA PESTAÑA)
+// ═══════════════════════════════════════════════════════
+function renderCalendar() {
+    const el = document.getElementById('tab-calendar');
+    if (!el) return;
+
+    // Calcular el lunes de esta semana
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+    const startOfCal = new Date(today.setDate(diff));
+    startOfCal.setHours(0,0,0,0);
+
+    // Crear arreglo de 21 días (3 semanas)
+    const days = [];
+    for(let i=0; i<21; i++) {
+        const d = new Date(startOfCal);
+        d.setDate(d.getDate() + i);
+        days.push(d);
+    }
+
+    let html = `<div class="cal-container"><div style="min-width:860px;">
+        <div class="cal-header">
+            <div style="padding:10px 14px; font-size:12px; font-weight:600; color:var(--text2); display:flex; align-items:center;">Próximas 3 semanas</div>
+            ${days.map(d => {
+                const isToday = d.toDateString() === new Date().toDateString();
+                const dayName = d.toLocaleDateString('es-CL', {weekday:'short'}).slice(0,1).toUpperCase();
+                const dateNum = d.getDate();
+                return `<div class="cal-day-col ${isToday?'today':''}">${dayName}<br><span style="font-size:12px">${dateNum}</span></div>`;
+            }).join('')}
+        </div>
+        <div class="cal-body">`;
+
+    const allT = getAllTasks();
+    const visibleTasks = allT.filter(t => {
+        const {start, end} = getTaskDates(t);
+        const s = new Date(start); s.setHours(0,0,0,0);
+        const e = new Date(end); e.setHours(23,59,59,999);
+        return s <= days[20] && e >= days[0] && getTaskStatus(t.id) !== 'completado';
+    }).sort((a,b) => getTaskDates(a).start - getTaskDates(b).start);
+
+    if (visibleTasks.length === 0) {
+        html += `<div style="padding:40px; text-align:center; color:var(--text3); font-size:13px;">No tienes tareas pendientes programadas para las próximas 3 semanas. ¡Buen trabajo!</div>`;
+    } else {
+        visibleTasks.forEach(t => {
+            const {start, end} = getTaskDates(t);
+            const s = new Date(start); s.setHours(0,0,0,0);
+            const e = new Date(end); e.setHours(0,0,0,0);
+            
+            let gridStart = Math.floor((s - days[0]) / (1000*60*60*24)) + 1;
+            let gridEnd = Math.floor((e - days[0]) / (1000*60*60*24)) + 2; 
+            
+            if (gridStart < 1) gridStart = 1;
+            if (gridEnd > 22) gridEnd = 22;
+
+            const barColor = t.stageColor || 'var(--green)';
+            const status = getTaskStatus(t.id);
+            const opacity = status === 'completado' ? '0.5' : (status==='retrasado'?'1':'0.85');
+            const actualBg = status === 'retrasado' ? 'var(--red)' : barColor;
+            const safeName = (t.name||'').replace(/"/g, '&quot;');
+            const assg = (t.assignee && typeof t.assignee==='string') ? t.assignee.split(' ')[0] : '';
+
+            html += `<div class="cal-row">
+                <div class="cal-task-name" title="${safeName}">${t.name}</div>
+                <div class="cal-grid">
+                    <div class="cal-grid-lines">
+                        ${Array.from({length:21}).map(()=>`<div class="cal-grid-line"></div>`).join('')}
+                    </div>
+                    <div class="cal-bar-wrapper">
+                        <div class="cal-bar" onclick="openTask('${t.id}',${t.stageId})" style="grid-column: ${gridStart} / ${gridEnd}; background:${actualBg}; opacity:${opacity};">
+                            <span style="overflow:hidden; text-overflow:ellipsis;">${safeName}</span>
+                            ${assg ? `<span class="cal-bar-assignee">${assg}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        });
+    }
+    
+    html += `</div></div></div>`;
+    el.innerHTML = html;
+}
+
 
 // ═══════════════════════════════════════════════════════
 //  RENDER KANBAN
@@ -1752,76 +1832,40 @@ function renderEval() {
 }
 
 // ═══════════════════════════════════════════════════════
-//  RENDER EQUIPO
+//  NUEVOS MODALES DE ACCIÓN GLOBAL
 // ═══════════════════════════════════════════════════════
-function renderTeam() {
-  const el = document.getElementById('tab-team');
-  if (!el) return;
-  let html = `<div class="section"><div style="padding:14px"><p style="font-size:13px;font-weight:500;margin-bottom:12px">Miembros del equipo</p>`;
-  (state.team||[]).forEach((m,i) => {
-    html += `<div class="team-member">
-      <div class="avatar" style="background:${m.color}22;color:${m.color}">${m.name.slice(0,2).toUpperCase()}</div>
-      <div style="flex:1"><p style="font-size:13px;font-weight:500">${m.name}</p><p style="font-size:12px;color:var(--text2)">${m.role}</p></div>
-      <button class="btn btn-danger btn-sm" onclick="removeMember(${i})"><i class="ti ti-trash"></i></button>
-    </div>`;
-  });
-  html += `<button class="btn btn-primary" style="margin-top:12px" onclick="openAddMember()"><i class="ti ti-plus"></i> Agregar miembro</button></div></div>`;
-  el.innerHTML = html;
-}
-function removeMember(i) { state.team.splice(i,1); saveState(); renderTeam(); }
-function openAddMember() {
-  modal(`<h3>Agregar miembro al equipo</h3>
-    <div class="form-row"><label>Nombre completo</label><input id="m-name" type="text" placeholder="Ej: Pedro Jiménez"/></div>
-    <div class="form-row"><label>Rol en el proyecto</label><input id="m-role" type="text" placeholder="Ej: Investigador de campo"/></div>
-    <div class="modal-actions"><button class="btn" onclick="closeModal()">Cancelar</button><button class="btn btn-primary" onclick="saveMember()">Agregar</button></div>`);
-}
-function saveMember() {
-  const name=document.getElementById('m-name').value.trim();
-  const role=document.getElementById('m-role').value.trim();
-  if (!name) return;
-  const colors=['#1D9E75','#378ADD','#D85A30','#7F77DD','#EF9F27','#D4537E'];
-  if (!state.team) state.team=[];
-  state.team.push({ name, role, color: colors[state.team.length%colors.length] });
-  saveState(); closeModal(); renderTeam();
+
+function openShareModal(){
+    const text = getShareText();
+    modal(`
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <h3 style="margin:0"><i class="ti ti-share"></i> Compartir Resumen</h3>
+        </div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Copia el resumen del estado actual del proyecto para enviarlo a tu equipo o contraparte.</p>
+        <textarea readonly style="width:100%; height:180px; font-family:monospace; font-size:11px; padding:10px; border:1px solid var(--border); border-radius:var(--radius); margin-bottom:12px; background:var(--bg2); color:var(--text);">${text}</textarea>
+        <div class="modal-actions" style="justify-content:flex-end;">
+            <button class="btn" onclick="closeModal()">Cerrar</button>
+            <button class="btn btn-blue" onclick="copyShareMsg()"><i class="ti ti-copy"></i> Copiar al portapapeles</button>
+        </div>
+    `);
 }
 
-function getShareText() {
-    const s = calcStats(); const cw = currentWeek(); 
-    const nm = getNextUpcoming('hito'); const np = getNextUpcoming('producto');
-    let hitoText = nm.item ? `${nm.item.name} (en ${nm.days} días)` : "Ninguno pendiente";
-    let prodText = np.item ? `${np.item.name} (en ${np.days} días)` : "Ninguno pendiente";
+function openSettingsModal(activeTab = 'general') {
     const meta = currentProjId ? allProjects[currentProjId].meta : {};
+    
+    let generalStyle = activeTab === 'general' ? 'block' : 'none';
+    let teamStyle = activeTab === 'team' ? 'block' : 'none';
+    
+    let teamHtml = (state.team||[]).map((m,i) => `
+        <div class="team-member">
+          <div class="avatar" style="background:${m.color}22;color:${m.color}">${m.name.slice(0,2).toUpperCase()}</div>
+          <div style="flex:1"><p style="font-size:13px;font-weight:500">${m.name}</p><p style="font-size:12px;color:var(--text2)">${m.role}</p></div>
+          <button class="btn btn-danger btn-sm" onclick="removeMemberModal(${i})"><i class="ti ti-trash"></i></button>
+        </div>
+    `).join('') || '<p style="font-size:12px;color:var(--text3)">No hay miembros en el equipo. Agrega el primero abajo.</p>';
 
-    return `📊 [${(meta.name||'PROYECTO').toUpperCase()}]\r\nSemana actual: S${cw} (${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))})\r\nProgreso: ${s.pct}% (${s.done}/${s.total} actividades completadas)\r\n- Completadas: ${s.counts.completado}\r\n- En curso: ${s.counts.curso}\r\n- Pendientes: ${s.counts.pendiente}\r\n- Retrasadas: ${s.counts.retrasado}\r\n\r\nPróximo producto: ${prodText}\r\nPróximo hito: ${hitoText}\r\n\r\nGenerado: ${fmtDate(new Date())} a las ${new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}`;
-}
-
-// ═══════════════════════════════════════════════════════
-//  RENDER PUBLICAR (SHARE)
-// ═══════════════════════════════════════════════════════
-function renderShare(){
-  const el = document.getElementById('tab-share');
-  if(!el) return;
-  el.innerHTML=`<div style="margin-bottom:14px">
-    <p style="font-size:13px;color:var(--text2);margin-bottom:12px">A continuación, puedes copiar el resumen del estado actual del proyecto para enviarlo a tu equipo o contraparte.</p>
-    <div class="export-row"><button class="btn btn-blue" onclick="copyShareMsg()"><i class="ti ti-copy"></i> Copiar resumen al portapapeles</button></div>
-  </div>`;
-}
-
-function copyShareMsg(){
-  const text = getShareText();
-  navigator.clipboard.writeText(text).then(()=>alert('Resumen copiado al portapapeles ✓'));
-}
-
-// ═══════════════════════════════════════════════════════
-//  RENDER CONFIG
-// ═══════════════════════════════════════════════════════
-function renderConfig() {
-  const el = document.getElementById('tab-config');
-  if (!el) return;
-  const meta = currentProjId ? allProjects[currentProjId].meta : {};
-  
-  let extraFields = '';
-  if (meta.type === 'propuesta') {
+    let extraFields = '';
+    if (meta.type === 'propuesta') {
       extraFields = `
         <div style="margin-top:16px; border-top:1px solid var(--border); padding-top:16px;">
             <p style="font-size:13px;font-weight:600;margin-bottom:10px">Datos de la Propuesta / Licitación</p>
@@ -1841,49 +1885,73 @@ function renderConfig() {
             </div>
         </div>
       `;
-  }
+    }
 
-  el.innerHTML = `
-    <div class="section"><div style="padding:16px">
-      <p style="font-size:14px;font-weight:600;margin-bottom:12px"><i class="ti ti-edit"></i> Editar información general</p>
-      
-      <div class="form-row">
-        <label>Nombre del proyecto / propuesta</label>
-        <input type="text" id="cfg-name" value="${meta.name||''}"/>
-      </div>
-      <div class="form-row">
-        <label>Cliente / Mandante</label>
-        <input type="text" id="cfg-client" value="${meta.client||''}"/>
-      </div>
-      
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-        ${meta.type !== 'propuesta' ? `
-        <div class="form-row">
-          <label>Total de semanas</label>
-          <input type="number" id="cfg-weeks" min="1" value="${meta.totalWeeks||35}"/>
-        </div>` : `<div></div>`}
-        <div class="form-row">
-          <label>Tipo</label>
-          <select id="cfg-type" disabled>
-            <option value="proyecto" ${meta.type==='proyecto'?'selected':''}>Proyecto</option>
-            <option value="propuesta" ${meta.type==='propuesta'?'selected':''}>Propuesta técnica</option>
-          </select>
+    modal(`
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <h3 style="margin:0"><i class="ti ti-settings"></i> Ajustes del Proyecto</h3>
         </div>
-      </div>
-      
-      <div class="form-row" style="margin-top:6px;">
-        <label>Fecha de inicio oficial (Semana 1)</label>
-        <input type="date" value="${state.startDate||''}" onchange="state.startDate=this.value;saveState();"/>
-        <p style="font-size:11px;color:var(--text3);margin-top:4px">Al guardar abajo, el Gantt se ajustará a la nueva fecha y semanas.</p>
-      </div>
+        
+        <div class="tab-row" style="margin-bottom:16px">
+            <button class="tab ${activeTab==='general'?'active':''}" onclick="openSettingsModal('general')">Datos Generales</button>
+            <button class="tab ${activeTab==='team'?'active':''}" onclick="openSettingsModal('team')">Equipo de Trabajo</button>
+        </div>
 
-      ${extraFields}
-      
-      <button class="btn btn-primary" style="margin-top:12px" onclick="updateProjectMeta()"><i class="ti ti-check"></i> Guardar configuración</button>
-    </div></div>`;
+        <div id="settings-general" style="display:${generalStyle}">
+            <div class="form-row">
+                <label>Nombre del proyecto / propuesta</label>
+                <input type="text" id="cfg-name" value="${meta.name||''}"/>
+            </div>
+            <div class="form-row">
+                <label>Cliente / Mandante</label>
+                <input type="text" id="cfg-client" value="${meta.client||''}"/>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                ${meta.type !== 'propuesta' ? `
+                <div class="form-row">
+                <label>Total de semanas</label>
+                <input type="number" id="cfg-weeks" min="1" value="${meta.totalWeeks||35}"/>
+                </div>` : `<div></div>`}
+                <div class="form-row">
+                <label>Tipo</label>
+                <select id="cfg-type" disabled>
+                    <option value="proyecto" ${meta.type==='proyecto'?'selected':''}>Proyecto</option>
+                    <option value="propuesta" ${meta.type==='propuesta'?'selected':''}>Propuesta técnica</option>
+                </select>
+                </div>
+            </div>
+            <div class="form-row" style="margin-top:6px;">
+                <label>Fecha de inicio oficial (Semana 1)</label>
+                <input type="date" value="${state.startDate||''}" id="cfg-start"/>
+                <p style="font-size:11px;color:var(--text3);margin-top:4px">Al guardar abajo, el Gantt se ajustará a la nueva fecha y semanas.</p>
+            </div>
+            ${extraFields}
+            <div class="modal-actions" style="justify-content:flex-end;">
+                <button class="btn" onclick="closeModal()">Cancelar</button>
+                <button class="btn btn-primary" onclick="updateProjectMetaModal()"><i class="ti ti-check"></i> Guardar configuración</button>
+            </div>
+        </div>
+
+        <div id="settings-team" style="display:${teamStyle}">
+            <div style="max-height:250px; overflow-y:auto; margin-bottom:12px; padding-right:8px;">
+                ${teamHtml}
+            </div>
+            <div style="background:var(--bg2); padding:12px; border-radius:var(--radius); border:1px solid var(--border);">
+                <p style="font-size:12px; font-weight:600; margin-bottom:8px;">Añadir nuevo miembro</p>
+                <div style="display:flex; gap:8px;">
+                    <input id="new-m-name" type="text" placeholder="Nombre" style="flex:1; padding:6px; font-size:12px; border:1px solid var(--border2); border-radius:4px;"/>
+                    <input id="new-m-role" type="text" placeholder="Rol" style="flex:1; padding:6px; font-size:12px; border:1px solid var(--border2); border-radius:4px;"/>
+                    <button class="btn btn-sm btn-primary" onclick="saveMemberModal()"><i class="ti ti-plus"></i></button>
+                </div>
+            </div>
+            <div class="modal-actions" style="justify-content:flex-end; margin-top:16px;">
+                <button class="btn" onclick="closeModal()">Cerrar</button>
+            </div>
+        </div>
+    `);
 }
 
-function updateProjectMeta() {
+function updateProjectMetaModal() {
   const meta = allProjects[currentProjId].meta;
   meta.name = document.getElementById('cfg-name').value.trim() || 'Proyecto sin nombre';
   meta.client = document.getElementById('cfg-client').value.trim();
@@ -1895,11 +1963,14 @@ function updateProjectMeta() {
       meta.closingDate = document.getElementById('cfg-closing').value;
       meta.awardDate = document.getElementById('cfg-award').value;
       
-      const startD = parseLocal(state.startDate || meta.startDate);
+      const startD = parseLocal(document.getElementById('cfg-start').value || meta.startDate);
       const closeD = parseLocal(meta.closingDate);
       const diffTime = closeD - startD;
       meta.totalWeeks = Math.max(1, Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 7)));
   }
+
+  state.startDate = document.getElementById('cfg-start').value;
+  saveState();
   
   db.collection('projects').doc(currentProjId).update(meta).then(() => {
      document.getElementById('proj-title').textContent = meta.name;
@@ -1911,8 +1982,28 @@ function updateProjectMeta() {
          document.getElementById('proj-subtitle').textContent = `${meta.client||'Sin cliente'} · Inicio: ${fmtDateStr(state.startDate)} · ${meta.totalWeeks} semanas · ${STAGES.length} etapas`;
      }
      renderAllViews();
+     closeModal();
      alert('Configuración actualizada ✓');
   }).catch(e => { console.error(e); alert('Error al actualizar.'); });
+}
+
+function saveMemberModal() {
+  const name = document.getElementById('new-m-name').value.trim();
+  const role = document.getElementById('new-m-role').value.trim();
+  if (!name) return;
+  const colors=['#1D9E75','#378ADD','#D85A30','#7F77DD','#EF9F27','#D4537E'];
+  if (!state.team) state.team=[];
+  state.team.push({ name, role, color: colors[state.team.length%colors.length] });
+  saveState(); 
+  openSettingsModal('team'); 
+  renderAllViews();
+}
+
+function removeMemberModal(i) { 
+    state.team.splice(i,1); 
+    saveState(); 
+    openSettingsModal('team');
+    renderAllViews();
 }
 
 // ═══════════════════════════════════════════════════════
