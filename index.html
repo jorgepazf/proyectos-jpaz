@@ -86,6 +86,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .badge-postulada{background:var(--blue-light);color:var(--blue)}
 .badge-finalizado{background:#e0e0e0;color:#555}
 .badge-perdida{background:var(--red-light);color:var(--red)}
+
 .new-card{border:2px dashed var(--border);border-radius:var(--radius-lg);padding:16px;cursor:pointer;transition:border-color .15s,background .15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:130px;color:var(--text3)}
 .new-card:hover{border-color:var(--green);background:var(--green-light);color:var(--green)}
 .new-card i{font-size:24px}
@@ -315,7 +316,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
           <div id="notif-list"></div>
         </div>
       </div>
-      <button class="btn" onclick="openShareModal()"><i class="ti ti-share"></i> Compartir</button>
+      <button class="btn" onclick="openShareModal()"><i class="ti ti-clipboard-text"></i> Resumen</button>
       <button class="btn" onclick="openSettingsModal()"><i class="ti ti-settings"></i> Ajustes</button>
       <button class="btn btn-primary" onclick="openAddTask()"><i class="ti ti-plus"></i> Nueva tarea</button>
     </div>
@@ -1368,470 +1369,6 @@ function renderNotifs() {
 }
 
 // ═══════════════════════════════════════════════════════
-//  RENDER PRINCIPAL
-// ═══════════════════════════════════════════════════════
-function renderAllViews() {
-  try {
-    renderStats();
-    if (currentTab==='tasks') renderTasks();
-    if (currentTab==='calendar') renderCalendar();
-    if (currentTab==='board') renderBoard();
-    if (currentTab==='gantt') renderGantt();
-    if (currentTab==='eval')  renderEval();
-  } catch(e) { console.error('renderAllViews:', e); }
-}
-
-function setTab(tab, btn) {
-  currentTab = tab;
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  ['tasks','calendar','gantt','board','eval'].forEach(t => {
-    const el = document.getElementById('tab-'+t);
-    if (el) el.style.display = t===tab ? 'block' : 'none';
-  });
-  renderAllViews();
-}
-
-function badge(type) {
-  if (type==='producto') return '<span class="badge badge-producto"><i class="ti ti-box"></i> Producto</span>';
-  if (type==='revision') return '<span class="badge badge-revision"><i class="ti ti-clock"></i> Revisión</span>';
-  if (type==='hito')     return '<span class="badge badge-hito"><i class="ti ti-flag"></i> Hito</span>';
-  return '';
-}
-function getStatusIconHTML(s) {
-  if (s==='completado') return `<i class="ti ti-circle-check-filled"></i>`;
-  if (s==='curso')      return `<i class="ti ti-player-play-filled"></i>`;
-  if (s==='retrasado')  return `<i class="ti ti-alert-circle-filled"></i>`;
-  return `<i class="ti ti-circle"></i>`;
-}
-
-// ═══════════════════════════════════════════════════════
-//  RENDER STATS
-// ═══════════════════════════════════════════════════════
-function renderStats() {
-  const meta = currentProjId ? allProjects[currentProjId].meta : {};
-  const tw   = meta.totalWeeks || 35;
-  const s  = calcStats();
-  const cw = currentWeek();
-  const end = weekEnd(tw);
-
-  const np = getNextUpcoming('producto');
-  const prodVal = np.item ? np.item.name.replace(/"/g, '&quot;') : "Ninguno";
-  const prodSub = np.item ? `(en ${np.days} días)` : "Sin pendientes";
-
-  document.getElementById('stats-bar').innerHTML = `
-    <div class="stat-card"><div class="stat-label">Progreso general</div><div class="stat-val">${s.pct}%</div><div class="stat-sub">${s.done} de ${s.total} completadas</div></div>
-    <div class="stat-card"><div class="stat-label">Semana actual</div><div class="stat-val">S${cw}</div><div class="stat-sub">${fmtShort(weekStart(cw))} – ${fmtShort(weekEnd(cw))}</div></div>
-    <div class="stat-card"><div class="stat-label">Próximo producto</div><div class="stat-val" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${prodVal}">${prodVal}</div><div class="stat-sub">${prodSub}</div></div>
-    <div class="stat-card"><div class="stat-label">Fecha de término</div><div class="stat-val">${fmtShort(end)}</div><div class="stat-sub">Fin S${tw} · ${end.getFullYear()}</div></div>`;
-  
-  const pct = Math.round(todayFraction()*100);
-  document.getElementById('week-progress-bar').innerHTML = `
-    <div class="week-progress">
-      <div class="week-progress-label">
-        <span>${fmtShort(getStartDate())} ${getStartDate().getFullYear()}</span>
-        <span>Hoy: ${fmtDate(new Date())} · S${cw} de ${tw}</span>
-        <span>${fmtShort(end)} ${end.getFullYear()}</span>
-      </div>
-      <div class="pbar-outer"><div class="pbar-inner" style="width:${pct}%"></div></div>
-    </div>`;
-}
-
-// ═══════════════════════════════════════════════════════
-//  RENDER TASKS
-// ═══════════════════════════════════════════════════════
-function renderTasks() {
-  const el = document.getElementById('tab-tasks');
-  if (!el) return;
-  try {
-    const teamOpts = (state.team||[]).map(m => `<option value="${m.name}" ${filterAssignee===m.name?'selected':''}>${m.name}</option>`).join('');
-    let html = `<div class="filter-bar">
-      <select onchange="filterAssignee=this.value;renderTasks()">
-        <option value="all">Todos los responsables</option>${teamOpts}
-        <option value="unassigned" ${filterAssignee==='unassigned'?'selected':''}>Sin asignar</option>
-      </select>
-      <select onchange="filterStatus=this.value;renderTasks()">
-        <option value="all">Todos los estados</option>
-        <option value="active"    ${filterStatus==='active'?'selected':''}>Pendientes y En curso</option>
-        <option value="retrasado" ${filterStatus==='retrasado'?'selected':''}>Retrasados</option>
-        <option value="completado"${filterStatus==='completado'?'selected':''}>Completados</option>
-      </select>
-    </div>`;
-
-    STAGES.forEach(stage => {
-      let fTasks = getAllTasks().filter(t => t.stageId===stage.id).filter(t => {
-        let matchA = true;
-        if (filterAssignee==='unassigned') matchA = !t.assignee;
-        else if (filterAssignee!=='all')   matchA = t.assignee===filterAssignee;
-        const st = getTaskStatus(t.id);
-        let matchS = (filterStatus==='all')||
-          (filterStatus==='active'&&(st==='pendiente'||st==='curso'))||
-          (filterStatus===st);
-        return matchA && matchS;
-      }).sort((a,b) => getTaskDates(a).start - getTaskDates(b).start);
-      if (fTasks.length===0) return;
-
-      const done = fTasks.filter(t=>getTaskStatus(t.id)==='completado').length;
-      const pct  = fTasks.length ? Math.round(done/fTasks.length*100) : 0;
-      const col  = state.collapsed && state.collapsed[stage.id];
-      html += `<div class="section">
-        <div class="section-header" onclick="toggleSection(${stage.id})">
-          <div class="section-title">
-            <span style="width:10px;height:10px;border-radius:50%;background:${stage.color};display:inline-block;flex-shrink:0"></span>
-            ${stage.name}
-          </div>
-          <div class="section-meta">
-            <span>${done}/${fTasks.length}</span>
-            <div class="pbar-sm"><div class="pbar-sm-inner" style="width:${pct}%;background:${stage.color}"></div></div>
-            <i class="ti ti-chevron-${col?'right':'down'}" style="font-size:14px"></i>
-          </div>
-        </div>
-        ${col ? '' : renderTaskList(fTasks, stage)}
-      </div>`;
-    });
-    el.innerHTML = html;
-  } catch(e) { console.error(e); }
-}
-
-function renderTaskList(tasks, stage) {
-  let html = '<div>';
-  tasks.forEach(t => {
-    const status = getTaskStatus(t.id);
-    const { start, end } = getTaskDates(t);
-    const dateLabel = `${fmtShort(start)} — ${fmtShort(end)} · S${getRelWeek(start)}-S${getRelWeek(end)}`;
-    const assigneeBadge = (t.assignee && typeof t.assignee==='string')
-      ? `<span class="badge" style="background:var(--bg3);color:var(--text2)"><i class="ti ti-user"></i> ${t.assignee}</span>` : '';
-
-    const subs = state.subtasks && state.subtasks[t.id] ? state.subtasks[t.id] : [];
-    let subProgHtml = '';
-    if(subs.length > 0) {
-        const dSub = subs.filter(s=>s.status==='completado').length;
-        const pSub = Math.round((dSub/subs.length)*100);
-        subProgHtml = `<span style="font-size:10px;color:var(--blue);margin-left:8px"><i class="ti ti-list-check"></i> ${dSub}/${subs.length} (${pSub}%)</span><div class="sub-prog-bar"><div class="sub-prog-inner" style="width:${pSub}%"></div></div>`;
-    }
-
-    html += `<div class="task-row${status==='completado'?' done':''}" onclick="openTask('${t.id}',${stage.id})">
-      <div class="status-icon si-${status}" onclick="quickToggle(event,'${t.id}')">${getStatusIconHTML(status)}</div>
-      <div class="task-info">
-        <div class="task-name">${t.name}</div>
-        <div class="task-date"><i class="ti ti-calendar-event" style="font-size:11px"></i> ${dateLabel} ${subProgHtml}</div>
-      </div>
-      <div class="task-right">${assigneeBadge}${badge(t.type)}</div>
-    </div>`;
-
-    subs.forEach(s => {
-      if (!s) return;
-      const sst   = s.status||'pendiente';
-      const sassg = (s.assignee&&typeof s.assignee==='string') ? ` <i class="ti ti-user"></i> ${s.assignee.split(' ')[0]}` : '';
-      const sdate = s.date ? ` · <i class="ti ti-calendar-event"></i> ${fmtShort(parseLocal(s.date))}` : '';
-      
-      html += `<div class="subtask-indented ${sst==='completado'?'done':''}" onclick="openTask('${t.id}',${stage.id})">
-        <div class="status-icon si-${sst}" onclick="event.stopPropagation(); toggleSubM('${t.id}', '${s.id}')" style="cursor:pointer; transform: scale(0.8); margin-right: -2px;">${getStatusIconHTML(sst)}</div>
-        <span class="st-name">${s.name}<span style="font-size:11px;color:var(--text3)"> ${sassg}${sdate}</span></span>
-      </div>`;
-    });
-  });
-  html += `<div class="add-task-btn" onclick="openAddTask(${stage.id})"><i class="ti ti-plus"></i> Agregar actividad</div>`;
-  html += '</div>';
-  return html;
-}
-
-function toggleSection(id) {
-  if (!state.collapsed) state.collapsed = {};
-  state.collapsed[id] = !state.collapsed[id];
-  saveState();
-}
-function quickToggle(e, id) {
-  e.stopPropagation();
-  const curr  = getTaskStatus(id);
-  const isDone= curr==='completado';
-  state.statuses[id] = isDone ? 'pendiente' : 'completado';
-  const tName = (getAllTasks().find(t=>t.id===id)||{}).name||'';
-  logAction(`Marcó '${tName.length>25?tName.slice(0,25)+'...':tName}' como ${isDone?'Pendiente':'Completado'}.`);
-  saveState();
-}
-
-// ═══════════════════════════════════════════════════════
-//  RENDER CALENDAR (NUEVA PESTAÑA)
-// ═══════════════════════════════════════════════════════
-function renderCalendar() {
-    const el = document.getElementById('tab-calendar');
-    if (!el) return;
-
-    // Calcular el lunes de esta semana
-    const today = new Date();
-    const dayOfWeek = today.getDay();
-    const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
-    const startOfCal = new Date(today.setDate(diff));
-    startOfCal.setHours(0,0,0,0);
-
-    // Crear arreglo de 21 días (3 semanas)
-    const days = [];
-    for(let i=0; i<21; i++) {
-        const d = new Date(startOfCal);
-        d.setDate(d.getDate() + i);
-        days.push(d);
-    }
-
-    let html = `<div class="cal-container"><div style="min-width:860px;">
-        <div class="cal-header">
-            <div style="padding:10px 14px; font-size:12px; font-weight:600; color:var(--text2); display:flex; align-items:center;">Próximas 3 semanas</div>
-            ${days.map(d => {
-                const isToday = d.toDateString() === new Date().toDateString();
-                const dayName = d.toLocaleDateString('es-CL', {weekday:'short'}).slice(0,1).toUpperCase();
-                const dateNum = d.getDate();
-                return `<div class="cal-day-col ${isToday?'today':''}">${dayName}<br><span style="font-size:12px">${dateNum}</span></div>`;
-            }).join('')}
-        </div>
-        <div class="cal-body">`;
-
-    const allT = getAllTasks();
-    const visibleTasks = allT.filter(t => {
-        const {start, end} = getTaskDates(t);
-        const s = new Date(start); s.setHours(0,0,0,0);
-        const e = new Date(end); e.setHours(23,59,59,999);
-        return s <= days[20] && e >= days[0] && getTaskStatus(t.id) !== 'completado';
-    }).sort((a,b) => getTaskDates(a).start - getTaskDates(b).start);
-
-    if (visibleTasks.length === 0) {
-        html += `<div style="padding:40px; text-align:center; color:var(--text3); font-size:13px;">No tienes tareas pendientes programadas para las próximas 3 semanas. ¡Buen trabajo!</div>`;
-    } else {
-        visibleTasks.forEach(t => {
-            const {start, end} = getTaskDates(t);
-            const s = new Date(start); s.setHours(0,0,0,0);
-            const e = new Date(end); e.setHours(0,0,0,0);
-            
-            let gridStart = Math.floor((s - days[0]) / (1000*60*60*24)) + 1;
-            let gridEnd = Math.floor((e - days[0]) / (1000*60*60*24)) + 2; 
-            
-            if (gridStart < 1) gridStart = 1;
-            if (gridEnd > 22) gridEnd = 22;
-
-            const barColor = t.stageColor || 'var(--green)';
-            const status = getTaskStatus(t.id);
-            const opacity = status === 'completado' ? '0.5' : (status==='retrasado'?'1':'0.85');
-            const actualBg = status === 'retrasado' ? 'var(--red)' : barColor;
-            const safeName = (t.name||'').replace(/"/g, '&quot;');
-            const assg = (t.assignee && typeof t.assignee==='string') ? t.assignee.split(' ')[0] : '';
-
-            html += `<div class="cal-row">
-                <div class="cal-task-name" title="${safeName}">${t.name}</div>
-                <div class="cal-grid">
-                    <div class="cal-grid-lines">
-                        ${Array.from({length:21}).map(()=>`<div class="cal-grid-line"></div>`).join('')}
-                    </div>
-                    <div class="cal-bar-wrapper">
-                        <div class="cal-bar" onclick="openTask('${t.id}',${t.stageId})" style="grid-column: ${gridStart} / ${gridEnd}; background:${actualBg}; opacity:${opacity};">
-                            <span style="overflow:hidden; text-overflow:ellipsis;">${safeName}</span>
-                            ${assg ? `<span class="cal-bar-assignee">${assg}</span>` : ''}
-                        </div>
-                    </div>
-                </div>
-            </div>`;
-        });
-    }
-    
-    html += `</div></div></div>`;
-    el.innerHTML = html;
-}
-
-
-// ═══════════════════════════════════════════════════════
-//  RENDER KANBAN
-// ═══════════════════════════════════════════════════════
-function renderBoard() {
-  const el = document.getElementById('tab-board');
-  if (!el) return;
-  try {
-    const cols = { pendiente:[], curso:[], retrasado:[], completado:[] };
-    getAllTasks().forEach(t => cols[getTaskStatus(t.id)].push(t));
-    const colNames = {
-      pendiente:  ['Pendientes','var(--border2)'],
-      curso:      ['En Curso','var(--blue)'],
-      retrasado:  ['Retrasadas','var(--red)'],
-      completado: ['Completadas','var(--green)']
-    };
-    let html = '<div class="board-container">';
-    ['pendiente','curso','retrasado','completado'].forEach(k => {
-      html += `<div class="board-col">
-        <h3 style="border-color:${colNames[k][1]}">${colNames[k][0]} <span style="color:var(--text3);font-size:11px">${cols[k].length}</span></h3>
-        ${cols[k].map(t => {
-          const subs    = state.subtasks&&state.subtasks[t.id] ? state.subtasks[t.id] : [];
-          const subsDone= subs.filter(s=>s.status==='completado').length;
-
-          let subMeta = '';
-          if(subs.length>0) {
-              const pSub = Math.round((subsDone/subs.length)*100);
-              subMeta = `<div style="display:flex;align-items:center;gap:4px;margin-top:6px;"><span style="color:var(--blue);font-size:10px;"><i class="ti ti-list-check"></i> ${subsDone}/${subs.length} (${pSub}%)</span><div class="sub-prog-bar"><div class="sub-prog-inner" style="width:${pSub}%"></div></div></div>`;
-          }
-
-          const assg    = (t.assignee&&typeof t.assignee==='string') ? `<i class="ti ti-user"></i> ${t.assignee.split(' ')[0]}` : '';
-          return `<div class="board-card" style="border-left-color:${t.stageColor}" onclick="openTask('${t.id}',${t.stageId})">
-            <div class="bc-title">${t.name}</div>
-            <div class="bc-meta"><span>${badge(t.type)} ${assg}</span></div>
-            ${subMeta}
-          </div>`;
-        }).join('')}
-      </div>`;
-    });
-    html += '</div>';
-    el.innerHTML = html;
-  } catch(e) { console.error(e); }
-}
-
-// ═══════════════════════════════════════════════════════
-//  RENDER GANTT
-// ═══════════════════════════════════════════════════════
-function toggleGanttCompleted() {
-    hideCompletedGantt = !hideCompletedGantt;
-    renderGantt();
-}
-
-function renderGantt() {
-  const el = document.getElementById('tab-gantt');
-  if (!el) return;
-  try {
-    const meta      = currentProjId ? allProjects[currentProjId].meta : {};
-    const TOTAL_W   = meta.totalWeeks || 35;
-    const TOTAL_D   = TOTAL_W * 7;
-    const projStart = getStartDate();
-    const tf        = todayFraction();
-    
-    let monthsHtml = '';
-    let currentM = '';
-    let wCount = 0;
-    
-    for (let w = 1; w <= TOTAL_W; w++) {
-        const date = weekStart(w);
-        const mStr = date.toLocaleDateString('es-CL', { month: 'short', year: '2-digit' }).replace(' de ', ' '); 
-        if (mStr !== currentM) {
-            if (wCount > 0) monthsHtml += `<div class="month-col" style="flex:${wCount};">${currentM}</div>`;
-            currentM = mStr;
-            wCount = 1;
-        } else {
-            wCount++;
-        }
-    }
-    if (wCount > 0) monthsHtml += `<div class="month-col" style="flex:${wCount};">${currentM}</div>`;
-
-    let html = `<div class="gantt-wrap"><div class="gantt-inner">
-      <div class="gantt-head-row">
-        <div style="display:flex; align-items:center; justify-content:space-between; padding-right:14px;">
-          Actividad 
-          <label style="font-weight:normal; cursor:pointer; font-size:10px; display:flex; align-items:center; gap:4px; color:var(--text2);">
-            <input type="checkbox" onchange="toggleGanttCompleted()" ${hideCompletedGantt?'checked':''}> Ocultar completadas
-          </label>
-        </div>
-        <div class="month-labels">${monthsHtml}</div>
-      </div>`;
-
-    STAGES.forEach(stage => {
-      let stageTasks = getAllTasks().filter(t=>t.stageId===stage.id);
-      if(hideCompletedGantt) stageTasks = stageTasks.filter(t => getTaskStatus(t.id) !== 'completado');
-      stageTasks = stageTasks.sort((a,b)=>getTaskDates(a).start-getTaskDates(b).start);
-      
-      if (!stageTasks.length) return;
-      const scol = state.ganttCollapsed && state.ganttCollapsed[stage.id];
-      
-      let stageBarHtml = `<div></div>`;
-      if(stageTasks.length > 0) {
-          let minS = Infinity, maxE = -Infinity;
-          stageTasks.forEach(t => {
-              const {start, end} = getTaskDates(t);
-              if(start && !isNaN(start) && start.getTime() < minS) minS = start.getTime();
-              if(end && !isNaN(end) && end.getTime() > maxE) maxE = end.getTime();
-          });
-          if(minS !== Infinity && maxE !== -Infinity) {
-              const sD = Math.floor((minS - projStart.getTime())/(24*3600*1000));
-              const eD = Math.floor((maxE - projStart.getTime())/(24*3600*1000));
-              const sLeft = Math.max(0, (sD/TOTAL_D)*100);
-              const sWidth = Math.max(0.5, ((eD - sD + 1)/TOTAL_D)*100);
-              stageBarHtml = `<div class="gantt-bar-cell" style="cursor:default !important;"><div class="gantt-bar" style="left:${sLeft}%;width:${sWidth}%;background:${stage.color};opacity:0.25;border-radius:4px"></div></div>`;
-          }
-      }
-
-      html += `<div class="gantt-row" style="background:${stage.light};" onclick="toggleGanttSection(${stage.id})">
-        <div style="font-weight:600; font-size:12px; display:flex; align-items:center; gap:6px; z-index:3; color:${stage.color}">
-          <i class="ti ti-chevron-${scol?'right':'down'}" style="font-size:14px;color:${stage.color}"></i>
-          <span style="width:8px;height:8px;border-radius:50%;background:${stage.color};display:inline-block;flex-shrink:0"></span>
-          ${stage.name}
-        </div>
-        ${stageBarHtml}
-      </div>`;
-      
-      if (!scol) {
-        stageTasks.forEach(t => {
-          const status = getTaskStatus(t.id);
-          const { start, end } = getTaskDates(t);
-          const startD  = Math.floor((start - projStart)/(24*3600*1000));
-          const endD    = Math.floor((end - projStart)/(24*3600*1000));
-          const leftPct = Math.max(0,(startD/TOTAL_D)*100);
-          const widthPct= Math.max(.5,((endD-startD+1)/TOTAL_D)*100);
-          
-          let barColor = status==='completado'?'var(--green)': status==='retrasado'?'var(--red)': status==='curso'?'var(--blue)':stage.color;
-          let barStyle = t.type === 'revision' ? `background: repeating-linear-gradient(45deg, ${barColor}, ${barColor} 6px, rgba(255,255,255,0.4) 6px, rgba(255,255,255,0.4) 12px);` : `background: ${barColor};`;
-
-          const safeName = (t.name||'').replace(/"/g, '&quot;');
-          html += `<div class="gantt-row" onclick="openTask('${t.id}',${stage.id})">
-            <div style="overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding-right:8px;color:${status==='completado'?'var(--text3)':'var(--text)'}${status==='completado'?';text-decoration:line-through':''}" title="${safeName}">${t.name}</div>
-            <div class="gantt-bar-cell">
-              <div class="gantt-today-line" style="left:${tf*100}%"></div>
-              <div class="gantt-bar" style="left:${leftPct}%; width:${widthPct}%; ${barStyle} ${status==='completado'?';opacity:.5':''}" title="${safeName}"></div>
-            </div>
-          </div>`;
-        });
-      }
-    });
-    html += '</div></div>';
-    el.innerHTML = html;
-  } catch(e) { console.error(e); }
-}
-
-function toggleGanttSection(id) {
-  if (!state.ganttCollapsed) state.ganttCollapsed = {};
-  state.ganttCollapsed[id] = !state.ganttCollapsed[id];
-  saveState();
-}
-
-// ═══════════════════════════════════════════════════════
-//  RENDER EVALUACIONES
-// ═══════════════════════════════════════════════════════
-function renderEval() {
-  const el = document.getElementById('tab-eval');
-  if (!el) return;
-  let html = '';
-  STAGES.forEach(stage => {
-    const evals = getAllTasks().filter(t=>t.stageId===stage.id&&(t.type==='producto'||t.type==='revision'));
-    if (!evals.length) return;
-    html += `<div class="section"><div class="section-header" style="cursor:default"><div class="section-title"><span style="width:10px;height:10px;border-radius:50%;background:${stage.color};display:inline-block"></span>${stage.name}</div></div><div style="padding:10px 14px 0">`;
-    
-    evals.forEach(t => {
-      const isProd = t.type==='producto';
-      const ev     = isProd ? (state.evaluations&&state.evaluations[t.id]||0) : (state.evaluationsClient&&state.evaluationsClient[t.id]||0);
-      const note   = state.notes&&state.notes[t.id]||'';
-      const status = getTaskStatus(t.id);
-      const { start, end } = getTaskDates(t);
-      const dateLabel = `${fmtShort(start)} — ${fmtShort(end)} · S${getRelWeek(start)}-S${getRelWeek(end)}`;
-      
-      html += `<div class="eval-card">
-        <h4>${t.name} ${status==='completado'?'<span class="tag-active">Completado</span>':''} ${badge(t.type)}</h4>
-        <div style="font-size:11px;color:var(--text3);margin-bottom:8px"><i class="ti ti-calendar"></i> ${dateLabel}</div>
-        <div class="eval-section">
-          <h4 style="color:${isProd?'var(--green)':'#a87000'}">${isProd?'Autoevaluación del Equipo':'Feedback del Cliente'}</h4>
-          <div class="stars-input">
-            ${[1,2,3,4,5].map(i=>`<i class="ti ti-star-filled" style="font-size:18px;color:${ev>=i?(isProd?'var(--green)':'var(--amber)'):'var(--border2)'}"></i>`).join('')}
-            <span style="font-size:12px;color:var(--text2);margin-left:6px">${ev>0?'Registrado':'Sin evaluar'}</span>
-          </div>
-        </div>
-        <div style="margin-top:8px;font-size:12px;color:var(--text);background:var(--bg);border:1px solid var(--border);padding:8px;border-radius:var(--radius)"><b>Notas:</b> ${note||'No hay notas.'}</div>
-      </div>`;
-    });
-    html += '</div></div>';
-  });
-  el.innerHTML = html || '<p style="font-size:13px;color:var(--text2)">No hay productos o revisiones en este proyecto.</p>';
-}
-
-// ═══════════════════════════════════════════════════════
 //  NUEVOS MODALES DE ACCIÓN GLOBAL
 // ═══════════════════════════════════════════════════════
 
@@ -1839,15 +1376,37 @@ function openShareModal(){
     const text = getShareText();
     modal(`
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-            <h3 style="margin:0"><i class="ti ti-share"></i> Compartir Resumen</h3>
+            <h3 style="margin:0"><i class="ti ti-clipboard-text"></i> Resumen del Proyecto</h3>
         </div>
-        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Copia el resumen del estado actual del proyecto para enviarlo a tu equipo o contraparte.</p>
-        <textarea readonly style="width:100%; height:180px; font-family:monospace; font-size:11px; padding:10px; border:1px solid var(--border); border-radius:var(--radius); margin-bottom:12px; background:var(--bg2); color:var(--text);">${text}</textarea>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Este es el estado actual de tu proyecto. Cópialo para enviarlo rápidamente a tu equipo o contraparte.</p>
+        <textarea id="share-textarea" readonly style="width:100%; height:180px; font-family:monospace; font-size:11px; padding:10px; border:1px solid var(--border); border-radius:var(--radius); margin-bottom:12px; background:var(--bg2); color:var(--text);">${text}</textarea>
         <div class="modal-actions" style="justify-content:flex-end;">
             <button class="btn" onclick="closeModal()">Cerrar</button>
             <button class="btn btn-blue" onclick="copyShareMsg()"><i class="ti ti-copy"></i> Copiar al portapapeles</button>
         </div>
     `);
+}
+
+function copyShareMsg(){
+    const textArea = document.getElementById('share-textarea');
+    if(!textArea) return;
+    textArea.select();
+    textArea.setSelectionRange(0, 99999); 
+    try {
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(textArea.value).then(() => {
+                alert('Resumen copiado al portapapeles ✓');
+            }).catch(() => {
+                document.execCommand('copy');
+                alert('Resumen copiado al portapapeles ✓');
+            });
+        } else {
+            document.execCommand('copy');
+            alert('Resumen copiado al portapapeles ✓');
+        }
+    } catch(e) {
+        alert('No se pudo copiar automáticamente. El texto ya está seleccionado, cópialo manualmente.');
+    }
 }
 
 function openSettingsModal(activeTab = 'general') {
